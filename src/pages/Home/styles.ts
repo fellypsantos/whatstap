@@ -1,18 +1,25 @@
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ContextMenu from 'react-native-context-menu-view';
+import {RectButton} from 'react-native-gesture-handler';
 
-export const ContactCard = styled.View`
+interface ContactCardProps {
+  useGrayedLeftBorder: boolean;
+}
+
+export const ContactCard = styled.View<ContactCardProps>`
   border-top-color: #e3e3e3;
   border-right-color: #e3e3e3;
   border-bottom-color: #e3e3e3;
-  border-left-color: #5467fb;
   border-width: 1px;
   border-radius: 5px;
   border-left-width: 5px;
   padding: 15px 20px 10px 20px;
   background-color: #fff;
   margin-bottom: 15px;
+
+  border-left-color: ${props =>
+    props.useGrayedLeftBorder ? '#aaa' : '#5467fb'};
 `;
 
 export const ContactCardHeader = styled.View`
@@ -81,7 +88,7 @@ export const ContactDateTime = styled.Text`
   color: #aaaaaa;
 `;
 
-export const ContactMenuWhatsAppButton = styled.TouchableOpacity`
+export const ContactMenuWhatsAppButton = styled(RectButton)`
   background-color: #25d366;
   width: 35px;
   height: 30px;

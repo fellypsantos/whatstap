@@ -29,6 +29,7 @@ const PhoneNumberInput: React.FC<PhoneInputProps> = props => (
         fontFamily: 'Ubuntu-B',
         fontSize: 18,
         backgroundColor: '#fff',
+        marginLeft: -15,
       }}
       textInputStyle={{
         padding: 0,
@@ -36,6 +37,7 @@ const PhoneNumberInput: React.FC<PhoneInputProps> = props => (
         fontFamily: 'Ubuntu-B',
         backgroundColor: '#fff',
       }}
+      textInputProps={{placeholderTextColor: '#aaa'}}
     />
     <InputLabel>
       <InputLabelIcon name="phone" color="#aaa" size={14} />

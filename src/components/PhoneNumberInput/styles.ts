@@ -25,6 +25,7 @@ export const InputLabelIcon = styled(Icon)`
 export const InputLabelText = styled.Text`
   font-family: 'Ubuntu-R';
   text-transform: uppercase;
+  color: #aaa;
 `;
 
 export const ContainerInput = styled(PhoneInput)<PhoneInputProps>``;

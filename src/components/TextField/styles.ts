@@ -10,11 +10,14 @@ export const Container = styled.View`
   padding-top: 5px;
 `;
 
-export const ContainerInput = styled.TextInput`
+export const ContainerInput = styled.TextInput.attrs({
+  placeholderTextColor: '#aaa',
+})`
   background-color: #fff;
   padding: 10px 20px;
   font-family: 'Ubuntu-B';
   font-size: 18px;
+  color: #474747;
 `;
 
 export const InputLabel = styled.View`
@@ -32,4 +35,5 @@ export const InputLabelIcon = styled(Icon)`
 export const InputLabelText = styled.Text`
   font-family: 'Ubuntu-R';
   text-transform: uppercase;
+  color: #aaa;
 `;

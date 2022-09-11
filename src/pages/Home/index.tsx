@@ -1,4 +1,8 @@
-import React from 'react';
+import React, {useCallback} from 'react';
+import {useNavigation} from '@react-navigation/core';
+
+import {StackNavigationProps} from '../../routes/Stack';
+import {useContact} from '../../hooks/contact';
 import AppStructure from '../../components/AppStructure';
 
 import {
@@ -17,55 +21,93 @@ import {
   ContactNumber,
   Divider,
 } from './styles';
+import {format, formatRelative, subDays} from 'date-fns';
+import {pt} from 'date-fns/locale';
 
-const Home = () => (
-  <AppStructure
-    sectionName="Contact History"
-    headerMenuOptions={{icon: 'plus-circle', onPress: () => null}}>
-    <>
-      {[1, 2, 3, 4, 5, 6].map(item => (
-        <ContactCard key={item}>
-          <ContactCardHeader>
-            <ContactNumber>+5591998379320</ContactNumber>
-            <ContactMenuButton
-              dropdownMenuMode
-              actions={[{title: 'Editar'}, {title: 'Excluir'}]}
-              onPress={e =>
-                console.log(
-                  `Pressed ${e.nativeEvent.name} at index ${e.nativeEvent.index}`,
-                )
-              }>
-              <ContactMenuButtonIcon name="ellipsis-v" color="#aaa" size={14} />
-            </ContactMenuButton>
-          </ContactCardHeader>
+const DropDownOptions = {
+  edit: 0,
+  delete: 1,
+};
 
-          <ContactName>Backend Developer</ContactName>
+const Home: React.FC = () => {
+  const navigation = useNavigation<StackNavigationProps>();
+  const {contacts} = useContact();
 
-          <ContactLocationContainer>
-            <ContactLocationIcon
-              name="map-marker-alt"
-              color="#5467FB"
-              size={14}
-            />
-            <ContactLocationName>BRAZIL</ContactLocationName>
-          </ContactLocationContainer>
+  const handlePressMenuOption = useCallback((itemIndex: number) => {
+    // if (itemIndex === DropDownOptions.edit) handleEdit()
+  }, []);
 
-          <Divider />
+  const eraseAsyncStorageData = useCallback(async () => {
+    console.log('ALL CLEAR');
+  }, []);
 
-          <ContactFooter>
-            <ContactDateTime>27 MAY, 2019 | 07:00PM</ContactDateTime>
-            <ContactMenuWhatsAppButton>
-              <ContactMenuWhatsAppButtonIcon
-                name="whatsapp"
-                color="#fff"
-                size={14}
-              />
-            </ContactMenuWhatsAppButton>
-          </ContactFooter>
-        </ContactCard>
-      ))}
-    </>
-  </AppStructure>
-);
+  return (
+    <AppStructure
+      sectionName="Contact History"
+      headerMenuOptions={{
+        icon: 'plus-circle',
+        onPress: () => navigation.navigate('AddNumber'),
+      }}>
+      <>
+        {contacts.length === 0 ? (
+          <ContactCard useGrayedLeftBorder>
+            <ContactNumber>
+              No contacts yet. Tap the + button to add you first contact.
+            </ContactNumber>
+          </ContactCard>
+        ) : (
+          contacts.map(contact => (
+            <ContactCard key={contact.id}>
+              <ContactCardHeader>
+                <ContactNumber>{contact.number}</ContactNumber>
+                <ContactMenuButton
+                  dropdownMenuMode
+                  actions={[{title: 'Editar'}, {title: 'Excluir'}]}
+                  onPress={({nativeEvent}) =>
+                    handlePressMenuOption(nativeEvent.index)
+                  }>
+                  <ContactMenuButtonIcon
+                    name="ellipsis-v"
+                    color="#aaa"
+                    size={14}
+                  />
+                </ContactMenuButton>
+              </ContactCardHeader>
+
+              <ContactName>{contact.name || 'No name'}</ContactName>
+
+              <ContactLocationContainer>
+                <ContactLocationIcon
+                  name="map-marker-alt"
+                  color="#5467FB"
+                  size={14}
+                />
+                <ContactLocationName>BRAZIL</ContactLocationName>
+              </ContactLocationContainer>
+
+              <Divider />
+
+              <ContactFooter>
+                <ContactDateTime>
+                  {format(contact.createdAt, 'PPpp', {locale: pt})}
+                </ContactDateTime>
+
+                <ContactMenuWhatsAppButton
+                  onPress={() => null}
+                  onLongPress={eraseAsyncStorageData}>
+                  <ContactMenuWhatsAppButtonIcon
+                    name="whatsapp"
+                    color="#fff"
+                    size={14}
+                  />
+                </ContactMenuWhatsAppButton>
+              </ContactFooter>
+            </ContactCard>
+          ))
+        )}
+      </>
+    </AppStructure>
+  );
+};
 
 export default Home;

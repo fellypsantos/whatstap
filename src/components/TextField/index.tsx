@@ -10,6 +10,7 @@ import {
 
 interface TextFieldsProps {
   icon: string;
+  label: string;
   value: string;
   placeholder?: string;
   onChangeText(text: string): void;
@@ -17,6 +18,7 @@ interface TextFieldsProps {
 
 const TextField: React.FC<TextFieldsProps> = ({
   icon,
+  label,
   value,
   placeholder,
   onChangeText,
@@ -30,7 +32,7 @@ const TextField: React.FC<TextFieldsProps> = ({
       />
       <InputLabel>
         <InputLabelIcon name={icon} color="#aaa" size={14} />
-        <InputLabelText>Identifier</InputLabelText>
+        <InputLabelText>{label}</InputLabelText>
       </InputLabel>
     </Container>
   </KeyboardAvoidingView>
