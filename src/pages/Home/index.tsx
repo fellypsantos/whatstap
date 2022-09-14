@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useMemo} from 'react';
 import {useNavigation} from '@react-navigation/core';
 
 import {StackNavigationProps} from '../../routes/Stack';
@@ -21,35 +21,43 @@ import {
   ContactNumber,
   Divider,
 } from './styles';
-import {format, formatRelative, subDays} from 'date-fns';
+import {format} from 'date-fns';
 import {pt} from 'date-fns/locale';
-
-const DropDownOptions = {
-  edit: 0,
-  delete: 1,
-};
+import {ActivityIndicator} from 'react-native';
+import IContact from '../../interfaces/IContact';
 
 const Home: React.FC = () => {
   const navigation = useNavigation<StackNavigationProps>();
-  const {contacts} = useContact();
+  const {contacts, loading, openWhatsApp, removeContact} = useContact();
 
-  const handlePressMenuOption = useCallback((itemIndex: number) => {
-    // if (itemIndex === DropDownOptions.edit) handleEdit()
-  }, []);
+  const dropdown = useMemo(
+    () => ({
+      indexes: {EDIT: 0, DELETE: 1},
+      options: [{title: 'Edit'}, {title: 'Delete'}],
+    }),
+    [],
+  );
 
-  const eraseAsyncStorageData = useCallback(async () => {
-    console.log('ALL CLEAR');
-  }, []);
+  const handlePressMenuItem = useCallback(
+    (contact: IContact, optionIndex: number) => {
+      if (optionIndex === dropdown.indexes.EDIT)
+        navigation.navigate('EditContact', {contact: contact});
+      else if (optionIndex === dropdown.indexes.DELETE) removeContact(contact);
+    },
+    [removeContact, dropdown.indexes, navigation],
+  );
 
   return (
     <AppStructure
       sectionName="Contact History"
       headerMenuOptions={{
         icon: 'plus-circle',
-        onPress: () => navigation.navigate('AddNumber'),
+        onPress: () => navigation.navigate('AddContact'),
       }}>
       <>
-        {contacts.length === 0 ? (
+        {loading ? (
+          <ActivityIndicator />
+        ) : contacts.length === 0 ? (
           <ContactCard useGrayedLeftBorder>
             <ContactNumber>
               No contacts yet. Tap the + button to add you first contact.
@@ -59,12 +67,12 @@ const Home: React.FC = () => {
           contacts.map(contact => (
             <ContactCard key={contact.id}>
               <ContactCardHeader>
-                <ContactNumber>{contact.number}</ContactNumber>
+                <ContactNumber>{contact.phone}</ContactNumber>
                 <ContactMenuButton
                   dropdownMenuMode
-                  actions={[{title: 'Editar'}, {title: 'Excluir'}]}
+                  actions={dropdown.options}
                   onPress={({nativeEvent}) =>
-                    handlePressMenuOption(nativeEvent.index)
+                    handlePressMenuItem(contact, nativeEvent.index)
                   }>
                   <ContactMenuButtonIcon
                     name="ellipsis-v"
@@ -82,19 +90,18 @@ const Home: React.FC = () => {
                   color="#5467FB"
                   size={14}
                 />
-                <ContactLocationName>BRAZIL</ContactLocationName>
+                <ContactLocationName>{contact.country}</ContactLocationName>
               </ContactLocationContainer>
 
               <Divider />
 
               <ContactFooter>
                 <ContactDateTime>
-                  {format(contact.createdAt, 'PPpp', {locale: pt})}
+                  {format(new Date(contact.createdAt), 'PPpp', {locale: pt})}
                 </ContactDateTime>
 
                 <ContactMenuWhatsAppButton
-                  onPress={() => null}
-                  onLongPress={eraseAsyncStorageData}>
+                  onPress={() => openWhatsApp(contact.phone)}>
                   <ContactMenuWhatsAppButtonIcon
                     name="whatsapp"
                     color="#fff"

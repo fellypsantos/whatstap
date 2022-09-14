@@ -41,7 +41,7 @@ const PhoneNumberInput: React.FC<PhoneInputProps> = props => (
     />
     <InputLabel>
       <InputLabelIcon name="phone" color="#aaa" size={14} />
-      <InputLabelText>Number</InputLabelText>
+      <InputLabelText>Phone Number</InputLabelText>
     </InputLabel>
   </Container>
 );

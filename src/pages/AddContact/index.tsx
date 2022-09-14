@@ -1,8 +1,6 @@
 import {useNavigation} from '@react-navigation/core';
 import React, {useCallback, useState} from 'react';
-import {Linking} from 'react-native';
 import uuid from 'react-native-uuid';
-import {} from 'react-native-phone-number-input';
 
 import {useContact} from '../../hooks/contact';
 import AppStructure from '../../components/AppStructure';
@@ -12,15 +10,15 @@ import PhoneNumberInput from '../../components/PhoneNumberInput';
 import TextField from '../../components/TextField';
 import IContact from '../../interfaces/IContact';
 
-const AddNumber: React.FC = () => {
+const AddContact: React.FC = () => {
   const navigation = useNavigation();
-  const [openWhatsApp, setOpenWhatsApp] = useState(false);
-  const {addContact} = useContact();
+  const [openWhatsAppChecked, setOpenWhatsAppChecked] = useState(false);
+  const {addContact, openWhatsApp} = useContact();
 
   const [contact, setContact] = useState<IContact>(() => ({
     id: uuid.v4().toString(),
     name: '',
-    number: '',
+    phone: '',
     country: 'Brazil',
     createdAt: new Date(),
   }));
@@ -31,16 +29,14 @@ const AddNumber: React.FC = () => {
       createdAt: new Date(),
     });
 
-    if (openWhatsApp) {
-      Linking.openURL(`whatsapp://send?&phone=${contact.number}`);
-    }
+    if (openWhatsAppChecked) openWhatsApp(contact.phone);
 
     navigation.goBack();
-  }, [contact, addContact, openWhatsApp, navigation]);
+  }, [contact, addContact, openWhatsAppChecked, navigation, openWhatsApp]);
 
   return (
     <AppStructure
-      sectionName="Add Number"
+      sectionName="Add Contact"
       headerMenuOptions={{
         icon: 'trash',
         onPress: () => navigation.goBack(),
@@ -52,7 +48,7 @@ const AddNumber: React.FC = () => {
           onChangeCountry={({name}) =>
             setContact({...contact, country: name.toString()})
           }
-          onChangeFormattedText={text => setContact({...contact, number: text})}
+          onChangeFormattedText={text => setContact({...contact, phone: text})}
           placeholder="Type here"
         />
 
@@ -65,9 +61,9 @@ const AddNumber: React.FC = () => {
         />
 
         <CheckboxField
-          isChecked={openWhatsApp}
+          isChecked={openWhatsAppChecked}
           text="Start this chat when save"
-          onPress={isChecked => setOpenWhatsApp(isChecked)}
+          onPress={isChecked => setOpenWhatsAppChecked(isChecked)}
         />
 
         <ButtonContainer
@@ -86,4 +82,4 @@ const AddNumber: React.FC = () => {
   );
 };
 
-export default AddNumber;
+export default AddContact;
