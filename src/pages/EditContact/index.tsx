@@ -1,35 +1,38 @@
-import React, {useCallback, useState} from 'react';
-import {Alert} from 'react-native';
+import React, { useCallback, useState } from 'react';
 
-import {useContact} from '../../hooks/contact';
+import { useContact } from '../../hooks/contact';
 import AppStructure from '../../components/AppStructure';
 import ButtonContainer from '../../components/Button';
 import TextField from '../../components/TextField';
 import IContact from '../../interfaces/IContact';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../routes/Stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../routes/Stack';
 
 type PageProps = NativeStackScreenProps<RootStackParamList, 'EditContact'>;
 
-const EditContact: React.FC<PageProps> = ({navigation, route}) => {
-  const [contact, setContact] = useState({...route.params.contact});
-  const {removeContact} = useContact();
+const EditContact: React.FC<PageProps> = ({ navigation, route }) => {
+  const [contact, setContact] = useState({ ...route.params.contact });
+  const { removeContact, editContact } = useContact();
 
   const handleEdit = useCallback(
     async (contactEdit: IContact) => {
-      const result = await removeContact(contactEdit);
-      console.log('delete result', result);
+      const updated = await editContact(contactEdit);
+      if (updated) navigation.goBack();
     },
-    [removeContact],
+    [editContact, navigation],
   );
+
+  const handleDelete = useCallback(async () => {
+    const result = await removeContact(contact);
+    if (result) navigation.goBack();
+  }, [contact, navigation, removeContact]);
 
   return (
     <AppStructure
       sectionName="Edit Contact"
       headerMenuOptions={{
         icon: 'trash',
-        onPress: () =>
-          Alert.alert('NEED_IMPLEMENT', 'DELETAR CONTATO SENDO EDITADO'),
+        onPress: handleDelete,
       }}>
       <>
         <TextField
@@ -45,7 +48,7 @@ const EditContact: React.FC<PageProps> = ({navigation, route}) => {
           label="identifier"
           value={contact.name}
           placeholder="Optional Name"
-          onChangeText={text => setContact({...contact, name: text})}
+          onChangeText={text => setContact({ ...contact, name: text })}
         />
 
         <ButtonContainer

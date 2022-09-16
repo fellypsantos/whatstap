@@ -6,7 +6,8 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Alert, Linking } from 'react-native';
+import { Alert, Linking, ToastAndroid } from 'react-native';
+import AlertAsync from 'react-native-alert-async';
 
 import IContact from '../interfaces/IContact';
 import { useDatabase } from './database';
@@ -16,6 +17,7 @@ interface ContactContext {
   loading: boolean;
   getContacts(): Promise<IContact[]>;
   addContact(contact: IContact): void;
+  editContact(contact: IContact): Promise<boolean>;
   removeContact(contact: IContact): Promise<boolean>;
   openWhatsApp(phone: string): void;
 }
@@ -58,8 +60,57 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
     [dbConnection, contacts],
   );
 
+  const editContact = useCallback(
+    async (contact: IContact): Promise<boolean> => {
+      try {
+        const { id, name } = contact;
+
+        const update = await dbConnection?.executeSql(
+          'UPDATE contacts SET name = ? WHERE id = ?',
+          [name, id],
+        );
+
+        if (update) {
+          const updatedList = contacts.map(item => {
+            if (item.id === contact.id) {
+              return {
+                ...item,
+                name: contact.name,
+              };
+            }
+            return contact;
+          });
+
+          setContacts(updatedList);
+          ToastAndroid.show('Contact updated.', ToastAndroid.LONG);
+          return update[0].rowsAffected > 0;
+        } else throw new Error();
+      } catch {
+        ToastAndroid.show('Failed to edit the contact.', ToastAndroid.LONG);
+        console.error('Failed to edit the contact.');
+        return false;
+      }
+    },
+    [dbConnection, contacts],
+  );
+
   const removeContact = useCallback(
     async (contact: IContact): Promise<boolean> => {
+      const confirm = await AlertAsync(
+        'Caution',
+        'Do you really want to delete this contact?',
+        [
+          { text: 'Yes, I Want', onPress: () => true },
+          { text: 'No', onPress: () => false },
+        ],
+        {
+          cancelable: true,
+          onDismiss: () => false,
+        },
+      );
+
+      if (!confirm) return false;
+
       try {
         const deleteResult = await dbConnection?.executeSql(
           'DELETE FROM contacts WHERE id = ?',
@@ -67,9 +118,7 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
         );
 
         if (deleteResult) {
-          const filtered = contacts.filter(
-            contactItem => contactItem.id !== contact.id,
-          );
+          const filtered = contacts.filter(item => item.id !== contact.id);
 
           setContacts(filtered);
           return deleteResult[0].rowsAffected > 0;
@@ -106,12 +155,21 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
     () => ({
       getContacts,
       addContact,
+      editContact,
       removeContact,
       contacts,
       loading,
       openWhatsApp,
     }),
-    [getContacts, addContact, removeContact, contacts, loading, openWhatsApp],
+    [
+      getContacts,
+      addContact,
+      editContact,
+      removeContact,
+      contacts,
+      loading,
+      openWhatsApp,
+    ],
   );
 
   return (
