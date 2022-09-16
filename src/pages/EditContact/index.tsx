@@ -1,27 +1,27 @@
 import React, {useCallback, useState} from 'react';
 import {Alert} from 'react-native';
-import uuid from 'react-native-uuid';
-import PhoneInput from 'react-native-phone-number-input';
 
 import {useContact} from '../../hooks/contact';
 import AppStructure from '../../components/AppStructure';
 import ButtonContainer from '../../components/Button';
-import PhoneNumberInput from '../../components/PhoneNumberInput';
 import TextField from '../../components/TextField';
 import IContact from '../../interfaces/IContact';
-import {PageProps} from '../../routes/Stack';
-import {RouteProp} from '@react-navigation/core';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../routes/Stack';
 
-interface EditContactProps extends PageProps {
-  route: RouteProp<{params: {contact: IContact}}, 'params'>;
-}
+type PageProps = NativeStackScreenProps<RootStackParamList, 'EditContact'>;
 
-const EditContact: React.FC<EditContactProps> = ({navigation, route}) => {
-  const [contact] = useState(route.params.contact);
+const EditContact: React.FC<PageProps> = ({navigation, route}) => {
+  const [contact, setContact] = useState({...route.params.contact});
+  const {removeContact} = useContact();
 
-  const handleEdit = useCallback((contactEdit: IContact) => {
-    console.log('edit', contactEdit);
-  }, []);
+  const handleEdit = useCallback(
+    async (contactEdit: IContact) => {
+      const result = await removeContact(contactEdit);
+      console.log('delete result', result);
+    },
+    [removeContact],
+  );
 
   return (
     <AppStructure
@@ -32,25 +32,24 @@ const EditContact: React.FC<EditContactProps> = ({navigation, route}) => {
           Alert.alert('NEED_IMPLEMENT', 'DELETAR CONTATO SENDO EDITADO'),
       }}>
       <>
-        <PhoneNumberInput
-          autoFocus
-          defaultCode="BR"
-          defaultValue={contact.phone}
-          onChangeCountry={({name}) => null}
-          onChangeFormattedText={text => null}
-          placeholder="Type here"
+        <TextField
+          editable={false}
+          icon="lock"
+          label="PHONE NUMBER NOT EDITABLE"
+          value={contact.phone}
+          onChangeText={() => null}
         />
 
         <TextField
           icon="id-card"
           label="identifier"
           value={contact.name}
-          placeholder="Optional name"
-          onChangeText={text => null}
+          placeholder="Optional Name"
+          onChangeText={text => setContact({...contact, name: text})}
         />
 
         <ButtonContainer
-          text="Save Changes"
+          text="Save"
           type="default"
           onPress={() => handleEdit(contact)}
         />

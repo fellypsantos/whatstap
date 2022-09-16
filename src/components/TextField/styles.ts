@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import { TextInputProps } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 export const Container = styled.View`
@@ -10,10 +11,8 @@ export const Container = styled.View`
   padding-top: 5px;
 `;
 
-export const ContainerInput = styled.TextInput.attrs({
-  placeholderTextColor: '#aaa',
-})`
-  background-color: #fff;
+export const ContainerInput = styled.TextInput<TextInputProps>`
+  background-color: ${props => (props.editable ? '#fff' : '#ddd')};
   padding: 10px 20px;
   font-family: 'Ubuntu-B';
   font-size: 18px;

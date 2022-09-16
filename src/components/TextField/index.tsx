@@ -1,5 +1,5 @@
 import React from 'react';
-import {KeyboardAvoidingView} from 'react-native';
+import { KeyboardAvoidingView } from 'react-native';
 import {
   Container,
   ContainerInput,
@@ -13,6 +13,7 @@ interface TextFieldsProps {
   label: string;
   value: string;
   placeholder?: string;
+  editable?: boolean;
   onChangeText(text: string): void;
 }
 
@@ -22,13 +23,16 @@ const TextField: React.FC<TextFieldsProps> = ({
   value,
   placeholder,
   onChangeText,
+  editable = true,
 }) => (
   <KeyboardAvoidingView behavior="height">
     <Container>
       <ContainerInput
+        editable={editable}
         value={value}
         placeholder={placeholder}
         onChangeText={onChangeText}
+        placeholderTextColor="#aaa"
       />
       <InputLabel>
         <InputLabelIcon name={icon} color="#aaa" size={14} />
