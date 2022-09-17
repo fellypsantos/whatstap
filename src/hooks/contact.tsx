@@ -6,7 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Alert, Linking, ToastAndroid } from 'react-native';
+import { Linking, ToastAndroid } from 'react-native';
 import AlertAsync from 'react-native-alert-async';
 
 import IContact from '../interfaces/IContact';
@@ -15,7 +15,6 @@ import { useDatabase } from './database';
 interface ContactContext {
   contacts: IContact[];
   loading: boolean;
-  getContacts(): Promise<IContact[]>;
   addContact(contact: IContact): void;
   editContact(contact: IContact): Promise<boolean>;
   removeContact(contact: IContact): Promise<boolean>;
@@ -33,13 +32,6 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
   const [contacts, setContacts] = useState<IContact[]>([]);
   const { dbConnection } = useDatabase();
 
-  const getContacts = useCallback(async (): Promise<IContact[]> => {
-    const dbContacts = await dbConnection?.executeSql('SELECT * FROM contacts');
-
-    if (dbContacts) return dbContacts[0].rows.raw().reverse();
-    return [];
-  }, [dbConnection]);
-
   const addContact = useCallback(
     async (contact: IContact) => {
       try {
@@ -50,11 +42,13 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
           [id, name, phone, country, createdAt],
         );
 
-        if (insertResult) setContacts([contact, ...contacts]);
-        else throw new Error('Failed to save the contact');
+        if (insertResult) {
+          setContacts([contact, ...contacts]);
+          ToastAndroid.show('Contact was added.', ToastAndroid.LONG);
+        } else throw new Error('Failed to save the contact');
       } catch (err) {
         const error = err as Error;
-        Alert.alert('OOPS', error.message);
+        ToastAndroid.show(error.message, ToastAndroid.LONG);
       }
     },
     [dbConnection, contacts],
@@ -78,16 +72,16 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
                 name: contact.name,
               };
             }
-            return contact;
+            return item;
           });
 
           setContacts(updatedList);
           ToastAndroid.show('Contact updated.', ToastAndroid.LONG);
           return update[0].rowsAffected > 0;
-        } else throw new Error();
-      } catch {
-        ToastAndroid.show('Failed to edit the contact.', ToastAndroid.LONG);
-        console.error('Failed to edit the contact.');
+        } else throw new Error('Failed to edit the contact.');
+      } catch (err) {
+        const error = err as Error;
+        ToastAndroid.show(error.message, ToastAndroid.LONG);
         return false;
       }
     },
@@ -121,13 +115,14 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
           const filtered = contacts.filter(item => item.id !== contact.id);
 
           setContacts(filtered);
+          ToastAndroid.show('Contact was removed.', ToastAndroid.LONG);
           return deleteResult[0].rowsAffected > 0;
         } else {
           throw new Error(`Failed to remove contact with id: ${contact.id}`);
         }
       } catch (err) {
         const error = err as Error;
-        console.error('Ocorreu um erro ao deletar o contato: ', error.message);
+        ToastAndroid.show(error.message, ToastAndroid.LONG);
       }
 
       return false;
@@ -137,23 +132,26 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
 
   const openWhatsApp = useCallback((phone: string) => {
     phone = phone.replace('+', '');
+    ToastAndroid.show('Opening Whatsapp....', ToastAndroid.LONG);
     Linking.openURL(`whatsapp://send?&phone=${phone}`);
   }, []);
 
   useEffect(() => {
     async function loadContacts(): Promise<void> {
-      const dbContacts = await getContacts();
-      setContacts(dbContacts);
-      setLoading(false);
+      const result = await dbConnection?.executeSql('SELECT * FROM contacts');
+
+      if (result !== undefined) {
+        setContacts(result[0].rows.raw().reverse());
+        setLoading(false);
+      }
     }
 
     setLoading(true);
     loadContacts();
-  }, [dbConnection, getContacts]);
+  }, [dbConnection]);
 
   const value = useMemo(
     () => ({
-      getContacts,
       addContact,
       editContact,
       removeContact,
@@ -161,15 +159,7 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
       loading,
       openWhatsApp,
     }),
-    [
-      getContacts,
-      addContact,
-      editContact,
-      removeContact,
-      contacts,
-      loading,
-      openWhatsApp,
-    ],
+    [addContact, editContact, removeContact, contacts, loading, openWhatsApp],
   );
 
   return (
