@@ -1,4 +1,4 @@
-package com.whatstap.newarchitecture.modules;
+package app.whatstap.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;
