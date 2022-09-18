@@ -1,8 +1,9 @@
-import React, {useCallback, useMemo} from 'react';
-import {useNavigation} from '@react-navigation/core';
+import React, { useCallback, useMemo } from 'react';
+import { useNavigation } from '@react-navigation/core';
+import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
 
-import {StackNavigationProps} from '../../routes/Stack';
-import {useContact} from '../../hooks/contact';
+import { StackNavigationProps } from '../../routes/Stack';
+import { useContact } from '../../hooks/contact';
 import AppStructure from '../../components/AppStructure';
 
 import {
@@ -21,19 +22,19 @@ import {
   ContactNumber,
   Divider,
 } from './styles';
-import {format} from 'date-fns';
-import {pt} from 'date-fns/locale';
-import {ActivityIndicator} from 'react-native';
+import { format } from 'date-fns';
+import { pt } from 'date-fns/locale';
+import { ActivityIndicator } from 'react-native';
 import IContact from '../../interfaces/IContact';
 
 const Home: React.FC = () => {
   const navigation = useNavigation<StackNavigationProps>();
-  const {contacts, loading, openWhatsApp, removeContact} = useContact();
+  const { contacts, loading, openWhatsApp, removeContact } = useContact();
 
   const dropdown = useMemo(
     () => ({
-      indexes: {EDIT: 0, DELETE: 1},
-      options: [{title: 'Edit'}, {title: 'Delete'}],
+      indexes: { EDIT: 0, DELETE: 1 },
+      options: [{ title: 'Edit' }, { title: 'Delete' }],
     }),
     [],
   );
@@ -41,7 +42,7 @@ const Home: React.FC = () => {
   const handlePressMenuItem = useCallback(
     (contact: IContact, optionIndex: number) => {
       if (optionIndex === dropdown.indexes.EDIT)
-        navigation.navigate('EditContact', {contact: contact});
+        navigation.navigate('EditContact', { contact: contact });
       else if (optionIndex === dropdown.indexes.DELETE) removeContact(contact);
     },
     [removeContact, dropdown.indexes, navigation],
@@ -55,6 +56,8 @@ const Home: React.FC = () => {
         onPress: () => navigation.navigate('AddContact'),
       }}>
       <>
+        <BannerAd unitId={TestIds.BANNER} size={BannerAdSize.FULL_BANNER} />
+
         {loading ? (
           <ActivityIndicator />
         ) : contacts.length === 0 ? (
@@ -71,7 +74,7 @@ const Home: React.FC = () => {
                 <ContactMenuButton
                   dropdownMenuMode
                   actions={dropdown.options}
-                  onPress={({nativeEvent}) =>
+                  onPress={({ nativeEvent }) =>
                     handlePressMenuItem(contact, nativeEvent.index)
                   }>
                   <ContactMenuButtonIcon
@@ -97,7 +100,7 @@ const Home: React.FC = () => {
 
               <ContactFooter>
                 <ContactDateTime>
-                  {format(new Date(contact.createdAt), 'PPpp', {locale: pt})}
+                  {format(new Date(contact.createdAt), 'PPpp', { locale: pt })}
                 </ContactDateTime>
 
                 <ContactMenuWhatsAppButton
