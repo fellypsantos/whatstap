@@ -1,4 +1,4 @@
-package app.whatstap.newarchitecture;
+package com.fellypsantos.whatstap.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import app.whatstap.BuildConfig;
-import app.whatstap.newarchitecture.components.MainComponentsRegistry;
-import app.whatstap.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.fellypsantos.whatstap.BuildConfig;
+import com.fellypsantos.whatstap.newarchitecture.components.MainComponentsRegistry;
+import com.fellypsantos.whatstap.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

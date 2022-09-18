@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "492391904931",
+    "project_id": "whatstap-app",
+    "storage_bucket": "whatstap-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:492391904931:android:7cd3fd371482305d297116",
+        "android_client_info": {
+          "package_name": "com.fellypsantos.whatstap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "492391904931-q12v4563n6a8i8h26jecq2a2nna169lc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCY-3u8VPaEHYSs1nknL2DFpfyYZdBe6FA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "492391904931-q12v4563n6a8i8h26jecq2a2nna169lc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

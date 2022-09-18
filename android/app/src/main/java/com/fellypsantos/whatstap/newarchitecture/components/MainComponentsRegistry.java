@@ -1,4 +1,4 @@
-package app.whatstap.newarchitecture.components;
+package com.fellypsantos.whatstap.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

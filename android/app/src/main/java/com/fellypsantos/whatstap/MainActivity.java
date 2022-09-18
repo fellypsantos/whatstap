@@ -1,4 +1,4 @@
-package app.whatstap;
+package com.fellypsantos.whatstap;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
