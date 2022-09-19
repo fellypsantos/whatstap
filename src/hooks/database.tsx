@@ -40,6 +40,17 @@ const DatabaseProvider: React.FC<DatabaseProviderProps> = ({ children }) => {
     });
   }, []);
 
+  const createSettingsTable = useCallback((db: SQLiteDatabase) => {
+    db.transaction(tx => {
+      tx.executeSql(`
+        CREATE TABLE IF NOT EXISTS "settings" (
+          "language"	TEXT,
+          "last_country_iso"	TEXT
+        );
+      `);
+    });
+  }, []);
+
   useEffect(() => {
     async function connect() {
       if (!dbConnection) {
@@ -52,6 +63,7 @@ const DatabaseProvider: React.FC<DatabaseProviderProps> = ({ children }) => {
 
         setDbConnection(connection);
         createContactsTable(connection);
+        createSettingsTable(connection);
 
         if (__DEV__) console.log('DB: Connected');
       } else {
@@ -60,7 +72,7 @@ const DatabaseProvider: React.FC<DatabaseProviderProps> = ({ children }) => {
     }
 
     connect();
-  }, [dbConnection, createContactsTable]);
+  }, [dbConnection, createContactsTable, createSettingsTable]);
 
   const value = useMemo(() => ({ dbConnection }), [dbConnection]);
 

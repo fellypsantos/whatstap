@@ -3,6 +3,7 @@ import React from 'react';
 import { ContactProvider } from './contact';
 import { DatabaseProvider } from './database';
 import { TranslationProvider } from './translation';
+import { SettingsProvider } from './settings';
 
 interface AppProviderProps {
   children: React.ReactElement;
@@ -11,7 +12,9 @@ interface AppProviderProps {
 const AppProvider: React.FC<AppProviderProps> = ({ children }) => (
   <DatabaseProvider>
     <TranslationProvider>
-      <ContactProvider>{children}</ContactProvider>
+      <SettingsProvider>
+        <ContactProvider>{children}</ContactProvider>
+      </SettingsProvider>
     </TranslationProvider>
   </DatabaseProvider>
 );
