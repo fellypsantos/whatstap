@@ -907,6 +907,11 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
+"@iabtcf/core@^1.4.0":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@iabtcf/core/-/core-1.5.3.tgz#81a3c651e8ec3d1893d48e978d446dc143140df0"
+  integrity sha512-DZsenDL6uz/jULc/PlWs9HA2eDHkAcL+JiZ5TtB1O5ZSwZ2BMyJc4I5qC+j/7BZFPXqaHRbGQ7QpbxmcHYLw1Q==
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"
@@ -1366,11 +1371,6 @@
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/eslint-plugin/-/eslint-plugin-1.2.0.tgz#7d6d789ae8edf73dc9bed1246cd48277edea8066"
   integrity sha512-o6aam+0Ug1xGK3ABYmBm0B1YuEKfM/5kaoZO0eHbZwSpw9UzDX4G5y4Nx/K20FHqUmJHkZmLvOUFYwN4N+HqKA==
-
-"@react-native-firebase/admob@^11.5.0":
-  version "11.5.0"
-  resolved "https://registry.yarnpkg.com/@react-native-firebase/admob/-/admob-11.5.0.tgz#a392b0997b92b853513e33ba1d0c78a6031a0409"
-  integrity sha512-WmScm8xZC50pdOUm5CMixAD4VtVSitslQNySErLNxWnsKe4a+puTeivpQZGTdQ5lszBLIs3oxoNplqtPAqk27g==
 
 "@react-native-firebase/app@^15.6.0":
   version "15.6.0"
@@ -2870,6 +2870,11 @@ depd@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/depd/-/depd-2.0.0.tgz#b696163cc757560d09cf22cc8fad1571b79e76df"
   integrity sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==
+
+dequal@^2.0.2:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/dequal/-/dequal-2.0.3.tgz#2644214f1997d39ed0ee0ece72335490a7ac67be"
+  integrity sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==
 
 destroy@1.2.0:
   version "1.2.0"
@@ -6145,6 +6150,14 @@ react-native-gesture-handler@^2.6.0:
     lodash "^4.17.21"
     prop-types "^15.7.2"
 
+react-native-google-mobile-ads@^8.1.0:
+  version "8.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-google-mobile-ads/-/react-native-google-mobile-ads-8.1.0.tgz#e4854c3b1fab4ca97f34520c945ce866aec96e6d"
+  integrity sha512-MlPAdMtmTsBgoKwCSPTwzoWQN5e5mewsZfI6Hay/tkzl79wJ/PFg9BdTWafjVxI7eOyTQqZfpO9T0saVs6F34Q==
+  dependencies:
+    "@iabtcf/core" "^1.4.0"
+    use-deep-compare-effect "^1.8.1"
+
 react-native-gradle-plugin@^0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.0.7.tgz#96602f909745239deab7b589443f14fce5da2056"
@@ -7378,6 +7391,14 @@ url-parse@^1.5.3:
   dependencies:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
+
+use-deep-compare-effect@^1.8.1:
+  version "1.8.1"
+  resolved "https://registry.yarnpkg.com/use-deep-compare-effect/-/use-deep-compare-effect-1.8.1.tgz#ef0ce3b3271edb801da1ec23bf0754ef4189d0c6"
+  integrity sha512-kbeNVZ9Zkc0RFGpfMN3MNfaKNvcLNyxOAAd9O4CBZ+kCBXXscn9s/4I+8ytUER4RDpEYs5+O6Rs4PqiZ+rHr5Q==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    dequal "^2.0.2"
 
 use-latest-callback@^0.1.5:
   version "0.1.5"

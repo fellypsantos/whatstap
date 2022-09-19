@@ -15,7 +15,7 @@ interface HeaderBarProps {
 }
 
 const HeaderBar: React.FC<HeaderBarProps> = props => {
-  const {iconName, onPress} = props;
+  const { iconName, onPress } = props;
 
   return (
     <Container>

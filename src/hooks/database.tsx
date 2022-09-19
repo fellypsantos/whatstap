@@ -7,7 +7,6 @@ import React, {
   useState,
 } from 'react';
 import {
-  DEBUG,
   enablePromise,
   openDatabase,
   SQLiteDatabase,
@@ -23,7 +22,7 @@ interface DatabaseProviderProps {
 
 const DatabaseContext = createContext<DatabaseContext | null>(null);
 
-const DatabaseProvider: React.FC<DatabaseProviderProps> = ({children}) => {
+const DatabaseProvider: React.FC<DatabaseProviderProps> = ({ children }) => {
   const [dbConnection, setDbConnection] = useState<SQLiteDatabase | null>(null);
 
   const createContactsTable = useCallback((db: SQLiteDatabase) => {
@@ -44,7 +43,6 @@ const DatabaseProvider: React.FC<DatabaseProviderProps> = ({children}) => {
   useEffect(() => {
     async function connect() {
       if (!dbConnection) {
-        if (__DEV__) DEBUG(true);
         enablePromise(true);
 
         const connection = await openDatabase({
@@ -64,7 +62,7 @@ const DatabaseProvider: React.FC<DatabaseProviderProps> = ({children}) => {
     connect();
   }, [dbConnection, createContactsTable]);
 
-  const value = useMemo(() => ({dbConnection}), [dbConnection]);
+  const value = useMemo(() => ({ dbConnection }), [dbConnection]);
 
   return (
     <DatabaseContext.Provider value={value}>
@@ -83,4 +81,4 @@ const useDatabase = (): DatabaseContext => {
   return context;
 };
 
-export {DatabaseProvider, useDatabase};
+export { DatabaseProvider, useDatabase };

@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 import { useNavigation } from '@react-navigation/core';
-import { BannerAd, BannerAdSize, TestIds } from '@react-native-firebase/admob';
 
 import { StackNavigationProps } from '../../routes/Stack';
 import { useContact } from '../../hooks/contact';
@@ -24,12 +23,13 @@ import {
 } from './styles';
 import { format } from 'date-fns';
 import { pt } from 'date-fns/locale';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, FlatList } from 'react-native';
 import IContact from '../../interfaces/IContact';
 
 const Home: React.FC = () => {
   const navigation = useNavigation<StackNavigationProps>();
-  const { contacts, loading, openWhatsApp, removeContact } = useContact();
+  const { contacts, loading, openWhatsApp, removeContact, clearContacts } =
+    useContact();
 
   const dropdown = useMemo(
     () => ({
@@ -48,16 +48,55 @@ const Home: React.FC = () => {
     [removeContact, dropdown.indexes, navigation],
   );
 
+  const renderItem = ({ item }: { item: IContact }) => (
+    <ContactCard key={item.id}>
+      <ContactCardHeader>
+        <ContactNumber>{item.phone}</ContactNumber>
+        <ContactMenuButton
+          dropdownMenuMode
+          actions={dropdown.options}
+          onPress={({ nativeEvent }) =>
+            handlePressMenuItem(item, nativeEvent.index)
+          }>
+          <ContactMenuButtonIcon name="ellipsis-v" color="#aaa" size={14} />
+        </ContactMenuButton>
+      </ContactCardHeader>
+
+      <ContactName>{item.name || 'No name'}</ContactName>
+
+      <ContactLocationContainer>
+        <ContactLocationIcon name="map-marker-alt" color="#5467FB" size={14} />
+        <ContactLocationName>{item.country}</ContactLocationName>
+      </ContactLocationContainer>
+
+      <Divider />
+
+      <ContactFooter>
+        <ContactDateTime>
+          {format(new Date(item.createdAt), 'PPpp', { locale: pt })}
+        </ContactDateTime>
+
+        <ContactMenuWhatsAppButton onPress={() => openWhatsApp(item.phone)}>
+          <ContactMenuWhatsAppButtonIcon
+            name="whatsapp"
+            color="#fff"
+            size={14}
+          />
+        </ContactMenuWhatsAppButton>
+      </ContactFooter>
+    </ContactCard>
+  );
+
   return (
     <AppStructure
       sectionName="Contact History"
+      sectionMenuText={contacts.length > 0 ? 'Clear' : ''}
+      sectionMenuOnPress={() => clearContacts()}
       headerMenuOptions={{
         icon: 'plus-circle',
         onPress: () => navigation.navigate('AddContact'),
       }}>
       <>
-        <BannerAd unitId={TestIds.BANNER} size={BannerAdSize.FULL_BANNER} />
-
         {loading ? (
           <ActivityIndicator />
         ) : contacts.length === 0 ? (
@@ -67,53 +106,11 @@ const Home: React.FC = () => {
             </ContactNumber>
           </ContactCard>
         ) : (
-          contacts.map(contact => (
-            <ContactCard key={contact.id}>
-              <ContactCardHeader>
-                <ContactNumber>{contact.phone}</ContactNumber>
-                <ContactMenuButton
-                  dropdownMenuMode
-                  actions={dropdown.options}
-                  onPress={({ nativeEvent }) =>
-                    handlePressMenuItem(contact, nativeEvent.index)
-                  }>
-                  <ContactMenuButtonIcon
-                    name="ellipsis-v"
-                    color="#aaa"
-                    size={14}
-                  />
-                </ContactMenuButton>
-              </ContactCardHeader>
-
-              <ContactName>{contact.name || 'No name'}</ContactName>
-
-              <ContactLocationContainer>
-                <ContactLocationIcon
-                  name="map-marker-alt"
-                  color="#5467FB"
-                  size={14}
-                />
-                <ContactLocationName>{contact.country}</ContactLocationName>
-              </ContactLocationContainer>
-
-              <Divider />
-
-              <ContactFooter>
-                <ContactDateTime>
-                  {format(new Date(contact.createdAt), 'PPpp', { locale: pt })}
-                </ContactDateTime>
-
-                <ContactMenuWhatsAppButton
-                  onPress={() => openWhatsApp(contact.phone)}>
-                  <ContactMenuWhatsAppButtonIcon
-                    name="whatsapp"
-                    color="#fff"
-                    size={14}
-                  />
-                </ContactMenuWhatsAppButton>
-              </ContactFooter>
-            </ContactCard>
-          ))
+          <FlatList
+            data={contacts}
+            keyExtractor={item => item.id}
+            renderItem={renderItem}
+          />
         )}
       </>
     </AppStructure>

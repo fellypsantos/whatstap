@@ -1,5 +1,5 @@
 import React from 'react';
-import {PhoneInputProps} from 'react-native-phone-number-input';
+import { PhoneInputProps } from 'react-native-phone-number-input';
 
 import {
   Container,
@@ -37,7 +37,7 @@ const PhoneNumberInput: React.FC<PhoneInputProps> = props => (
         fontFamily: 'Ubuntu-B',
         backgroundColor: '#fff',
       }}
-      textInputProps={{placeholderTextColor: '#aaa'}}
+      textInputProps={{ placeholderTextColor: '#aaa' }}
     />
     <InputLabel>
       <InputLabelIcon name="phone" color="#aaa" size={14} />

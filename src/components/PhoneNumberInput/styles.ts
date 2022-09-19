@@ -1,5 +1,5 @@
 import styled from 'styled-components/native';
-import PhoneInput, {PhoneInputProps} from 'react-native-phone-number-input';
+import PhoneInput, { PhoneInputProps } from 'react-native-phone-number-input';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 export const Container = styled.View`
@@ -28,4 +28,4 @@ export const InputLabelText = styled.Text`
   color: #aaa;
 `;
 
-export const ContainerInput = styled(PhoneInput)<PhoneInputProps>``;
+export const ContainerInput = styled(PhoneInput) <PhoneInputProps>``;

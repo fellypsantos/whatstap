@@ -1,8 +1,15 @@
-import React, {ReactElement} from 'react';
+import React, { ReactElement } from 'react';
 
+import AppMargin from '../AppMargin';
 import HeaderBar from '../HeaderBar';
 
-import {Container, Scrollable, AppMargin, SectionName} from './styles';
+import {
+  Container,
+  SectionContainer,
+  SectionName,
+  SectionOption,
+  SectionOptionText,
+} from './styles';
 
 interface HeaderMenu {
   icon: string;
@@ -13,12 +20,16 @@ interface AppStructureProps {
   children: ReactElement;
   headerMenuOptions: HeaderMenu;
   sectionName: string;
+  sectionMenuText?: string;
+  sectionMenuOnPress?(): void;
 }
 
 const AppStructure: React.FC<AppStructureProps> = ({
   children,
   headerMenuOptions,
   sectionName,
+  sectionMenuText,
+  sectionMenuOnPress,
 }) => (
   <>
     <HeaderBar
@@ -27,12 +38,17 @@ const AppStructure: React.FC<AppStructureProps> = ({
     />
 
     <Container>
-      <Scrollable>
-        <AppMargin>
+      <AppMargin>
+        <SectionContainer>
           <SectionName>{sectionName}</SectionName>
-          {children}
-        </AppMargin>
-      </Scrollable>
+          {!!sectionMenuText && (
+            <SectionOption onPress={sectionMenuOnPress}>
+              <SectionOptionText>{sectionMenuText}</SectionOptionText>
+            </SectionOption>
+          )}
+        </SectionContainer>
+      </AppMargin>
+      {children}
     </Container>
   </>
 );

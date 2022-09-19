@@ -1,7 +1,7 @@
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ContextMenu from 'react-native-context-menu-view';
-import {RectButton} from 'react-native-gesture-handler';
+import { RectButton } from 'react-native-gesture-handler';
 
 interface ContactCardProps {
   useGrayedLeftBorder: boolean;
@@ -17,6 +17,8 @@ export const ContactCard = styled.View<ContactCardProps>`
   padding: 15px 20px 10px 20px;
   background-color: #fff;
   margin-bottom: 15px;
+  margin-left: 20px;
+  margin-right: 20px;
 
   border-left-color: ${props =>
     props.useGrayedLeftBorder ? '#aaa' : '#5467fb'};

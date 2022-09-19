@@ -1,4 +1,7 @@
 {
   "name": "whatstap",
-  "displayName": "WhatsTap"
+  "displayName": "WhatsTap",
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-3444194669126701~1207050941"
+  }
 }

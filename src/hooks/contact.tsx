@@ -19,6 +19,7 @@ interface ContactContext {
   editContact(contact: IContact): Promise<boolean>;
   removeContact(contact: IContact): Promise<boolean>;
   openWhatsApp(phone: string): void;
+  clearContacts(): void;
 }
 
 interface ContactProviderProps {
@@ -130,6 +131,34 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
     [dbConnection, contacts],
   );
 
+  const clearContacts = useCallback(async () => {
+    try {
+      const confirm = await AlertAsync(
+        'Dangerous Action',
+        "You are going to delete all your contact list. It can't be undone. Are you really sure?",
+        [
+          { text: 'Yes, Clear History', onPress: () => true },
+          { text: 'No', onPress: () => false },
+        ],
+        {
+          cancelable: true,
+          onDismiss: () => false,
+        },
+      );
+
+      if (!confirm) return false;
+
+      const result = await dbConnection?.executeSql('DELETE FROM contacts');
+      if (result) {
+        setContacts([]);
+        ToastAndroid.show('Contact history was cleared.', ToastAndroid.LONG);
+      } else throw new Error('Failed to clear you contact history.');
+    } catch (err) {
+      const error = err as Error;
+      ToastAndroid.show(error.message, ToastAndroid.LONG);
+    }
+  }, [dbConnection]);
+
   const openWhatsApp = useCallback((phone: string) => {
     phone = phone.replace('+', '');
     ToastAndroid.show('Opening Whatsapp....', ToastAndroid.LONG);
@@ -158,8 +187,17 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
       contacts,
       loading,
       openWhatsApp,
+      clearContacts,
     }),
-    [addContact, editContact, removeContact, contacts, loading, openWhatsApp],
+    [
+      addContact,
+      editContact,
+      removeContact,
+      contacts,
+      loading,
+      openWhatsApp,
+      clearContacts,
+    ],
   );
 
   return (
