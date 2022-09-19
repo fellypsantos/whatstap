@@ -7,12 +7,16 @@ import TextField from '../../components/TextField';
 import IContact from '../../interfaces/IContact';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../routes/Stack';
+import AppMargin from '../../components/AppMargin';
+import { ScrollView } from 'react-native';
+import { useAppTranslation } from '../../hooks/translation';
 
 type PageProps = NativeStackScreenProps<RootStackParamList, 'EditContact'>;
 
 const EditContact: React.FC<PageProps> = ({ navigation, route }) => {
   const [contact, setContact] = useState({ ...route.params.contact });
   const { removeContact, editContact } = useContact();
+  const { Translate } = useAppTranslation();
 
   const handleEdit = useCallback(
     async (contactEdit: IContact) => {
@@ -29,40 +33,44 @@ const EditContact: React.FC<PageProps> = ({ navigation, route }) => {
 
   return (
     <AppStructure
-      sectionName="Edit Contact"
+      sectionName={Translate('editContact')}
       headerMenuOptions={{
         icon: 'trash',
         onPress: handleDelete,
       }}>
-      <>
-        <TextField
-          editable={false}
-          icon="lock"
-          label="PHONE NUMBER NOT EDITABLE"
-          value={contact.phone}
-          onChangeText={() => null}
-        />
+      <ScrollView>
+        <AppMargin>
+          <>
+            <TextField
+              editable={false}
+              icon="lock"
+              label={Translate('phoneNumberNotEditable')}
+              value={contact.phone}
+              onChangeText={() => null}
+            />
 
-        <TextField
-          icon="id-card"
-          label="identifier"
-          value={contact.name}
-          placeholder="Optional Name"
-          onChangeText={text => setContact({ ...contact, name: text })}
-        />
+            <TextField
+              icon="id-card"
+              label={Translate('identifier')}
+              value={contact.name}
+              placeholder={Translate('optionalName')}
+              onChangeText={text => setContact({ ...contact, name: text })}
+            />
 
-        <ButtonContainer
-          text="Save"
-          type="default"
-          onPress={() => handleEdit(contact)}
-        />
+            <ButtonContainer
+              text={Translate('save')}
+              type="default"
+              onPress={() => handleEdit(contact)}
+            />
 
-        <ButtonContainer
-          text="Cancel"
-          type="cancel"
-          onPress={() => navigation.goBack()}
-        />
-      </>
+            <ButtonContainer
+              text={Translate('cancel')}
+              type="cancel"
+              onPress={() => navigation.goBack()}
+            />
+          </>
+        </AppMargin>
+      </ScrollView>
     </AppStructure>
   );
 };

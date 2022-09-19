@@ -16,11 +16,13 @@ import TextField from '../../components/TextField';
 import IContact from '../../interfaces/IContact';
 import AppMargin from '../../components/AppMargin';
 import { ActivityIndicator, Alert, ScrollView } from 'react-native';
+import { useAppTranslation } from '../../hooks/translation';
 
 const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
 
 const AddContact: React.FC = () => {
   const navigation = useNavigation();
+  const { Translate } = useAppTranslation();
   const [processing, setProcessing] = useState(false);
   const [adLoaded, setAdLoaded] = useState(false);
   const [adClosed, setAdClosed] = useState(false);
@@ -40,8 +42,8 @@ const AddContact: React.FC = () => {
   const handleAddContact = useCallback(() => {
     if (contact.phone === '') {
       Alert.alert(
-        'Attention',
-        'You must type some phone number before trying to save the contact.',
+        Translate('Alerts.Attention'),
+        Translate('Alerts.Empty.PhoneNumber'),
       );
 
       return;
@@ -74,6 +76,7 @@ const AddContact: React.FC = () => {
     navigation,
     openWhatsApp,
     adLoaded,
+    Translate,
   ]);
 
   useEffect(() => {
@@ -89,7 +92,7 @@ const AddContact: React.FC = () => {
 
     if (!adLoaded && wantShowAd) {
       interstitial.load();
-      console.log('Requesting ad to AdMob Network');
+      if (__DEV__) console.log('Requesting ad to AdMob Network');
     }
 
     // Unsubscribe from events on unmount
@@ -117,7 +120,7 @@ const AddContact: React.FC = () => {
 
   return (
     <AppStructure
-      sectionName="Add Contact"
+      sectionName={Translate('addContact')}
       headerMenuOptions={{
         icon: 'trash',
         onPress: () => navigation.goBack(),
@@ -127,43 +130,43 @@ const AddContact: React.FC = () => {
           <>
             <PhoneNumberInput
               autoFocus
-              defaultCode="BR"
+              defaultCode="US"
               onChangeCountry={({ name }) =>
                 setContact({ ...contact, country: name.toString() })
               }
               onChangeFormattedText={text =>
                 setContact({ ...contact, phone: text })
               }
-              placeholder="Type here"
+              placeholder={Translate('typeHere')}
             />
 
             <TextField
               editable={!processing}
               icon="id-card"
-              label="identifier"
+              label={Translate('identifier')}
               value={contact.name}
-              placeholder="Optional name"
+              placeholder={Translate('optionalName')}
               onChangeText={text => setContact({ ...contact, name: text })}
             />
 
             <CheckboxField
               isChecked={openWhatsAppChecked}
-              text="Start this chat when save"
+              text={Translate('startChatOnSave')}
               onPress={isChecked => setOpenWhatsAppChecked(isChecked)}
             />
 
             {processing ? (
-              <ActivityIndicator />
+              <ActivityIndicator size={25} color="#5467fb" />
             ) : (
               <>
                 <ButtonContainer
-                  text="Save Phone Number"
+                  text={Translate('saveContact')}
                   type="default"
                   onPress={handleAddContact}
                 />
 
                 <ButtonContainer
-                  text="Cancel"
+                  text={Translate('cancel')}
                   type="cancel"
                   onPress={() => navigation.goBack()}
                 />

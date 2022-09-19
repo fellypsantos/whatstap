@@ -22,11 +22,18 @@ import {
   Divider,
 } from './styles';
 import { format } from 'date-fns';
-import { pt } from 'date-fns/locale';
+import {
+  ptBR as ptBR_DateTime,
+  enUS as enUS_DateTime,
+  es as es_DateTime,
+} from 'date-fns/locale';
 import { ActivityIndicator, FlatList } from 'react-native';
+
 import IContact from '../../interfaces/IContact';
+import { useAppTranslation } from '../../hooks/translation';
 
 const Home: React.FC = () => {
+  const { Translate, selectedLanguage } = useAppTranslation();
   const navigation = useNavigation<StackNavigationProps>();
   const { contacts, loading, openWhatsApp, removeContact, clearContacts } =
     useContact();
@@ -34,10 +41,19 @@ const Home: React.FC = () => {
   const dropdown = useMemo(
     () => ({
       indexes: { EDIT: 0, DELETE: 1 },
-      options: [{ title: 'Edit' }, { title: 'Delete' }],
+      options: [
+        { title: Translate('Dropdown.Edit') },
+        { title: Translate('Dropdown.Delete') },
+      ],
     }),
-    [],
+    [Translate],
   );
+
+  const parseI18NextLocale = useCallback(() => {
+    if (selectedLanguage === 'pt') return ptBR_DateTime;
+    else if (selectedLanguage === 'es') return es_DateTime;
+    else return enUS_DateTime;
+  }, [selectedLanguage]);
 
   const handlePressMenuItem = useCallback(
     (contact: IContact, optionIndex: number) => {
@@ -62,7 +78,7 @@ const Home: React.FC = () => {
         </ContactMenuButton>
       </ContactCardHeader>
 
-      <ContactName>{item.name || 'No name'}</ContactName>
+      <ContactName>{item.name || Translate('unamedContact')}</ContactName>
 
       <ContactLocationContainer>
         <ContactLocationIcon name="map-marker-alt" color="#5467FB" size={14} />
@@ -73,7 +89,9 @@ const Home: React.FC = () => {
 
       <ContactFooter>
         <ContactDateTime>
-          {format(new Date(item.createdAt), 'PPpp', { locale: pt })}
+          {format(new Date(item.createdAt), 'PPpp', {
+            locale: parseI18NextLocale(),
+          })}
         </ContactDateTime>
 
         <ContactMenuWhatsAppButton onPress={() => openWhatsApp(item.phone)}>
@@ -89,8 +107,8 @@ const Home: React.FC = () => {
 
   return (
     <AppStructure
-      sectionName="Contact History"
-      sectionMenuText={contacts.length > 0 ? 'Clear' : ''}
+      sectionName={Translate('contactHistory')}
+      sectionMenuText={contacts.length > 0 ? Translate('clearContacts') : ''}
       sectionMenuOnPress={() => clearContacts()}
       headerMenuOptions={{
         icon: 'plus-circle',
@@ -101,9 +119,7 @@ const Home: React.FC = () => {
           <ActivityIndicator />
         ) : contacts.length === 0 ? (
           <ContactCard useGrayedLeftBorder>
-            <ContactNumber>
-              No contacts yet. Tap the + button to add you first contact.
-            </ContactNumber>
+            <ContactNumber>{Translate('noContactsYet')}</ContactNumber>
           </ContactCard>
         ) : (
           <FlatList

@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useAppTranslation } from '../../hooks/translation';
 
 import {
   Container,
@@ -16,12 +17,13 @@ interface HeaderBarProps {
 
 const HeaderBar: React.FC<HeaderBarProps> = props => {
   const { iconName, onPress } = props;
+  const { Translate } = useAppTranslation();
 
   return (
     <Container>
       <HeaderTextContainer>
         <AppName>WhatsTap</AppName>
-        <AppDescription>Speed up your whatsapp chat.</AppDescription>
+        <AppDescription>{Translate('appDescription')}</AppDescription>
       </HeaderTextContainer>
 
       <HeaderButtonContainer onPress={onPress}>

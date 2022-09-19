@@ -6,6 +6,7 @@ import mobileAds from 'react-native-google-mobile-ads';
 
 import Stack from './routes/Stack';
 import AdMobBanner from './components/AdMobBanner';
+import '../i18n.config';
 
 mobileAds()
   .initialize()

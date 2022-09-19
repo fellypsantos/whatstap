@@ -1,15 +1,18 @@
 import React from 'react';
 
-import {ContactProvider} from './contact';
-import {DatabaseProvider} from './database';
+import { ContactProvider } from './contact';
+import { DatabaseProvider } from './database';
+import { TranslationProvider } from './translation';
 
 interface AppProviderProps {
   children: React.ReactElement;
 }
 
-const AppProvider: React.FC<AppProviderProps> = ({children}) => (
+const AppProvider: React.FC<AppProviderProps> = ({ children }) => (
   <DatabaseProvider>
-    <ContactProvider>{children}</ContactProvider>
+    <TranslationProvider>
+      <ContactProvider>{children}</ContactProvider>
+    </TranslationProvider>
   </DatabaseProvider>
 );
 

@@ -14,7 +14,7 @@ import EditContact from '../../pages/EditContact';
 export type RootStackParamList = {
   Home: undefined;
   AddContact: undefined;
-  EditContact: {contact: IContact};
+  EditContact: { contact: IContact };
 };
 
 export interface PageProps {
@@ -24,7 +24,7 @@ export interface PageProps {
 export type StackNavigationProps =
   NativeStackNavigationProp<RootStackParamList>;
 
-const {Navigator, Screen} = createNativeStackNavigator<RootStackParamList>();
+const { Navigator, Screen } = createNativeStackNavigator<RootStackParamList>();
 
 const Stack: React.FC = () => (
   <AppProvider>

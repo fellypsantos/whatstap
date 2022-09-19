@@ -6,11 +6,12 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Linking, ToastAndroid } from 'react-native';
+import { Alert, Linking, ToastAndroid } from 'react-native';
 import AlertAsync from 'react-native-alert-async';
 
 import IContact from '../interfaces/IContact';
 import { useDatabase } from './database';
+import { useAppTranslation } from './translation';
 
 interface ContactContext {
   contacts: IContact[];
@@ -32,6 +33,7 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [contacts, setContacts] = useState<IContact[]>([]);
   const { dbConnection } = useDatabase();
+  const { Translate } = useAppTranslation();
 
   const addContact = useCallback(
     async (contact: IContact) => {
@@ -45,14 +47,17 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
 
         if (insertResult) {
           setContacts([contact, ...contacts]);
-          ToastAndroid.show('Contact was added.', ToastAndroid.LONG);
-        } else throw new Error('Failed to save the contact');
+          ToastAndroid.show(
+            Translate('Toast.Contact.Added'),
+            ToastAndroid.LONG,
+          );
+        } else throw new Error(Translate('Toast.Contact.FailedToAdd'));
       } catch (err) {
         const error = err as Error;
         ToastAndroid.show(error.message, ToastAndroid.LONG);
       }
     },
-    [dbConnection, contacts],
+    [dbConnection, contacts, Translate],
   );
 
   const editContact = useCallback(
@@ -77,26 +82,29 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
           });
 
           setContacts(updatedList);
-          ToastAndroid.show('Contact updated.', ToastAndroid.LONG);
+          ToastAndroid.show(
+            Translate('Toast.Contact.Updated'),
+            ToastAndroid.LONG,
+          );
           return update[0].rowsAffected > 0;
-        } else throw new Error('Failed to edit the contact.');
+        } else throw new Error(Translate('Toast.Contact.FailedToUpdate'));
       } catch (err) {
         const error = err as Error;
         ToastAndroid.show(error.message, ToastAndroid.LONG);
         return false;
       }
     },
-    [dbConnection, contacts],
+    [dbConnection, contacts, Translate],
   );
 
   const removeContact = useCallback(
     async (contact: IContact): Promise<boolean> => {
       const confirm = await AlertAsync(
-        'Caution',
-        'Do you really want to delete this contact?',
+        Translate('Alerts.Warning'),
+        Translate('Confirm.Contact.Delete'),
         [
-          { text: 'Yes, I Want', onPress: () => true },
-          { text: 'No', onPress: () => false },
+          { text: Translate('Confirm.Option.YesIWant'), onPress: () => true },
+          { text: Translate('Confirm.Option.No'), onPress: () => false },
         ],
         {
           cancelable: true,
@@ -116,11 +124,12 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
           const filtered = contacts.filter(item => item.id !== contact.id);
 
           setContacts(filtered);
-          ToastAndroid.show('Contact was removed.', ToastAndroid.LONG);
+          ToastAndroid.show(
+            Translate('Toast.Contact.Deleted'),
+            ToastAndroid.LONG,
+          );
           return deleteResult[0].rowsAffected > 0;
-        } else {
-          throw new Error(`Failed to remove contact with id: ${contact.id}`);
-        }
+        } else throw new Error('Toast.Contact.FailedToDelete');
       } catch (err) {
         const error = err as Error;
         ToastAndroid.show(error.message, ToastAndroid.LONG);
@@ -128,17 +137,20 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
 
       return false;
     },
-    [dbConnection, contacts],
+    [dbConnection, contacts, Translate],
   );
 
   const clearContacts = useCallback(async () => {
     try {
       const confirm = await AlertAsync(
-        'Dangerous Action',
-        "You are going to delete all your contact list. It can't be undone. Are you really sure?",
+        Translate('Alerts.DangerousAction'),
+        Translate('Confirm.Contact.ClearAll'),
         [
-          { text: 'Yes, Clear History', onPress: () => true },
-          { text: 'No', onPress: () => false },
+          {
+            text: Translate('Confirm.Option.YesClearHistory'),
+            onPress: () => true,
+          },
+          { text: Translate('Confirm.Option.No'), onPress: () => false },
         ],
         {
           cancelable: true,
@@ -149,21 +161,42 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
       if (!confirm) return false;
 
       const result = await dbConnection?.executeSql('DELETE FROM contacts');
+
       if (result) {
         setContacts([]);
-        ToastAndroid.show('Contact history was cleared.', ToastAndroid.LONG);
-      } else throw new Error('Failed to clear you contact history.');
+        ToastAndroid.show(
+          Translate('Toast.Contact.HistoryCleared'),
+          ToastAndroid.LONG,
+        );
+      } else throw new Error(Translate('Toast.Contact.FailedToClearAll'));
     } catch (err) {
       const error = err as Error;
       ToastAndroid.show(error.message, ToastAndroid.LONG);
     }
-  }, [dbConnection]);
+  }, [dbConnection, Translate]);
 
-  const openWhatsApp = useCallback((phone: string) => {
-    phone = phone.replace('+', '');
-    ToastAndroid.show('Opening Whatsapp....', ToastAndroid.LONG);
-    Linking.openURL(`whatsapp://send?&phone=${phone}`);
-  }, []);
+  const openWhatsApp = useCallback(
+    async (phone: string) => {
+      phone = phone.replace('+', '');
+
+      const whatsappURL = `whatsapp://send?&phone=${phone}`;
+      const supported = await Linking.canOpenURL(whatsappURL);
+
+      if (supported) {
+        ToastAndroid.show(
+          Translate('Toast.OpeningWhatsApp'),
+          ToastAndroid.LONG,
+        );
+        Linking.openURL(whatsappURL);
+      } else {
+        Alert.alert(
+          Translate('Alerts.Error'),
+          Translate('Alerts.WhatsAppCantHandleURL'),
+        );
+      }
+    },
+    [Translate],
+  );
 
   useEffect(() => {
     async function loadContacts(): Promise<void> {
