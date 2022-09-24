@@ -10,11 +10,11 @@ import { useDatabase } from './database';
 
 interface ISettings {
   language: string;
-  lastCountryISO: string;
 }
 
 interface SettingsContext {
   settings: ISettings;
+  loaded: boolean;
 }
 
 interface Props {
@@ -24,37 +24,53 @@ interface Props {
 const SettingsContext = createContext<SettingsContext | null>(null);
 
 const SettingsProvider: React.FC<Props> = ({ children }) => {
-  const [settings, setSettings] = useState<ISettings>({
-    language: 'en',
-    lastCountryISO: 'BR',
-  });
+  const clearDatabaseSettingsOnStart = false;
+
+  const [loaded, setLoaded] = useState(false);
+  const defaultSettings = useMemo<ISettings>(() => ({ language: 'pt' }), []);
+  const [settings, setSettings] = useState<ISettings>({ ...defaultSettings });
 
   const { dbConnection } = useDatabase();
 
-  const insertDefaultSettings = useCallback(async () => {
-    const result = await dbConnection?.executeSql(
-      'INSERT INTO settings (language, last_country_iso) VALUES(?,?)',
-      [settings.language, settings.lastCountryISO],
-    );
+  const clearDatabaseSettings = useCallback(async () => {
+    if (__DEV__) console.log('DATABASE: SETTINGS CLEARED');
+    await dbConnection?.executeSql('DELETE FROM settings');
+  }, [dbConnection]);
 
-    console.log('insertDefaultSettings', result);
-  }, [dbConnection, settings]);
+  const loadDatabaseSettings = useCallback(async () => {
+    const result = await dbConnection?.executeSql('SELECT * FROM settings');
+    const dbSettings: ISettings = result?.[0].rows.raw()[0];
+
+    if (!dbSettings) {
+      if (__DEV__) console.log('using default settings');
+
+      await dbConnection?.executeSql(
+        'INSERT INTO settings (language, last_country_iso) VALUES(?,?)',
+        [defaultSettings.language, 'BR'],
+      );
+    } else {
+      if (__DEV__) console.log('using database settings');
+      setSettings(dbSettings);
+    }
+
+    setLoaded(true);
+  }, [dbConnection, defaultSettings]);
 
   useEffect(() => {
     async function loadSettings() {
-      const result = await dbConnection?.executeSql('SELECT * FROM settings');
-
-      // LOOP INFINITO
-      // CRIAR UM STATE PRA SABER QUANDO AS SETTINGS ESTÃO CARREGADAS
-      // OU enquando as settings forem nulas.
-
-      // setSettings({ ...settings, lastCountryISO: 'US' });
+      if (clearDatabaseSettingsOnStart) await clearDatabaseSettings();
+      await loadDatabaseSettings();
     }
 
-    loadSettings();
-  }, [dbConnection, insertDefaultSettings, settings]);
+    if (!loaded) loadSettings();
+  }, [
+    loaded,
+    loadDatabaseSettings,
+    clearDatabaseSettings,
+    clearDatabaseSettingsOnStart,
+  ]);
 
-  const value = useMemo(() => ({ settings }), [settings]);
+  const value = useMemo(() => ({ loaded, settings }), [loaded, settings]);
 
   return (
     <SettingsContext.Provider value={value}>

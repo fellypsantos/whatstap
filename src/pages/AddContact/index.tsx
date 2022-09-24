@@ -11,7 +11,7 @@ import { useContact } from '../../hooks/contact';
 import AppStructure from '../../components/AppStructure';
 import ButtonContainer from '../../components/Button';
 import CheckboxField from '../../components/CheckboxField';
-import PhoneNumberInput from '../../components/PhoneNumberInput';
+import PhoneNumberTextInput from '../../components/PhoneNumberInput';
 import TextField from '../../components/TextField';
 import IContact from '../../interfaces/IContact';
 import AppMargin from '../../components/AppMargin';
@@ -25,13 +25,14 @@ const AddContact: React.FC = () => {
   const [processing, setProcessing] = useState(false);
   const [adLoaded, setAdLoaded] = useState(false);
   const [adClosed, setAdClosed] = useState(false);
+  const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [openWhatsAppChecked, setOpenWhatsAppChecked] = useState(false);
   const wantShowAd = useMemo(() => Boolean(Math.floor(Math.random() * 2)), []);
 
   const navigation = useNavigation();
   const { Translate } = useAppTranslation();
   const { addContact, openWhatsApp } = useContact();
-  const { settings } = useSettings();
+  const [dialCode, setDialCode] = useState('+55');
 
   const [contact, setContact] = useState<IContact>(() => ({
     id: uuid.v4().toString(),
@@ -56,6 +57,7 @@ const AddContact: React.FC = () => {
     setTimeout(() => {
       addContact({
         ...contact,
+        phone: `${dialCode}${contact.phone}`,
         createdAt: new Date(),
       });
 
@@ -104,8 +106,6 @@ const AddContact: React.FC = () => {
     };
   }, [adLoaded, wantShowAd]);
 
-  useEffect(() => console.log('settings change', settings), [settings]);
-
   // HANDLE AD_CLOSE
   useEffect(() => {
     if (adLoaded && adClosed) {
@@ -122,6 +122,10 @@ const AddContact: React.FC = () => {
     openWhatsAppChecked,
   ]);
 
+  useEffect(() => {
+    console.log('updated contact', dialCode, contact);
+  }, [contact, dialCode]);
+
   return (
     <AppStructure
       sectionName={Translate('addContact')}
@@ -132,16 +136,19 @@ const AddContact: React.FC = () => {
       <ScrollView>
         <AppMargin>
           <>
-            <PhoneNumberInput
-              autoFocus
-              defaultCode={settings.lastCountryISO}
-              onChangeCountry={({ name }) =>
-                setContact({ ...contact, country: name.toString() })
-              }
-              onChangeFormattedText={text =>
+            <PhoneNumberTextInput
+              countryCode={dialCode}
+              phoneNumber={contact.phone}
+              show={showCountryPicker}
+              handleOpenCountryPicker={() => setShowCountryPicker(true)}
+              handleCloseCountryPicker={() => setShowCountryPicker(false)}
+              onChangeCountryCode={country => {
+                setDialCode(country.dialCode);
+                setContact({ ...contact, country: country.name });
+              }}
+              onChangePhoneNumber={text =>
                 setContact({ ...contact, phone: text })
               }
-              placeholder={Translate('typeHere')}
             />
 
             <TextField

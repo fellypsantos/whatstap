@@ -12,6 +12,7 @@ module.exports = {
         'no-shadow': 'off',
         'no-undef': 'off',
         curly: 'off',
+        semi: 'off',
       },
     },
   ],

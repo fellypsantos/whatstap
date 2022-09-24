@@ -1,52 +1,87 @@
-import React from 'react';
-import { PhoneInputProps } from 'react-native-phone-number-input';
+import React, { useState } from 'react';
+import { Modal } from 'react-native';
+import CountryPicker from 'react-native-country-codes-picker';
+
 import { useAppTranslation } from '../../hooks/translation';
 
 import {
   Container,
-  ContainerInput,
   InputLabel,
   InputLabelIcon,
   InputLabelText,
+  PhoneNumberContainer,
+  PhoneNumberCountryCodeButton,
+  PhoneNumberCountryCodeText,
+  PhoneNumberTextInput,
 } from './styles';
 
-const PhoneNumberInput: React.FC<PhoneInputProps> = props => {
+interface ICountry {
+  code: string;
+  dialCode: string;
+  name: string;
+}
+
+interface IPhoneNumberProps {
+  show: boolean;
+  countryCode: string;
+  phoneNumber: string;
+  handleOpenCountryPicker(): void;
+  handleCloseCountryPicker(): void;
+  onChangeCountryCode(country: ICountry): void;
+  onChangePhoneNumber(phone: string): void;
+}
+
+const PhoneNumberInput: React.FC<IPhoneNumberProps> = props => {
   const { Translate } = useAppTranslation();
+  const {
+    show,
+    countryCode,
+    phoneNumber,
+    handleOpenCountryPicker,
+    handleCloseCountryPicker,
+    onChangeCountryCode,
+    onChangePhoneNumber,
+  } = props;
+
   return (
-    <Container>
-      <ContainerInput
-        {...props}
-        containerStyle={{
-          padding: 0,
-          backgroundColor: '#fff',
-          width: '100%',
-          borderRadius: 5,
-        }}
-        textContainerStyle={{
-          padding: 0,
-          backgroundColor: '#fff',
-          borderRadius: 5,
-        }}
-        codeTextStyle={{
-          padding: 0,
-          fontFamily: 'Ubuntu-B',
-          fontSize: 18,
-          backgroundColor: '#fff',
-          marginLeft: -15,
-        }}
-        textInputStyle={{
-          padding: 0,
-          fontSize: 18,
-          fontFamily: 'Ubuntu-B',
-          backgroundColor: '#fff',
-        }}
-        textInputProps={{ placeholderTextColor: '#aaa' }}
-      />
-      <InputLabel>
-        <InputLabelIcon name="phone" color="#aaa" size={14} />
-        <InputLabelText>{Translate('phoneNumberLabel')}</InputLabelText>
-      </InputLabel>
-    </Container>
+    <>
+      <Modal transparent={true} visible={show} style={{ flex: 1 }}>
+        <CountryPicker
+          lang="en"
+          show={true}
+          inputPlaceholder="YOU NEED TO CHANGE ME"
+          // when picker button press you will get the country object with dial code
+          pickerButtonOnPress={item => {
+            const country: ICountry = {
+              code: item.code,
+              dialCode: item.dial_code,
+              name: item.name.en,
+            };
+            onChangeCountryCode(country);
+            handleCloseCountryPicker();
+          }}
+          onBackdropPress={() => handleCloseCountryPicker()}
+        />
+      </Modal>
+      <Container>
+        <PhoneNumberContainer>
+          <PhoneNumberCountryCodeButton onPress={handleOpenCountryPicker}>
+            <PhoneNumberCountryCodeText>
+              {countryCode}
+            </PhoneNumberCountryCodeText>
+          </PhoneNumberCountryCodeButton>
+          <PhoneNumberTextInput
+            value={phoneNumber}
+            keyboardType="phone-pad"
+            onChangeText={onChangePhoneNumber}
+          />
+        </PhoneNumberContainer>
+        <InputLabel>
+          <InputLabelIcon name="phone" color="#aaa" size={14} />
+          <InputLabelText>{Translate('phoneNumberLabel')}</InputLabelText>
+        </InputLabel>
+      </Container>
+    </>
   );
 };
 

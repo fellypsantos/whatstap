@@ -1,6 +1,6 @@
 import styled from 'styled-components/native';
-import PhoneInput, { PhoneInputProps } from 'react-native-phone-number-input';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { RectButton } from 'react-native-gesture-handler';
 
 export const Container = styled.View`
   border-color: #e3e3e3;
@@ -28,4 +28,28 @@ export const InputLabelText = styled.Text`
   color: #aaa;
 `;
 
-export const ContainerInput = styled(PhoneInput) <PhoneInputProps>``;
+export const PhoneNumberContainer = styled.View`
+  flex-direction: row;
+  padding: 0px 15px;
+`;
+
+export const PhoneNumberCountryCodeButton = styled(RectButton)`
+  width: 75px;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const PhoneNumberCountryCodeText = styled.Text`
+  font-family: 'Ubuntu-B';
+  font-size: 18px;
+  color: #474747;
+`;
+
+export const PhoneNumberTextInput = styled.TextInput`
+  flex: 1;
+  height: 45px;
+  font-family: 'Ubuntu-B';
+  font-size: 18px;
+  color: #474747;
+  margin-top: 2px;
+`;
