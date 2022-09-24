@@ -31,14 +31,15 @@ const AddContact: React.FC = () => {
 
   const navigation = useNavigation();
   const { Translate } = useAppTranslation();
+  const { settings, updateSettings } = useSettings();
   const { addContact, openWhatsApp } = useContact();
-  const [dialCode, setDialCode] = useState('+55');
+  const [dialCode, setDialCode] = useState(settings.last_country_iso);
 
   const [contact, setContact] = useState<IContact>(() => ({
     id: uuid.v4().toString(),
     name: '',
     phone: '',
-    country: 'Brazil',
+    country: 'United States',
     createdAt: new Date(),
   }));
 
@@ -61,6 +62,9 @@ const AddContact: React.FC = () => {
         createdAt: new Date(),
       });
 
+      // need to save last dial code to settings
+      updateSettings({ ...settings, last_country_iso: dialCode });
+
       if (adLoaded) {
         if (__DEV__) console.log('Good! Ad is loaded, let show now.');
         interstitial.show();
@@ -81,6 +85,9 @@ const AddContact: React.FC = () => {
     openWhatsApp,
     adLoaded,
     Translate,
+    dialCode,
+    settings,
+    updateSettings,
   ]);
 
   useEffect(() => {
@@ -121,10 +128,6 @@ const AddContact: React.FC = () => {
     navigation,
     openWhatsAppChecked,
   ]);
-
-  useEffect(() => {
-    console.log('updated contact', dialCode, contact);
-  }, [contact, dialCode]);
 
   return (
     <AppStructure

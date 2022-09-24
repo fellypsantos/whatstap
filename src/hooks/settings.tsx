@@ -10,11 +10,13 @@ import { useDatabase } from './database';
 
 interface ISettings {
   language: string;
+  last_country_iso: string;
 }
 
 interface SettingsContext {
   settings: ISettings;
   loaded: boolean;
+  updateSettings(settings: ISettings): void;
 }
 
 interface Props {
@@ -27,15 +29,34 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
   const clearDatabaseSettingsOnStart = false;
 
   const [loaded, setLoaded] = useState(false);
-  const defaultSettings = useMemo<ISettings>(() => ({ language: 'pt' }), []);
-  const [settings, setSettings] = useState<ISettings>({ ...defaultSettings });
+  const defaultSettings = useMemo<ISettings>(
+    () => ({ language: 'pt', last_country_iso: '+1' }),
+    [],
+  );
 
+  const [settings, setSettings] = useState<ISettings>({ ...defaultSettings });
   const { dbConnection } = useDatabase();
 
   const clearDatabaseSettings = useCallback(async () => {
     if (__DEV__) console.log('DATABASE: SETTINGS CLEARED');
     await dbConnection?.executeSql('DELETE FROM settings');
   }, [dbConnection]);
+
+  const updateSettings = useCallback(
+    async (newSettings: ISettings) => {
+      const { language, last_country_iso } = newSettings;
+
+      setSettings({ language, last_country_iso });
+
+      const result = await dbConnection?.executeSql(
+        'UPDATE settings SET language=?, last_country_iso=?',
+        [language, last_country_iso],
+      );
+
+      if (result?.[0].rowsAffected !== 0) console.log('Failed to update DB');
+    },
+    [dbConnection],
+  );
 
   const loadDatabaseSettings = useCallback(async () => {
     const result = await dbConnection?.executeSql('SELECT * FROM settings');
@@ -46,7 +67,7 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
 
       await dbConnection?.executeSql(
         'INSERT INTO settings (language, last_country_iso) VALUES(?,?)',
-        [defaultSettings.language, 'BR'],
+        [defaultSettings.language, defaultSettings.last_country_iso],
       );
     } else {
       if (__DEV__) console.log('using database settings');
@@ -70,7 +91,10 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
     clearDatabaseSettingsOnStart,
   ]);
 
-  const value = useMemo(() => ({ loaded, settings }), [loaded, settings]);
+  const value = useMemo(
+    () => ({ loaded, settings, updateSettings }),
+    [loaded, settings, updateSettings],
+  );
 
   return (
     <SettingsContext.Provider value={value}>

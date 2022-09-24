@@ -66,8 +66,6 @@ const DatabaseProvider: React.FC<DatabaseProviderProps> = ({ children }) => {
         createSettingsTable(connection);
 
         if (__DEV__) console.log('DB: Connected');
-      } else {
-        if (__DEV__) console.log('DB: Already connected');
       }
     }
 

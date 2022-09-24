@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Modal } from 'react-native';
 import CountryPicker from 'react-native-country-codes-picker';
 
