@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal } from 'react-native';
 import CountryPicker from 'react-native-country-codes-picker';
+import { useSettings } from '../../hooks/settings';
 
 import { useAppTranslation } from '../../hooks/translation';
 
@@ -33,6 +34,8 @@ interface IPhoneNumberProps {
 
 const PhoneNumberInput: React.FC<IPhoneNumberProps> = props => {
   const { Translate } = useAppTranslation();
+  const { settings } = useSettings();
+
   const {
     show,
     countryCode,
@@ -47,9 +50,9 @@ const PhoneNumberInput: React.FC<IPhoneNumberProps> = props => {
     <>
       <Modal transparent={true} visible={show} style={{ flex: 1 }}>
         <CountryPicker
-          lang="en"
+          lang={settings.language}
           show={true}
-          inputPlaceholder="YOU NEED TO CHANGE ME"
+          inputPlaceholder={Translate('searchCountryName')}
           // when picker button press you will get the country object with dial code
           pickerButtonOnPress={item => {
             const country: ICountry = {
@@ -72,6 +75,7 @@ const PhoneNumberInput: React.FC<IPhoneNumberProps> = props => {
           </PhoneNumberCountryCodeButton>
           <PhoneNumberTextInput
             value={phoneNumber}
+            placeholder={Translate('typeHere')}
             keyboardType="phone-pad"
             onChangeText={onChangePhoneNumber}
           />
