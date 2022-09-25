@@ -40,7 +40,7 @@ const AddContact: React.FC = () => {
     name: '',
     country_code: settings.last_country_code,
     phone: '',
-    country: 'United States',
+    country: settings.last_country_name,
     createdAt: new Date(),
   }));
 
@@ -62,7 +62,11 @@ const AddContact: React.FC = () => {
         createdAt: new Date(),
       });
 
-      updateSettings({ ...settings, last_country_code: contact.country_code });
+      updateSettings({
+        ...settings,
+        last_country_code: contact.country_code,
+        last_country_name: contact.country,
+      });
 
       if (adLoaded) {
         if (__DEV__) console.log('Good! Ad is loaded, let show now.');

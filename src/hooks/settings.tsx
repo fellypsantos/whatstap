@@ -13,6 +13,7 @@ import { useDatabase } from './database';
 interface ISettings {
   language: string;
   last_country_code: string;
+  last_country_name: string;
 }
 
 interface SettingsContext {
@@ -32,7 +33,11 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
 
   const [loaded, setLoaded] = useState(false);
   const defaultSettings = useMemo<ISettings>(
-    () => ({ language: getSupportedLocale(), last_country_code: '+1' }),
+    () => ({
+      language: getSupportedLocale(),
+      last_country_code: '+1',
+      last_country_name: 'United States',
+    }),
     [],
   );
 
@@ -46,13 +51,13 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
 
   const updateSettings = useCallback(
     async (newSettings: ISettings) => {
-      const { language, last_country_code } = newSettings;
+      const { language, last_country_code, last_country_name } = newSettings;
 
-      setSettings({ language, last_country_code });
+      setSettings({ language, last_country_code, last_country_name });
 
       const result = await dbConnection?.executeSql(
-        'UPDATE settings SET language=?, last_country_code=?',
-        [language, last_country_code],
+        'UPDATE settings SET language=?, last_country_code=?, last_country_name=?',
+        [language, last_country_code, last_country_name],
       );
 
       if (result?.[0].rowsAffected !== 1)
