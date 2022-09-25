@@ -7,6 +7,7 @@ import React, {
   useCallback,
   useState,
 } from 'react';
+import { getSupportedLocale } from '../utils/device';
 import { useDatabase } from './database';
 
 interface ISettings {
@@ -31,7 +32,7 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
 
   const [loaded, setLoaded] = useState(false);
   const defaultSettings = useMemo<ISettings>(
-    () => ({ language: 'en', last_country_code: '+1' }),
+    () => ({ language: getSupportedLocale(), last_country_code: '+1' }),
     [],
   );
 
