@@ -13,7 +13,7 @@ const resources = {
 i18n.use(initReactI18next).init({
   resources,
   compatibilityJSON: 'v3',
-  lng: 'pt',
+  lng: 'en',
   fallbackLng: 'en',
   interpolation: {
     escapeValue: false, // not needed for react!!

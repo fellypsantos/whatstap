@@ -1,5 +1,5 @@
 import React from 'react';
-import {ButtonText, MainContainer, ButtonContainer} from './styles';
+import { ButtonText, MainContainer, ButtonContainer } from './styles';
 
 interface IButtonProps {
   type: 'default' | 'cancel';
@@ -7,7 +7,7 @@ interface IButtonProps {
   onPress(): void;
 }
 
-const ButtonContainenr: React.FC<IButtonProps> = ({type, text, onPress}) => (
+const ButtonComponent: React.FC<IButtonProps> = ({ type, text, onPress }) => (
   <MainContainer type={type}>
     <ButtonContainer type={type} onPress={onPress}>
       <ButtonText type={type}>{text}</ButtonText>
@@ -15,4 +15,4 @@ const ButtonContainenr: React.FC<IButtonProps> = ({type, text, onPress}) => (
   </MainContainer>
 );
 
-export default ButtonContainenr;
+export default ButtonComponent;

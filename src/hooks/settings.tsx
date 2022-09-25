@@ -1,3 +1,4 @@
+import i18next from 'i18next';
 import React, {
   createContext,
   useContext,
@@ -30,7 +31,7 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
 
   const [loaded, setLoaded] = useState(false);
   const defaultSettings = useMemo<ISettings>(
-    () => ({ language: 'pt', last_country_iso: '+1' }),
+    () => ({ language: 'en', last_country_iso: '+1' }),
     [],
   );
 
@@ -53,7 +54,8 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
         [language, last_country_iso],
       );
 
-      if (result?.[0].rowsAffected !== 0) console.log('Failed to update DB');
+      if (result?.[0].rowsAffected !== 1)
+        console.log('Failed to update DB', result?.[0].rowsAffected);
     },
     [dbConnection],
   );
@@ -90,6 +92,10 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
     clearDatabaseSettings,
     clearDatabaseSettingsOnStart,
   ]);
+
+  useEffect(() => {
+    i18next.changeLanguage(settings.language);
+  }, [settings.language]);
 
   const value = useMemo(
     () => ({ loaded, settings, updateSettings }),

@@ -3,7 +3,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 
 export const Container = styled.View`
   background-color: #fff;
-  margin: 15px 0%;
+  padding-bottom: 10px;
 `;
 
 export const BouncyCheckBox = styled(BouncyCheckbox).attrs({

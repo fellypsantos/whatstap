@@ -1,5 +1,5 @@
 import React from 'react';
-import {BouncyCheckBox, Container} from './styles';
+import { BouncyCheckBox, Container } from './styles';
 
 interface ICheckboxFieldProps {
   text: string;
