@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { StatusBar, AppState } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
@@ -8,6 +8,9 @@ import mobileAds, {
   TestIds,
 } from 'react-native-google-mobile-ads';
 
+import SpInAppUpdates, { IAUUpdateKind } from 'sp-react-native-in-app-updates';
+import VersionInfo from 'react-native-version-info';
+
 import Stack from './routes/Stack';
 import AdMobBanner from './components/AdMobBanner';
 import { OpenApp } from './AdMob';
@@ -16,6 +19,8 @@ import { GetRandomBoolean } from './utils/random';
 
 const adUnitId = __DEV__ ? TestIds.APP_OPEN : OpenApp;
 const appOpenAd = AppOpenAd.createForAdRequest(adUnitId);
+
+const CHECK_UPDATE_INTERVAL_IN_MS = 5 * 1000 * 60; // 5 minutes
 
 // Preload an app open ad
 appOpenAd.load();
@@ -40,6 +45,32 @@ const App: React.FC = () => {
   };
 
   const appState = useRef(AppState.currentState);
+
+  const checkAppUpdates = useCallback(() => {
+    // IN APP UPDATE
+    const inAppUpdates = new SpInAppUpdates(
+      __DEV__, // isDebug
+    );
+
+    inAppUpdates
+      .checkNeedsUpdate({ curVersion: VersionInfo.appVersion })
+      .then(result => {
+        if (result.shouldUpdate) {
+          let updateOptions = {};
+
+          updateOptions = {
+            updateType: IAUUpdateKind.FLEXIBLE,
+          };
+
+          inAppUpdates.startUpdate(updateOptions); // https://github.com/SudoPlz/sp-react-native-in-app-updates/blob/master/src/types.ts#L78
+        }
+      });
+  }, []);
+
+  useEffect(() => {
+    checkAppUpdates();
+    setInterval(checkAppUpdates, CHECK_UPDATE_INTERVAL_IN_MS);
+  }, [checkAppUpdates]);
 
   useEffect(() => {
     const unsubscribeClosed = appOpenAd.addAdEventListener(
