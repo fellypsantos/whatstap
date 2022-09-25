@@ -10,12 +10,28 @@ import mobileAds, {
 
 import SpInAppUpdates, { IAUUpdateKind } from 'sp-react-native-in-app-updates';
 import VersionInfo from 'react-native-version-info';
+import PushNotification from 'react-native-push-notification';
 
 import Stack from './routes/Stack';
 import AdMobBanner from './components/AdMobBanner';
 import { OpenApp } from './AdMob';
 import '../i18n.config';
 import { GetRandomBoolean } from './utils/random';
+
+PushNotification.configure({
+  onRegister: token => __DEV__ && console.log('Firebase Token is: ', token),
+  onNotification: notification => {
+    if (__DEV__) console.log('onNotification', notification);
+    // console.warn('Notification received inside Context!', notification);
+    // if (notification.userInteraction === true) {
+    //   console.warn('setAppNotification');
+    //   // setAppNotification(notification.data);
+    // }
+  },
+  onRegistrationError: err => {
+    console.error(err.message, err);
+  },
+});
 
 const adUnitId = __DEV__ ? TestIds.APP_OPEN : OpenApp;
 const appOpenAd = AppOpenAd.createForAdRequest(adUnitId);
@@ -24,9 +40,6 @@ const CHECK_UPDATE_INTERVAL_IN_MS = 5 * 1000 * 60; // 5 minutes
 
 // Preload an app open ad
 appOpenAd.load();
-
-// Show the app open ad when user brings the app to the foreground.
-// appOpenAd.show();
 
 mobileAds()
   .initialize()

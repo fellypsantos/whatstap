@@ -1,5 +1,4 @@
 apply plugin: "com.android.application"
-apply plugin: "com.google.gms.google-services"
 
 import com.android.build.OutputFile
 
@@ -264,6 +263,15 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
+    // FIREBASE PUSH NOTIFICATIONS
+    implementation platform('com.google.firebase:firebase-bom:29.3.1')
+
+    implementation 'com.google.firebase:firebase-analytics'
+
+    implementation project(':react-native-push-notification')
+
+    // END FIREBASE PUSH NOTIFICATIONS
+
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'
     }
@@ -325,3 +333,4 @@ project.ext.vectoricons = [
 ]
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+apply plugin: "com.google.gms.google-services"

@@ -2,13 +2,17 @@
   package="com.fellypsantos.whatstap">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+
+    <!-- PUSH NOTIFICATIONS -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
       android:roundIcon="@mipmap/ic_launcher_round"
-      android:allowBackup="false"
       android:theme="@style/AppTheme">
       <activity
         android:name=".MainActivity"
@@ -22,5 +26,49 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
+
+      <!-- AdMob app ID -->
+      <meta-data
+        android:name="com.google.android.gms.ads.APPLICATION_ID"
+        android:value="ca-app-pub-3444194669126701~1207050941"
+        />
+
+      <!-- PUSH NOTIFICATIONS -->
+      <meta-data
+        android:name="com.dieam.reactnativepushnotification.notification_channel_name"
+        android:value="ChannelWhatsTap"
+        />
+      <meta-data
+        android:name="com.dieam.reactnativepushnotification.notification_channel_description"
+        android:value="Default notifications channel."
+        />
+
+      <!-- Change the value to true to enable pop-up for in foreground (remote-only, for local use ignoreInForeground) -->
+      <meta-data
+        android:name="com.dieam.reactnativepushnotification.notification_foreground"
+        android:value="true"
+        />
+
+      <!-- Change the value to false if you don't want the creation of the default channel -->
+      <meta-data
+        android:name="com.dieam.reactnativepushnotification.channel_create_default"
+        android:value="true"
+        />
+
+      <meta-data
+        android:name="com.dieam.reactnativepushnotification.notification_icon"
+        android:resource="@drawable/ic_notification" />
+
+      <meta-data
+        android:name="com.google.firebase.messaging.default_notification_icon"
+        android:resource="@drawable/ic_notification" />
+
+      <meta-data
+        android:name="com.dieam.reactnativepushnotification.notification_color"
+        android:resource="@color/primary_color" />
+
+      <meta-data
+        android:name="com.google.firebase.messaging.default_notification_color"
+        android:resource="@color/primary_color" />
     </application>
 </manifest>
