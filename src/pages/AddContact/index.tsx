@@ -33,11 +33,11 @@ const AddContact: React.FC = () => {
   const { Translate } = useAppTranslation();
   const { settings, updateSettings } = useSettings();
   const { addContact, openWhatsApp } = useContact();
-  const [dialCode, setDialCode] = useState(settings.last_country_iso);
 
   const [contact, setContact] = useState<IContact>(() => ({
     id: uuid.v4().toString(),
     name: '',
+    country_code: settings.last_country_code,
     phone: '',
     country: 'United States',
     createdAt: new Date(),
@@ -58,12 +58,11 @@ const AddContact: React.FC = () => {
     setTimeout(() => {
       addContact({
         ...contact,
-        phone: `${dialCode}${contact.phone}`,
         createdAt: new Date(),
       });
 
       // need to save last dial code to settings
-      updateSettings({ ...settings, last_country_iso: dialCode });
+      updateSettings({ ...settings, last_country_code: contact.country_code });
 
       if (adLoaded) {
         if (__DEV__) console.log('Good! Ad is loaded, let show now.');
@@ -85,7 +84,6 @@ const AddContact: React.FC = () => {
     openWhatsApp,
     adLoaded,
     Translate,
-    dialCode,
     settings,
     updateSettings,
   ]);
@@ -140,14 +138,17 @@ const AddContact: React.FC = () => {
         <AppMargin>
           <>
             <PhoneNumberTextInput
-              countryCode={dialCode}
+              countryCode={contact.country_code}
               phoneNumber={contact.phone}
               show={showCountryPicker}
               handleOpenCountryPicker={() => setShowCountryPicker(true)}
               handleCloseCountryPicker={() => setShowCountryPicker(false)}
               onChangeCountryCode={country => {
-                setDialCode(country.dialCode);
-                setContact({ ...contact, country: country.name });
+                setContact({
+                  ...contact,
+                  country_code: country.dialCode,
+                  country: country.name,
+                });
               }}
               onChangePhoneNumber={text =>
                 setContact({ ...contact, phone: text })

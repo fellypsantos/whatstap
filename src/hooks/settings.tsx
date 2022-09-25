@@ -11,7 +11,7 @@ import { useDatabase } from './database';
 
 interface ISettings {
   language: string;
-  last_country_iso: string;
+  last_country_code: string;
 }
 
 interface SettingsContext {
@@ -31,7 +31,7 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
 
   const [loaded, setLoaded] = useState(false);
   const defaultSettings = useMemo<ISettings>(
-    () => ({ language: 'en', last_country_iso: '+1' }),
+    () => ({ language: 'en', last_country_code: '+1' }),
     [],
   );
 
@@ -45,13 +45,13 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
 
   const updateSettings = useCallback(
     async (newSettings: ISettings) => {
-      const { language, last_country_iso } = newSettings;
+      const { language, last_country_code } = newSettings;
 
-      setSettings({ language, last_country_iso });
+      setSettings({ language, last_country_code });
 
       const result = await dbConnection?.executeSql(
-        'UPDATE settings SET language=?, last_country_iso=?',
-        [language, last_country_iso],
+        'UPDATE settings SET language=?, last_country_code=?',
+        [language, last_country_code],
       );
 
       if (result?.[0].rowsAffected !== 1)
@@ -68,8 +68,8 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
       if (__DEV__) console.log('using default settings');
 
       await dbConnection?.executeSql(
-        'INSERT INTO settings (language, last_country_iso) VALUES(?,?)',
-        [defaultSettings.language, defaultSettings.last_country_iso],
+        'INSERT INTO settings (language, last_country_code) VALUES(?,?)',
+        [defaultSettings.language, defaultSettings.last_country_code],
       );
     } else {
       if (__DEV__) console.log('using database settings');

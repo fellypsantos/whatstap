@@ -31,6 +31,7 @@ const DatabaseProvider: React.FC<DatabaseProviderProps> = ({ children }) => {
         CREATE TABLE IF NOT EXISTS "contacts" (
           "id"	TEXT NOT NULL UNIQUE,
           "name"	TEXT,
+          "country_code"	TEXT NOT NULL,
           "phone"	TEXT NOT NULL,
           "country"	TEXT NOT NULL,
           "createdAt"	TEXT NOT NULL,
@@ -45,7 +46,7 @@ const DatabaseProvider: React.FC<DatabaseProviderProps> = ({ children }) => {
       tx.executeSql(`
         CREATE TABLE IF NOT EXISTS "settings" (
           "language"	TEXT,
-          "last_country_iso"	TEXT
+          "last_country_code"	TEXT
         );
       `);
     });

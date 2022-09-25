@@ -38,11 +38,11 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
   const addContact = useCallback(
     async (contact: IContact) => {
       try {
-        const { id, name, phone, country, createdAt } = contact;
+        const { id, name, country_code, phone, country, createdAt } = contact;
 
         const insertResult = await dbConnection?.executeSql(
-          'INSERT INTO contacts(id, name, phone, country, createdAt) VALUES(?,?,?,?,?)',
-          [id, name, phone, country, createdAt],
+          'INSERT INTO contacts(id, name, country_code, phone, country, createdAt) VALUES(?,?,?,?,?,?)',
+          [id, name, country_code, phone, country, createdAt],
         );
 
         if (insertResult) {
@@ -63,21 +63,16 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
   const editContact = useCallback(
     async (contact: IContact): Promise<boolean> => {
       try {
-        const { id, name } = contact;
+        const { id, name, country, country_code, phone } = contact;
 
         const update = await dbConnection?.executeSql(
-          'UPDATE contacts SET name = ? WHERE id = ?',
-          [name, id],
+          'UPDATE contacts SET country=?, country_code=?, phone=?, name=? WHERE id = ?',
+          [country, country_code, phone, name, id],
         );
 
         if (update) {
           const updatedList = contacts.map(item => {
-            if (item.id === contact.id) {
-              return {
-                ...item,
-                name: contact.name,
-              };
-            }
+            if (item.id === contact.id) return { ...contact };
             return item;
           });
 

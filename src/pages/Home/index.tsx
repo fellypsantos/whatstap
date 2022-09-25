@@ -49,6 +49,11 @@ const Home: React.FC = () => {
     [Translate],
   );
 
+  const formattedPhoneNumber = useCallback(
+    (contact: IContact) => `${contact.country_code}${contact.phone}`,
+    [],
+  );
+
   const parseI18NextLocale = useCallback(() => {
     if (selectedLanguage === 'pt') return ptBR_DateTime;
     else if (selectedLanguage === 'es') return es_DateTime;
@@ -67,7 +72,7 @@ const Home: React.FC = () => {
   const renderItem = ({ item }: { item: IContact }) => (
     <ContactCard key={item.id}>
       <ContactCardHeader>
-        <ContactNumber>{item.phone}</ContactNumber>
+        <ContactNumber>{formattedPhoneNumber(item)}</ContactNumber>
         <ContactMenuButton
           dropdownMenuMode
           actions={dropdown.options}
@@ -94,7 +99,8 @@ const Home: React.FC = () => {
           })}
         </ContactDateTime>
 
-        <ContactMenuWhatsAppButton onPress={() => openWhatsApp(item.phone)}>
+        <ContactMenuWhatsAppButton
+          onPress={() => openWhatsApp(formattedPhoneNumber(item))}>
           <ContactMenuWhatsAppButtonIcon
             name="whatsapp"
             color="#fff"

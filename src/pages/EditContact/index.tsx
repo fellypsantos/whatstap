@@ -3,20 +3,23 @@ import React, { useCallback, useState } from 'react';
 import { useContact } from '../../hooks/contact';
 import AppStructure from '../../components/AppStructure';
 import ButtonContainer from '../../components/Button';
+import PhoneNumberTextInput from '../../components/PhoneNumberInput';
 import TextField from '../../components/TextField';
 import IContact from '../../interfaces/IContact';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../routes/Stack';
 import AppMargin from '../../components/AppMargin';
 import { ScrollView } from 'react-native';
 import { useAppTranslation } from '../../hooks/translation';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../routes/Stack';
 
 type PageProps = NativeStackScreenProps<RootStackParamList, 'EditContact'>;
 
 const EditContact: React.FC<PageProps> = ({ navigation, route }) => {
-  const [contact, setContact] = useState({ ...route.params.contact });
-  const { removeContact, editContact } = useContact();
+  const { editContact } = useContact();
   const { Translate } = useAppTranslation();
+
+  const [contact, setContact] = useState<IContact>({ ...route.params.contact });
+  const [showCountryPicker, setShowCountryPicker] = useState(false);
 
   const handleEdit = useCallback(
     async (contactEdit: IContact) => {
@@ -26,27 +29,32 @@ const EditContact: React.FC<PageProps> = ({ navigation, route }) => {
     [editContact, navigation],
   );
 
-  const handleDelete = useCallback(async () => {
-    const result = await removeContact(contact);
-    if (result) navigation.goBack();
-  }, [contact, navigation, removeContact]);
-
   return (
     <AppStructure
-      sectionName={Translate('editContact')}
+      sectionName={Translate('addContact')}
       headerMenuOptions={{
         icon: 'trash',
-        onPress: handleDelete,
+        onPress: () => navigation.goBack(),
       }}>
       <ScrollView>
         <AppMargin>
           <>
-            <TextField
-              editable={false}
-              icon="lock"
-              label={Translate('phoneNumberNotEditable')}
-              value={contact.phone}
-              onChangeText={() => null}
+            <PhoneNumberTextInput
+              countryCode={contact.country_code}
+              phoneNumber={contact.phone}
+              show={showCountryPicker}
+              handleOpenCountryPicker={() => setShowCountryPicker(true)}
+              handleCloseCountryPicker={() => setShowCountryPicker(false)}
+              onChangeCountryCode={country => {
+                setContact({
+                  ...contact,
+                  country_code: country.dialCode,
+                  country: country.name,
+                });
+              }}
+              onChangePhoneNumber={text =>
+                setContact({ ...contact, phone: text })
+              }
             />
 
             <TextField
@@ -58,7 +66,7 @@ const EditContact: React.FC<PageProps> = ({ navigation, route }) => {
             />
 
             <ButtonContainer
-              text={Translate('save')}
+              text={Translate('editContact')}
               type="default"
               onPress={() => handleEdit(contact)}
             />
