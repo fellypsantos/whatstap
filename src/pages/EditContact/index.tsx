@@ -31,7 +31,7 @@ const EditContact: React.FC<PageProps> = ({ navigation, route }) => {
 
   return (
     <AppStructure
-      sectionName={Translate('addContact')}
+      sectionName={Translate('editContact')}
       headerMenuOptions={{
         icon: 'trash',
         onPress: () => navigation.goBack(),
