@@ -15,7 +15,7 @@ import { RootStackParamList } from '../../routes/Stack';
 type PageProps = NativeStackScreenProps<RootStackParamList, 'EditContact'>;
 
 const EditContact: React.FC<PageProps> = ({ navigation, route }) => {
-  const { editContact } = useContact();
+  const { editContact, removeContact } = useContact();
   const { Translate } = useAppTranslation();
 
   const [contact, setContact] = useState<IContact>({ ...route.params.contact });
@@ -29,12 +29,17 @@ const EditContact: React.FC<PageProps> = ({ navigation, route }) => {
     [editContact, navigation],
   );
 
+  const handleDelete = useCallback(async () => {
+    const result = await removeContact(contact);
+    if (result) navigation.goBack();
+  }, [contact, navigation, removeContact]);
+
   return (
     <AppStructure
       sectionName={Translate('editContact')}
       headerMenuOptions={{
         icon: 'trash',
-        onPress: () => navigation.goBack(),
+        onPress: handleDelete,
       }}>
       <ScrollView>
         <AppMargin>
