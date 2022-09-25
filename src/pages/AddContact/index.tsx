@@ -18,6 +18,7 @@ import AppMargin from '../../components/AppMargin';
 import { ActivityIndicator, Alert, ScrollView } from 'react-native';
 import { useAppTranslation } from '../../hooks/translation';
 import { useSettings } from '../../hooks/settings';
+import { GetRandomBoolean } from '../../utils/random';
 
 const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
 
@@ -27,7 +28,7 @@ const AddContact: React.FC = () => {
   const [adClosed, setAdClosed] = useState(false);
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [openWhatsAppChecked, setOpenWhatsAppChecked] = useState(false);
-  const wantShowAd = useMemo(() => Boolean(Math.floor(Math.random() * 2)), []);
+  const wantShowAd = useMemo(() => GetRandomBoolean(), []);
 
   const navigation = useNavigation();
   const { Translate } = useAppTranslation();
@@ -61,7 +62,6 @@ const AddContact: React.FC = () => {
         createdAt: new Date(),
       });
 
-      // need to save last dial code to settings
       updateSettings({ ...settings, last_country_code: contact.country_code });
 
       if (adLoaded) {
