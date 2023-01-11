@@ -1,5 +1,10 @@
 # WhatsTap
 
+![Descrição](https://media.discordapp.net/attachments/1062793206015721623/1062800561986089040/Screenshots.png "Screenshots")
+
+## Download Available
+https://play.google.com/store/apps/details?id=com.fellypsantos.whatstap
+
 ### English
 Sometimes we want to send a quick whatsapp message to someone that is not our contact, and we don't want to add, this app facilitates the process. Just type the phone number, give a optional name and done, you start chating on WhatsApp.
 
@@ -14,6 +19,3 @@ El número de teléfono solo se almacenará en el historial de la aplicación y 
 As vezes queremos enviar uma mensagem rápida pra alguém que não temos nos contatos, e nem temos intenção de salvar, esse app facilita esse processo, digite o número do contato, um nome se quiser, e pronto, o chat abre no WhatsApp.
 
 O número ficará salvo apenas no histórico do app, podendo ser editado ou excluído a qualquer momento.
-
-## Download Available
-https://play.google.com/store/apps/details?id=com.fellypsantos.whatstap
