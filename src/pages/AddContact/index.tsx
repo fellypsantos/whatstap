@@ -23,16 +23,20 @@ import { GetRandomBoolean } from '../../utils/random';
 const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
 
 const AddContact: React.FC = () => {
+  const { settings, updateSettings } = useSettings();
+
   const [processing, setProcessing] = useState(false);
   const [adLoaded, setAdLoaded] = useState(false);
   const [adClosed, setAdClosed] = useState(false);
+  const [disabledPhoneMask, setDisabledPhoneMask] = useState(
+    () => settings.disabled_phone_mask,
+  );
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [openWhatsAppChecked, setOpenWhatsAppChecked] = useState(false);
   const wantShowAd = useMemo(() => GetRandomBoolean(), []);
 
   const navigation = useNavigation();
   const { Translate } = useAppTranslation();
-  const { settings, updateSettings } = useSettings();
   const { addContact, openWhatsApp } = useContact();
 
   const [contact, setContact] = useState<IContact>(() => ({
@@ -62,12 +66,6 @@ const AddContact: React.FC = () => {
         createdAt: new Date(),
       });
 
-      updateSettings({
-        ...settings,
-        last_country_code: contact.country_code,
-        last_country_name: contact.country,
-      });
-
       if (adLoaded) {
         if (__DEV__) console.log('Good! Ad is loaded, let show now.');
         interstitial.show();
@@ -88,9 +86,27 @@ const AddContact: React.FC = () => {
     openWhatsApp,
     adLoaded,
     Translate,
-    settings,
-    updateSettings,
   ]);
+
+  const handleChangeDisablePhoneMask = useCallback(
+    (isChecked: boolean) => {
+      setDisabledPhoneMask(isChecked);
+
+      updateSettings({
+        ...settings,
+        disabled_phone_mask: isChecked,
+      });
+    },
+    [settings, updateSettings],
+  );
+
+  const handleResetCountryCode = useCallback(() => {
+    setContact({
+      ...contact,
+      country_code: '+1',
+      country: 'United States',
+    });
+  }, [contact]);
 
   useEffect(() => {
     const unsubscribeLoaded = interstitial.addAdEventListener(
@@ -142,9 +158,11 @@ const AddContact: React.FC = () => {
         <AppMargin>
           <>
             <PhoneNumberTextInput
+              disabledPhoneMask={disabledPhoneMask}
               countryCode={contact.country_code}
               phoneNumber={contact.phone}
               show={showCountryPicker}
+              resetCountryCode={handleResetCountryCode}
               handleOpenCountryPicker={() => setShowCountryPicker(true)}
               handleCloseCountryPicker={() => setShowCountryPicker(false)}
               onChangeCountryCode={country => {
@@ -153,10 +171,23 @@ const AddContact: React.FC = () => {
                   country_code: country.dialCode,
                   country: country.name,
                 });
+
+                updateSettings({
+                  ...settings,
+                  last_country_code: country.dialCode,
+                  last_country_iso: country.code,
+                  last_country_name: country.name,
+                });
               }}
               onChangePhoneNumber={text =>
-                setContact({ ...contact, phone: text })
+                setContact({ ...contact, phone: text.replace(/\D+/g, '') })
               }
+            />
+
+            <CheckboxField
+              isChecked={disabledPhoneMask}
+              text={Translate('disablePhoneMask')}
+              onPress={isChecked => handleChangeDisablePhoneMask(isChecked)}
             />
 
             <TextField

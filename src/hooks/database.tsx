@@ -53,6 +53,28 @@ const DatabaseProvider: React.FC<DatabaseProviderProps> = ({ children }) => {
     });
   }, []);
 
+  const addLastCountryIsoColumnInSettings = useCallback(
+    (db: SQLiteDatabase) => {
+      db.transaction(tx => {
+        tx.executeSql(
+          'ALTER TABLE "settings" ADD COLUMN "last_country_iso" TEXT',
+        );
+      }).catch(() => null);
+    },
+    [],
+  );
+
+  const addDisabledPhoneMaskColumnInSettings = useCallback(
+    (db: SQLiteDatabase) => {
+      db.transaction(tx => {
+        tx.executeSql(
+          'ALTER TABLE "settings" ADD COLUMN "disabled_phone_mask" INTEGER',
+        );
+      }).catch(() => null);
+    },
+    [],
+  );
+
   useEffect(() => {
     async function connect() {
       if (!dbConnection) {
@@ -67,12 +89,21 @@ const DatabaseProvider: React.FC<DatabaseProviderProps> = ({ children }) => {
         createContactsTable(connection);
         createSettingsTable(connection);
 
+        addLastCountryIsoColumnInSettings(connection);
+        addDisabledPhoneMaskColumnInSettings(connection);
+
         if (__DEV__) console.log('DB: Connected');
       }
     }
 
     connect();
-  }, [dbConnection, createContactsTable, createSettingsTable]);
+  }, [
+    dbConnection,
+    createContactsTable,
+    createSettingsTable,
+    addLastCountryIsoColumnInSettings,
+    addDisabledPhoneMaskColumnInSettings,
+  ]);
 
   const value = useMemo(() => ({ dbConnection }), [dbConnection]);
 

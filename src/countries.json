@@ -1,0 +1,1472 @@
+[
+  {
+    "name": "Afghanistan",
+    "code": "+93",
+    "iso": "AF",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Aland Islands",
+    "code": "+358",
+    "iso": "AX",
+    "mask": "(999)999-99-99"
+  },
+  {
+    "name": "Albania",
+    "code": "+355",
+    "iso": "AL",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Algeria",
+    "code": "+213",
+    "iso": "DZ",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "American Samoa",
+    "code": "+1",
+    "iso": "AS",
+    "mask": "(684)999-9999"
+  },
+  {
+    "name": "Andorra",
+    "code": "+376",
+    "iso": "AD",
+    "mask": "999-999"
+  },
+  {
+    "name": "Angola",
+    "code": "+244",
+    "iso": "AO",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Anguilla",
+    "code": "+1",
+    "iso": "AI",
+    "mask": "(264)999-9999"
+  },
+  {
+    "name": "Antarctica",
+    "code": "+672",
+    "iso": "AQ",
+    "mask": "199-999"
+  },
+  {
+    "name": "Antigua and Barbuda",
+    "code": "+1",
+    "iso": "AG",
+    "mask": "(268)999-9999"
+  },
+  {
+    "name": "Argentina",
+    "code": "+54",
+    "iso": "AR",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Armenia",
+    "code": "+374",
+    "iso": "AM",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Aruba",
+    "code": "+297",
+    "iso": "AW",
+    "mask": "999-9999"
+  },
+  {
+    "name": "Ascension Island",
+    "code": "+247",
+    "iso": "AC",
+    "mask": "9999"
+  },
+  {
+    "name": "Australia",
+    "code": "+61",
+    "iso": "AU",
+    "mask": "9-9999-9999"
+  },
+  {
+    "name": "Austria",
+    "code": "+43",
+    "iso": "AT",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Azerbaijan",
+    "code": "+994",
+    "iso": "AZ",
+    "mask": "99-999-99-99"
+  },
+  {
+    "name": "Bahamas",
+    "code": "+1",
+    "iso": "BS",
+    "mask": "(242)999-9999"
+  },
+  {
+    "name": "Bahrain",
+    "code": "+973",
+    "iso": "BH",
+    "mask": "9999-9999"
+  },
+  {
+    "name": "Bangladesh",
+    "code": "+880",
+    "iso": "BD",
+    "mask": "1999-999999"
+  },
+  {
+    "name": "Barbados",
+    "code": "+1",
+    "iso": "BB",
+    "mask": "(246)999-9999"
+  },
+  {
+    "name": "Belarus",
+    "code": "+375",
+    "iso": "BY",
+    "mask": "(99)999-99-99"
+  },
+  {
+    "name": "Belgium",
+    "code": "+32",
+    "iso": "BE",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Belize",
+    "code": "+501",
+    "iso": "BZ",
+    "mask": "999-9999"
+  },
+  {
+    "name": "Benin",
+    "code": "+229",
+    "iso": "BJ",
+    "mask": "99-99-9999"
+  },
+  {
+    "name": "Bermuda",
+    "code": "+1",
+    "iso": "BM",
+    "mask": "(441)999-9999"
+  },
+  {
+    "name": "Bhutan",
+    "code": "+975",
+    "iso": "BT",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Bolivia",
+    "code": "+591",
+    "iso": "BO",
+    "mask": "9-999-9999"
+  },
+  {
+    "name": "Bosnia and Herzegovina",
+    "code": "+387",
+    "iso": "BA",
+    "mask": "99-99999"
+  },
+  {
+    "name": "Botswana",
+    "code": "+267",
+    "iso": "BW",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Brazil",
+    "code": "+55",
+    "iso": "BR",
+    "mask": "(99)99999-9999"
+  },
+  {
+    "name": "British Indian Ocean Territory",
+    "code": "+246",
+    "iso": "IO",
+    "mask": "999-9999"
+  },
+  {
+    "name": "Brunei Darussalam",
+    "code": "+673",
+    "iso": "BN",
+    "mask": "999-9999"
+  },
+  {
+    "name": "Bulgaria",
+    "code": "+359",
+    "iso": "BG",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Burkina Faso",
+    "code": "+226",
+    "iso": "BF",
+    "mask": "99-99-9999"
+  },
+  {
+    "name": "Burundi",
+    "code": "+257",
+    "iso": "BI",
+    "mask": "99-99-9999"
+  },
+  {
+    "name": "Cambodia",
+    "code": "+855",
+    "iso": "KH",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Cameroon",
+    "code": "+237",
+    "iso": "CM",
+    "mask": "9999-9999"
+  },
+  {
+    "name": "Canada",
+    "code": "+1",
+    "iso": "CA",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Cape Verde",
+    "code": "+238",
+    "iso": "CV",
+    "mask": "(999)99-99"
+  },
+  {
+    "name": "Cayman Islands",
+    "code": "+1",
+    "iso": "KY",
+    "mask": "(345)999-9999"
+  },
+  {
+    "name": "Central African Republic",
+    "code": "+236",
+    "iso": "CF",
+    "mask": "99-99-9999"
+  },
+  {
+    "name": "Chad",
+    "code": "+235",
+    "iso": "TD",
+    "mask": "99-99-99-99"
+  },
+  {
+    "name": "Chile",
+    "code": "+56",
+    "iso": "CL",
+    "mask": "9-9999-9999"
+  },
+  {
+    "name": "China",
+    "code": "+86",
+    "iso": "CN",
+    "mask": "99-99999-99999"
+  },
+  {
+    "name": "Christmas Island",
+    "code": "+61",
+    "iso": "CX",
+    "mask": "9-9999-9999"
+  },
+  {
+    "name": "Cocos (Keeling) Islands",
+    "code": "+61",
+    "iso": "CC",
+    "mask": "9-9999-9999"
+  },
+  {
+    "name": "Colombia",
+    "code": "+57",
+    "iso": "CO",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Comoros",
+    "code": "+269",
+    "iso": "KM",
+    "mask": "99-99999"
+  },
+  {
+    "name": "Congo",
+    "code": "+242",
+    "iso": "CG",
+    "mask": "99-99999"
+  },
+  {
+    "name": "Cook Islands",
+    "code": "+682",
+    "iso": "CK",
+    "mask": "99-999"
+  },
+  {
+    "name": "Costa Rica",
+    "code": "+506",
+    "iso": "CR",
+    "mask": "9999-9999"
+  },
+  {
+    "name": "Croatia",
+    "code": "+385",
+    "iso": "HR",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Cuba",
+    "code": "+53",
+    "iso": "CU",
+    "mask": "9-999-9999"
+  },
+  {
+    "name": "Cyprus",
+    "code": "+357",
+    "iso": "CY",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Czech Republic",
+    "code": "+420",
+    "iso": "CZ",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Democratic Republic of the Congo",
+    "code": "+243",
+    "iso": "CD",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Denmark",
+    "code": "+45",
+    "iso": "DK",
+    "mask": "99-99-99-99"
+  },
+  {
+    "name": "Djibouti",
+    "code": "+253",
+    "iso": "DJ",
+    "mask": "99-99-99-99"
+  },
+  {
+    "name": "Dominica",
+    "code": "+1",
+    "iso": "DM",
+    "mask": "(767)999-9999"
+  },
+  {
+    "name": "Dominican Republic",
+    "code": "+1",
+    "iso": "DO",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Ecuador",
+    "code": "+593",
+    "iso": "EC",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Egypt",
+    "code": "+20",
+    "iso": "EG",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "El Salvador",
+    "code": "+503",
+    "iso": "SV",
+    "mask": "99-99-9999"
+  },
+  {
+    "name": "Equatorial Guinea",
+    "code": "+240",
+    "iso": "GQ",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Eritrea",
+    "code": "+291",
+    "iso": "ER",
+    "mask": "9-999-999"
+  },
+  {
+    "name": "Estonia",
+    "code": "+372",
+    "iso": "EE",
+    "mask": "9999-9999"
+  },
+  {
+    "name": "Eswatini",
+    "code": "+268",
+    "iso": "SZ",
+    "mask": "99-99-9999"
+  },
+  {
+    "name": "Ethiopia",
+    "code": "+251",
+    "iso": "ET",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Falkland Islands (Malvinas)",
+    "code": "+500",
+    "iso": "FK",
+    "mask": "99999"
+  },
+  {
+    "name": "Faroe Islands",
+    "code": "+298",
+    "iso": "FO",
+    "mask": "999-999"
+  },
+  {
+    "name": "Fiji",
+    "code": "+679",
+    "iso": "FJ",
+    "mask": "99-99999"
+  },
+  {
+    "name": "Finland",
+    "code": "+358",
+    "iso": "FI",
+    "mask": "(999)999-99-99"
+  },
+  {
+    "name": "France",
+    "code": "+33",
+    "iso": "FR",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "French Guiana",
+    "code": "+594",
+    "iso": "GF",
+    "mask": "99999-9999"
+  },
+  {
+    "name": "French Polynesia",
+    "code": "+689",
+    "iso": "PF",
+    "mask": "99-99-99"
+  },
+  {
+    "name": "Gabon",
+    "code": "+241",
+    "iso": "GA",
+    "mask": "9-99-99-99"
+  },
+  {
+    "name": "Gambia",
+    "code": "+220",
+    "iso": "GM",
+    "mask": "(999)99-99"
+  },
+  {
+    "name": "Georgia",
+    "code": "+995",
+    "iso": "GE",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Germany",
+    "code": "+49",
+    "iso": "DE",
+    "mask": "(9999)999-9999"
+  },
+  {
+    "name": "Ghana",
+    "code": "+233",
+    "iso": "GH",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Gibraltar",
+    "code": "+350",
+    "iso": "GI",
+    "mask": "999-99999"
+  },
+  {
+    "name": "Greece",
+    "code": "+30",
+    "iso": "GR",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Greenland",
+    "code": "+299",
+    "iso": "GL",
+    "mask": "99-99-99"
+  },
+  {
+    "name": "Grenada",
+    "code": "+1",
+    "iso": "GD",
+    "mask": "(473)999-9999"
+  },
+  {
+    "name": "Guadeloupe",
+    "code": "+590",
+    "iso": "GP",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Guam",
+    "code": "+1",
+    "iso": "GU",
+    "mask": "(671)999-9999"
+  },
+  {
+    "name": "Guatemala",
+    "code": "+502",
+    "iso": "GT",
+    "mask": "9-999-9999"
+  },
+  {
+    "name": "Guernsey",
+    "code": "+44",
+    "iso": "GG",
+    "mask": "(9999)999999"
+  },
+  {
+    "name": "Guinea",
+    "code": "+224",
+    "iso": "GN",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Guinea-Bissau",
+    "code": "+245",
+    "iso": "GW",
+    "mask": "9-999999"
+  },
+  {
+    "name": "Guyana",
+    "code": "+592",
+    "iso": "GY",
+    "mask": "999-9999"
+  },
+  {
+    "name": "Haiti",
+    "code": "+509",
+    "iso": "HT",
+    "mask": "99-99-9999"
+  },
+  {
+    "name": "Holy See (Vatican City State)",
+    "code": "+39",
+    "iso": "VA",
+    "mask": "06 69899999"
+  },
+  {
+    "name": "Honduras",
+    "code": "+504",
+    "iso": "HN",
+    "mask": "9999-9999"
+  },
+  {
+    "name": "Hong Kong",
+    "code": "+852",
+    "iso": "HK",
+    "mask": "9999-9999"
+  },
+  {
+    "name": "Hungary",
+    "code": "+36",
+    "iso": "HU",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Iceland",
+    "code": "+354",
+    "iso": "IS",
+    "mask": "999-9999"
+  },
+  {
+    "name": "India",
+    "code": "+91",
+    "iso": "IN",
+    "mask": "(9999)999-999"
+  },
+  {
+    "name": "Indonesia",
+    "code": "+62",
+    "iso": "ID",
+    "mask": "(999)999-99-999"
+  },
+  {
+    "name": "Iran",
+    "code": "+98",
+    "iso": "IR",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Iraq",
+    "code": "+924",
+    "iso": "IQ",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Ireland",
+    "code": "+353",
+    "iso": "IE",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Isle of Man",
+    "code": "+44",
+    "iso": "IM",
+    "mask": "(9999)999999"
+  },
+  {
+    "name": "Israel",
+    "code": "+972",
+    "iso": "IL",
+    "mask": "59-999-9999"
+  },
+  {
+    "name": "Italy",
+    "code": "+39",
+    "iso": "IT",
+    "mask": "(999)9999-999"
+  },
+  {
+    "name": "Ivory Coast / Cote d'Ivoire",
+    "code": "+225",
+    "iso": "CI",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Jamaica",
+    "code": "+1",
+    "iso": "JM",
+    "mask": "(876)999-9999"
+  },
+  {
+    "name": "Japan",
+    "code": "+81",
+    "iso": "JP",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Jersey",
+    "code": "+44",
+    "iso": "JE",
+    "mask": "(9999)9999-999999"
+  },
+  {
+    "name": "Jordan",
+    "code": "+962",
+    "iso": "JO",
+    "mask": "9-9999-9999"
+  },
+  {
+    "name": "Kazakhstan",
+    "code": "+77",
+    "iso": "KZ",
+    "mask": "(999)999-99-99"
+  },
+  {
+    "name": "Kenya",
+    "code": "+254",
+    "iso": "KE",
+    "mask": "999-999999"
+  },
+  {
+    "name": "Kiribati",
+    "code": "+686",
+    "iso": "KI",
+    "mask": "99-999"
+  },
+  {
+    "name": "Korea, Democratic People's Republic of Korea",
+    "code": "+850",
+    "iso": "KP",
+    "mask": "999-9999-999"
+  },
+  {
+    "name": "Korea, Republic of South Korea",
+    "code": "+82",
+    "iso": "KR",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Kosovo",
+    "code": "+383",
+    "iso": "XK",
+    "mask": "999-999-999"
+  },
+  {
+    "name": "Kuwait",
+    "code": "+965",
+    "iso": "KW",
+    "mask": "9999-9999"
+  },
+  {
+    "name": "Kyrgyzstan",
+    "code": "+996",
+    "iso": "KG",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Laos",
+    "code": "+856",
+    "iso": "LA",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Latvia",
+    "code": "+371",
+    "iso": "LV",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Lebanon",
+    "code": "+961",
+    "iso": "LB",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Lesotho",
+    "code": "+266",
+    "iso": "LS",
+    "mask": "9-999-9999"
+  },
+  {
+    "name": "Liberia",
+    "code": "+231",
+    "iso": "LR",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Libya",
+    "code": "+218",
+    "iso": "LY",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Liechtenstein",
+    "code": "+423",
+    "iso": "LI",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Lithuania",
+    "code": "+370",
+    "iso": "LT",
+    "mask": "(999)99-999"
+  },
+  {
+    "name": "Luxembourg",
+    "code": "+352",
+    "iso": "LU",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Macau",
+    "code": "+853",
+    "iso": "MO",
+    "mask": "9999-9999"
+  },
+  {
+    "name": "Madagascar",
+    "code": "+261",
+    "iso": "MG",
+    "mask": "99-99-99999"
+  },
+  {
+    "name": "Malawi",
+    "code": "+265",
+    "iso": "MW",
+    "mask": "9-9999-9999"
+  },
+  {
+    "name": "Malaysia",
+    "code": "+60",
+    "iso": "MY",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Maldives",
+    "code": "+960",
+    "iso": "MV",
+    "mask": "999-9999"
+  },
+  {
+    "name": "Mali",
+    "code": "+223",
+    "iso": "ML",
+    "mask": "99-99-9999"
+  },
+  {
+    "name": "Malta",
+    "code": "+356",
+    "iso": "MT",
+    "mask": "9999-9999"
+  },
+  {
+    "name": "Marshall Islands",
+    "code": "+692",
+    "iso": "MH",
+    "mask": "999-9999"
+  },
+  {
+    "name": "Martinique",
+    "code": "+596",
+    "iso": "MQ",
+    "mask": "(999)99-99-99"
+  },
+  {
+    "name": "Mauritania",
+    "code": "+222",
+    "iso": "MR",
+    "mask": "99-99-9999"
+  },
+  {
+    "name": "Mauritius",
+    "code": "+230",
+    "iso": "MU",
+    "mask": "999-9999"
+  },
+  {
+    "name": "Mayotte",
+    "code": "+262",
+    "iso": "YT",
+    "mask": "99999-9999"
+  },
+  {
+    "name": "Mexico",
+    "code": "+52",
+    "iso": "MX",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Micronesia, Federated States of Micronesia",
+    "code": "+691",
+    "iso": "FM",
+    "mask": "999-9999"
+  },
+  {
+    "name": "Moldova",
+    "code": "+373",
+    "iso": "MD",
+    "mask": "9999-9999"
+  },
+  {
+    "name": "Monaco",
+    "code": "+377",
+    "iso": "MC",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Mongolia",
+    "code": "+976",
+    "iso": "MN",
+    "mask": "99-99-9999"
+  },
+  {
+    "name": "Montenegro",
+    "code": "+382",
+    "iso": "ME",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Montserrat",
+    "code": "+1",
+    "iso": "MS",
+    "mask": "(664)999-9999"
+  },
+  {
+    "name": "Morocco",
+    "code": "+212",
+    "iso": "MA",
+    "mask": "99-9999-999"
+  },
+  {
+    "name": "Mozambique",
+    "code": "+258",
+    "iso": "MZ",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Myanmar",
+    "code": "+95",
+    "iso": "MM",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Namibia",
+    "code": "+224",
+    "iso": "NA",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Nauru",
+    "code": "+674",
+    "iso": "NR",
+    "mask": "999-9999"
+  },
+  {
+    "name": "Nepal",
+    "code": "+977",
+    "iso": "NP",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Netherlands",
+    "code": "+31",
+    "iso": "NL",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Netherlands Antilles",
+    "code": "+599",
+    "iso": "AN",
+    "mask": "9999-9999"
+  },
+  {
+    "name": "New Caledonia",
+    "code": "+687",
+    "iso": "NC",
+    "mask": "99-9999"
+  },
+  {
+    "name": "New Zealand",
+    "code": "+24",
+    "iso": "NZ",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Nicaragua",
+    "code": "+505",
+    "iso": "NI",
+    "mask": "9999-9999"
+  },
+  {
+    "name": "Niger",
+    "code": "+227",
+    "iso": "NE",
+    "mask": "99-99-9999"
+  },
+  {
+    "name": "Nigeria",
+    "code": "+234",
+    "iso": "NG",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Niue",
+    "code": "+683",
+    "iso": "NU",
+    "mask": "9999"
+  },
+  {
+    "name": "Norfolk Island",
+    "code": "+672",
+    "iso": "NF",
+    "mask": "399-999"
+  },
+  {
+    "name": "North Macedonia",
+    "code": "+389",
+    "iso": "MK",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Northern Mariana Islands",
+    "code": "+1",
+    "iso": "MP",
+    "mask": "(670)999-9999"
+  },
+  {
+    "name": "Norway",
+    "code": "+47",
+    "iso": "NO",
+    "mask": "(999)99-999"
+  },
+  {
+    "name": "Oman",
+    "code": "+968",
+    "iso": "OM",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Pakistan",
+    "code": "+92",
+    "iso": "PK",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Palau",
+    "code": "+680",
+    "iso": "PW",
+    "mask": "999-9999"
+  },
+  {
+    "name": "Palestine",
+    "code": "+970",
+    "iso": "PS",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Panama",
+    "code": "+507",
+    "iso": "PA",
+    "mask": "999-9999"
+  },
+  {
+    "name": "Papua New Guinea",
+    "code": "+675",
+    "iso": "PG",
+    "mask": "(999)99-999"
+  },
+  {
+    "name": "Paraguay",
+    "code": "+595",
+    "iso": "PY",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Peru",
+    "code": "+51",
+    "iso": "PE",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Philippines",
+    "code": "+63",
+    "iso": "PH",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Pitcairn",
+    "code": "+870",
+    "iso": "PN",
+    "mask": "999-999-999"
+  },
+  {
+    "name": "Poland",
+    "code": "+48",
+    "iso": "PL",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Portugal",
+    "code": "+351",
+    "iso": "PT",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Puerto Rico",
+    "code": "+1",
+    "iso": "PR",
+    "mask": "(999) 999 9999"
+  },
+  {
+    "name": "Qatar",
+    "code": "+974",
+    "iso": "QA",
+    "mask": "9999-9999"
+  },
+  {
+    "name": "Reunion",
+    "code": "+262",
+    "iso": "RE",
+    "mask": "99999-9999"
+  },
+  {
+    "name": "Romania",
+    "code": "+40",
+    "iso": "RO",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Russia",
+    "code": "+7",
+    "iso": "RU",
+    "mask": "(999)999-99-99"
+  },
+  {
+    "name": "Rwanda",
+    "code": "+250",
+    "iso": "RW",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Saint Barthelemy",
+    "code": "+590",
+    "iso": "BL",
+    "mask": "999-99-99-99"
+  },
+  {
+    "name": "Saint Helena, Ascension and Tristan Da Cunha",
+    "code": "+290",
+    "iso": "SH",
+    "mask": "9999"
+  },
+  {
+    "name": "Saint Kitts and Nevis",
+    "code": "+1",
+    "iso": "KN",
+    "mask": "(869)999-9999"
+  },
+  {
+    "name": "Saint Lucia",
+    "code": "+1",
+    "iso": "LC",
+    "mask": "(758)999-9999"
+  },
+  {
+    "name": "Saint Martin",
+    "code": "+590",
+    "iso": "MF",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Saint Pierre and Miquelon",
+    "code": "+508",
+    "iso": "PM",
+    "mask": "99-9999"
+  },
+  {
+    "name": "Saint Vincent and the Grenadines",
+    "code": "+1",
+    "iso": "VC",
+    "mask": "(784)999-9999"
+  },
+  {
+    "name": "Samoa",
+    "code": "+685",
+    "iso": "WS",
+    "mask": "99-9999"
+  },
+  {
+    "name": "San Marino",
+    "code": "+378",
+    "iso": "SM",
+    "mask": "9999-999999"
+  },
+  {
+    "name": "Sao Tome and Principe",
+    "code": "+239",
+    "iso": "ST",
+    "mask": "99-99999"
+  },
+  {
+    "name": "Saudi Arabia",
+    "code": "+966",
+    "iso": "SA",
+    "mask": "99-9999-9999"
+  },
+  {
+    "name": "Senegal",
+    "code": "+221",
+    "iso": "SN",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Serbia",
+    "code": "+381",
+    "iso": "RS",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Seychelles",
+    "code": "+248",
+    "iso": "SC",
+    "mask": "9-999-999"
+  },
+  {
+    "name": "Sierra Leone",
+    "code": "+232",
+    "iso": "SL",
+    "mask": "99-999999"
+  },
+  {
+    "name": "Singapore",
+    "code": "+65",
+    "iso": "SG",
+    "mask": "9999-9999"
+  },
+  {
+    "name": "Sint Maarten",
+    "code": "+1",
+    "iso": "SX",
+    "mask": "(721)999-9999"
+  },
+  {
+    "name": "Slovakia",
+    "code": "+421",
+    "iso": "SK",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Slovenia",
+    "code": "+386",
+    "iso": "SI",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Solomon Islands",
+    "code": "+677",
+    "iso": "SB",
+    "mask": "999-9999"
+  },
+  {
+    "name": "Somalia",
+    "code": "+252",
+    "iso": "SO",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "South Africa",
+    "code": "+27",
+    "iso": "ZA",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "South Georgia and the South Sandwich Islands",
+    "code": "+500",
+    "iso": "GS",
+    "mask": "99999"
+  },
+  {
+    "name": "South Sudan",
+    "code": "+211",
+    "iso": "SS",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Spain",
+    "code": "+34",
+    "iso": "ES",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Sri Lanka",
+    "code": "+94",
+    "iso": "LK",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Sudan",
+    "code": "+249",
+    "iso": "SD",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Suriname",
+    "code": "+597",
+    "iso": "SR",
+    "mask": "999-9999"
+  },
+  {
+    "name": "Svalbard and Jan Mayen",
+    "code": "+47",
+    "iso": "SJ",
+    "mask": "(999)99-999"
+  },
+  {
+    "name": "Sweden",
+    "code": "+46",
+    "iso": "SE",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Switzerland",
+    "code": "+41",
+    "iso": "CH",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Syrian Arab Republic",
+    "code": "+963",
+    "iso": "SY",
+    "mask": "99-9999-999"
+  },
+  {
+    "name": "Taiwan",
+    "code": "+886",
+    "iso": "TW",
+    "mask": "9-9999-9999"
+  },
+  {
+    "name": "Tajikistan",
+    "code": "+992",
+    "iso": "TJ",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Tanzania, United Republic of Tanzania",
+    "code": "+255",
+    "iso": "TZ",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Thailand",
+    "code": "+66",
+    "iso": "TH",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Timor-Leste",
+    "code": "+670",
+    "iso": "TL",
+    "mask": "999-99999"
+  },
+  {
+    "name": "Togo",
+    "code": "+228",
+    "iso": "TG",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Tokelau",
+    "code": "+690",
+    "iso": "TK",
+    "mask": "9999"
+  },
+  {
+    "name": "Tonga",
+    "code": "+676",
+    "iso": "TO",
+    "mask": "99999"
+  },
+  {
+    "name": "Trinidad and Tobago",
+    "code": "+1",
+    "iso": "TT",
+    "mask": "(868)999-9999"
+  },
+  {
+    "name": "Tunisia",
+    "code": "+216",
+    "iso": "TN",
+    "mask": "99-999-999"
+  },
+  {
+    "name": "Turkey",
+    "code": "+90",
+    "iso": "TR",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Turkmenistan",
+    "code": "+993",
+    "iso": "TM",
+    "mask": "9-999-9999"
+  },
+  {
+    "name": "Turks and Caicos Islands",
+    "code": "+1",
+    "iso": "TC",
+    "mask": "(249)999-999"
+  },
+  {
+    "name": "Tuvalu",
+    "code": "+688",
+    "iso": "TV",
+    "mask": "999999"
+  },
+  {
+    "name": "Uganda",
+    "code": "+256",
+    "iso": "UG",
+    "mask": "(999)999-999"
+  },
+  {
+    "name": "Ukraine",
+    "code": "+380",
+    "iso": "UA",
+    "mask": "(99)999-99-99"
+  },
+  {
+    "name": "United Arab Emirates",
+    "code": "+971",
+    "iso": "AE",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "United Kingdom",
+    "code": "+44",
+    "iso": "GB",
+    "mask": "99-9999-9999"
+  },
+  {
+    "name": "United States",
+    "code": "+1",
+    "iso": "US",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Uruguay",
+    "code": "+598",
+    "iso": "UY",
+    "mask": "9-999-99-99"
+  },
+  {
+    "name": "Uzbekistan",
+    "code": "+998",
+    "iso": "UZ",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Vanuatu",
+    "code": "+678",
+    "iso": "VU",
+    "mask": "99-99999"
+  },
+  {
+    "name": "Venezuela, Bolivarian Republic of Venezuela",
+    "code": "+58",
+    "iso": "VE",
+    "mask": "(999)999-9999"
+  },
+  {
+    "name": "Vietnam",
+    "code": "+84",
+    "iso": "VN",
+    "mask": "(999)9999-999"
+  },
+  {
+    "name": "Virgin Islands, British",
+    "code": "+1",
+    "iso": "VG",
+    "mask": "(284)999-9999"
+  },
+  {
+    "name": "Virgin Islands, U.S.",
+    "code": "+1",
+    "iso": "VI",
+    "mask": "(340)999-9999"
+  },
+  {
+    "name": "Wallis and Futuna",
+    "code": "+681",
+    "iso": "WF",
+    "mask": "99-9999"
+  },
+  {
+    "name": "Yemen",
+    "code": "+967",
+    "iso": "YE",
+    "mask": "999-999-999"
+  },
+  {
+    "name": "Zambia",
+    "code": "+260",
+    "iso": "ZM",
+    "mask": "99-999-9999"
+  },
+  {
+    "name": "Zimbabwe",
+    "code": "+263",
+    "iso": "ZW",
+    "mask": "9-999999"
+  }
+]

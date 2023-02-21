@@ -35,4 +35,5 @@ export const InputLabelText = styled.Text`
   font-family: 'Ubuntu-R';
   text-transform: uppercase;
   color: #aaa;
+  font-size: 12px;
 `;
