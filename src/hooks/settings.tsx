@@ -14,6 +14,8 @@ interface ISettings {
   language: string;
   last_country_code: string;
   last_country_name: string;
+  last_country_iso: string;
+  disabled_phone_mask: boolean;
 }
 
 interface SettingsContext {
@@ -37,6 +39,8 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
       language: getSupportedLocale(),
       last_country_code: '+1',
       last_country_name: 'United States',
+      last_country_iso: 'US',
+      disabled_phone_mask: false,
     }),
     [],
   );
@@ -51,13 +55,31 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
 
   const updateSettings = useCallback(
     async (newSettings: ISettings) => {
-      const { language, last_country_code, last_country_name } = newSettings;
+      const {
+        language,
+        last_country_code,
+        last_country_name,
+        last_country_iso,
+        disabled_phone_mask,
+      } = newSettings;
 
-      setSettings({ language, last_country_code, last_country_name });
+      setSettings({
+        language,
+        last_country_code,
+        last_country_name,
+        last_country_iso,
+        disabled_phone_mask,
+      });
 
       const result = await dbConnection?.executeSql(
-        'UPDATE settings SET language=?, last_country_code=?, last_country_name=?',
-        [language, last_country_code, last_country_name],
+        'UPDATE settings SET language=?, last_country_code=?, last_country_name=?, last_country_iso=?, disabled_phone_mask=?',
+        [
+          language,
+          last_country_code,
+          last_country_name,
+          last_country_iso,
+          disabled_phone_mask,
+        ],
       );
 
       if (result?.[0].rowsAffected !== 1)
@@ -74,8 +96,13 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
       if (__DEV__) console.log('using default settings');
 
       await dbConnection?.executeSql(
-        'INSERT INTO settings (language, last_country_code) VALUES(?,?)',
-        [defaultSettings.language, defaultSettings.last_country_code],
+        'INSERT INTO settings (language, last_country_code, last_country_iso, disabled_phone_mask) VALUES(?,?,?,?)',
+        [
+          defaultSettings.language,
+          defaultSettings.last_country_code,
+          defaultSettings.last_country_iso,
+          defaultSettings.disabled_phone_mask,
+        ],
       );
     } else {
       if (__DEV__) console.log('using database settings');
