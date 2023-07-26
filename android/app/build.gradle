@@ -138,8 +138,8 @@ android {
         applicationId "com.fellypsantos.whatstap"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 20230220
-        versionName "2.1"
+        versionCode 20230726
+        versionName "2.3"
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
         if (isNewArchitectureEnabled()) {
