@@ -6138,10 +6138,10 @@ react-native-context-menu-view@^1.5.2:
   resolved "https://registry.yarnpkg.com/react-native-context-menu-view/-/react-native-context-menu-view-1.5.2.tgz#944d407b1c5562ceeca66fbd602be3946e9e2ff1"
   integrity sha512-0oGSmi2qLTVIloL3a+1oSMEr9xkpr2SgXznYbFfDuRahlYt8asFKNj1o8k71vpao8GEusXE4khYHZdLMF+SE2g==
 
-react-native-country-codes-picker@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-country-codes-picker/-/react-native-country-codes-picker-2.0.0.tgz#7fdf59c82173dab42bfec345d6e1f9ac51d1bbd5"
-  integrity sha512-QWCP4hraJxa8Pj6+Q0rW+YT1kEEIF6mTA9YSObe9gci4nUE6DwHA/q706ECqhnZy7QJsdqG1bnnwQD6VKNAmoA==
+react-native-country-codes-picker@^2.3.3:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/react-native-country-codes-picker/-/react-native-country-codes-picker-2.3.3.tgz#9fa97b7ea550a860099f6f8a02b75e82930fd3de"
+  integrity sha512-ENK7dXcQiAmQoHOImosO27Pf5yMfRi77yK7u+KD4EV5qaNBBK9/2RYYHt0naqd+E20VvHJqpZG7OVwWXptzGuw==
 
 react-native-device-info@^0.9.3:
   version "0.9.9"
