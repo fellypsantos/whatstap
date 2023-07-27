@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Modal } from 'react-native';
-import CountryPicker from 'react-native-country-codes-picker';
+import { CountryPicker } from 'react-native-country-codes-picker';
 import { useCountries } from '../../hooks/countries';
 import { useSettings } from '../../hooks/settings';
 
@@ -100,7 +100,6 @@ const PhoneNumberInput: React.FC<IPhoneNumberProps> = props => {
           lang={settings.language}
           show={true}
           inputPlaceholder={Translate('searchCountryName')}
-          // when picker button press you will get the country object with dial code
           pickerButtonOnPress={item => {
             const country: ICountry = {
               code: item.code,
@@ -113,6 +112,24 @@ const PhoneNumberInput: React.FC<IPhoneNumberProps> = props => {
             handleCloseCountryPicker();
           }}
           onBackdropPress={() => handleCloseCountryPicker()}
+          style={{
+            modal: {
+              height: '75%',
+            },
+            textInput: {
+              height: 50,
+              borderRadius: 0,
+              color: '#333',
+            },
+            flag: {},
+            dialCode: {
+              color: '#333',
+              fontWeight: 'bold',
+            },
+            countryName: {
+              color: '#333',
+            },
+          }}
         />
       </Modal>
       <Container>
