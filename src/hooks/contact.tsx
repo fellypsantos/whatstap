@@ -50,26 +50,30 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
 
   const editContact = useCallback(
     async (contact: IContact): Promise<boolean> => {
-      try {
-        const { id, name, country, country_code, phone } = contact;
+      return new Promise((resolve, reject) => {
+        try {
+          const { id, name, country, country_code, phone } = contact;
 
-        const update = await DataBase.db.executeSql('UPDATE contacts SET country=?, country_code=?, phone=?, name=? WHERE id = ?', [country, country_code, phone, name, id]);
+          DataBase.db.transaction(tx => {
+            tx.executeSql('UPDATE contacts SET country=?, country_code=?, phone=?, name=? WHERE id = ?', [country, country_code, phone, name, id], (_, updateResult) => {
+              if (updateResult.rowsAffected === 1) {
+                const updatedList = contacts.map(item => {
+                  if (item.id === contact.id) return { ...contact };
+                  return item;
+                });
 
-        if (update) {
-          const updatedList = contacts.map(item => {
-            if (item.id === contact.id) return { ...contact };
-            return item;
+                setContacts(updatedList);
+                ToastAndroid.show(Translate('Toast.Contact.Updated'), ToastAndroid.LONG);
+                resolve(updateResult.rowsAffected > 0);
+              } else reject(Translate('Toast.Contact.FailedToUpdate'));
+            });
           });
-
-          setContacts(updatedList);
-          ToastAndroid.show(Translate('Toast.Contact.Updated'), ToastAndroid.LONG);
-          return update[0].rowsAffected > 0;
-        } else throw new Error(Translate('Toast.Contact.FailedToUpdate'));
-      } catch (err) {
-        const error = err as Error;
-        ToastAndroid.show(error.message, ToastAndroid.LONG);
-        return false;
-      }
+        } catch (err) {
+          const error = err as Error;
+          ToastAndroid.show(error.message, ToastAndroid.LONG);
+          return false;
+        }
+      });
     },
     [contacts, Translate],
   );
