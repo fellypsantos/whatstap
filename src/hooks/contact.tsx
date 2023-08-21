@@ -80,37 +80,41 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
 
   const removeContact = useCallback(
     async (contact: IContact): Promise<boolean> => {
-      const confirm = await AlertAsync(
-        Translate('Alerts.Warning'),
-        Translate('Confirm.Contact.Delete'),
-        [
-          { text: Translate('Confirm.Option.YesIWant'), onPress: () => true },
-          { text: Translate('Confirm.Option.No'), onPress: () => false },
-        ],
-        {
-          cancelable: true,
-          onDismiss: () => false,
-        },
-      );
+      return new Promise(async (resolve, reject) => {
+        const confirm = await AlertAsync(
+          Translate('Alerts.Warning'),
+          Translate('Confirm.Contact.Delete'),
+          [
+            { text: Translate('Confirm.Option.YesIWant'), onPress: () => true },
+            { text: Translate('Confirm.Option.No'), onPress: () => false },
+          ],
+          {
+            cancelable: true,
+            onDismiss: () => false,
+          },
+        );
 
-      if (!confirm) return false;
+        if (!confirm) return false;
 
-      try {
-        const deleteResult = await DataBase.db.executeSql('DELETE FROM contacts WHERE id = ?', [contact.id]);
+        try {
+          DataBase.db.transaction(tx => {
+            tx.executeSql('DELETE FROM contacts WHERE id = ?', [contact.id], (_, deleteResult) => {
+              if (deleteResult) {
+                const filtered = contacts.filter(item => item.id !== contact.id);
 
-        if (deleteResult) {
-          const filtered = contacts.filter(item => item.id !== contact.id);
+                setContacts(filtered);
+                ToastAndroid.show(Translate('Toast.Contact.Deleted'), ToastAndroid.LONG);
+                resolve(deleteResult.rowsAffected > 0);
+              } else reject(Translate('Toast.Contact.FailedToDelete'));
+            });
+          });
+        } catch (err) {
+          const error = err as Error;
+          ToastAndroid.show(error.message, ToastAndroid.LONG);
+        }
 
-          setContacts(filtered);
-          ToastAndroid.show(Translate('Toast.Contact.Deleted'), ToastAndroid.LONG);
-          return deleteResult[0].rowsAffected > 0;
-        } else throw new Error('Toast.Contact.FailedToDelete');
-      } catch (err) {
-        const error = err as Error;
-        ToastAndroid.show(error.message, ToastAndroid.LONG);
-      }
-
-      return false;
+        return false;
+      });
     },
     [contacts, Translate],
   );
