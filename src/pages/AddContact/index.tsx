@@ -1,11 +1,7 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import uuid from 'react-native-uuid';
-import {
-  TestIds,
-  InterstitialAd,
-  AdEventType,
-} from 'react-native-google-mobile-ads';
+import { TestIds, InterstitialAd, AdEventType } from 'react-native-google-mobile-ads';
 
 import { useContact } from '../../hooks/contact';
 import AppStructure from '../../components/AppStructure';
@@ -28,9 +24,7 @@ const AddContact: React.FC = () => {
   const [processing, setProcessing] = useState(false);
   const [adLoaded, setAdLoaded] = useState(false);
   const [adClosed, setAdClosed] = useState(false);
-  const [disabledPhoneMask, setDisabledPhoneMask] = useState(
-    () => settings.disabled_phone_mask,
-  );
+  const [disabledPhoneMask, setDisabledPhoneMask] = useState(() => settings.disabled_phone_mask);
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [openWhatsAppChecked, setOpenWhatsAppChecked] = useState(false);
   const wantShowAd = useMemo(() => GetRandomBoolean(), []);
@@ -50,11 +44,7 @@ const AddContact: React.FC = () => {
 
   const handleAddContact = useCallback(() => {
     if (contact.phone === '') {
-      Alert.alert(
-        Translate('Alerts.Attention'),
-        Translate('Alerts.Empty.PhoneNumber'),
-      );
-
+      Alert.alert(Translate('Alerts.Attention'), Translate('Alerts.Empty.PhoneNumber'));
       return;
     }
 
@@ -78,15 +68,7 @@ const AddContact: React.FC = () => {
       setProcessing(false);
       if (!adLoaded) navigation.goBack();
     }, 3000);
-  }, [
-    contact,
-    addContact,
-    openWhatsAppChecked,
-    navigation,
-    openWhatsApp,
-    adLoaded,
-    Translate,
-  ]);
+  }, [contact, addContact, openWhatsAppChecked, navigation, openWhatsApp, adLoaded, Translate]);
 
   const handleChangeDisablePhoneMask = useCallback(
     (isChecked: boolean) => {
@@ -109,15 +91,9 @@ const AddContact: React.FC = () => {
   }, [contact]);
 
   useEffect(() => {
-    const unsubscribeLoaded = interstitial.addAdEventListener(
-      AdEventType.LOADED,
-      () => setAdLoaded(true),
-    );
+    const unsubscribeLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => setAdLoaded(true));
 
-    const unsubscribeClose = interstitial.addAdEventListener(
-      AdEventType.CLOSED,
-      () => setAdClosed(true),
-    );
+    const unsubscribeClose = interstitial.addAdEventListener(AdEventType.CLOSED, () => setAdClosed(true));
 
     if (!adLoaded && wantShowAd) {
       interstitial.load();
@@ -138,14 +114,7 @@ const AddContact: React.FC = () => {
       if (openWhatsAppChecked) openWhatsApp(contact.phone);
       navigation.goBack();
     }
-  }, [
-    adLoaded,
-    adClosed,
-    contact.phone,
-    openWhatsApp,
-    navigation,
-    openWhatsAppChecked,
-  ]);
+  }, [adLoaded, adClosed, contact.phone, openWhatsApp, navigation, openWhatsAppChecked]);
 
   return (
     <AppStructure
@@ -179,16 +148,10 @@ const AddContact: React.FC = () => {
                   last_country_name: country.name,
                 });
               }}
-              onChangePhoneNumber={text =>
-                setContact({ ...contact, phone: text.replace(/\D+/g, '') })
-              }
+              onChangePhoneNumber={text => setContact({ ...contact, phone: text.replace(/\D+/g, '') })}
             />
 
-            <CheckboxField
-              isChecked={disabledPhoneMask}
-              text={Translate('disablePhoneMask')}
-              onPress={isChecked => handleChangeDisablePhoneMask(isChecked)}
-            />
+            <CheckboxField isChecked={disabledPhoneMask} text={Translate('disablePhoneMask')} onPress={isChecked => handleChangeDisablePhoneMask(isChecked)} />
 
             <TextField
               editable={!processing}
@@ -199,27 +162,15 @@ const AddContact: React.FC = () => {
               onChangeText={text => setContact({ ...contact, name: text })}
             />
 
-            <CheckboxField
-              isChecked={openWhatsAppChecked}
-              text={Translate('startChatOnSave')}
-              onPress={isChecked => setOpenWhatsAppChecked(isChecked)}
-            />
+            <CheckboxField isChecked={openWhatsAppChecked} text={Translate('startChatOnSave')} onPress={isChecked => setOpenWhatsAppChecked(isChecked)} />
 
             {processing ? (
               <ActivityIndicator size={25} color="#5467fb" />
             ) : (
               <>
-                <ButtonContainer
-                  text={Translate('saveContact')}
-                  type="default"
-                  onPress={handleAddContact}
-                />
+                <ButtonContainer text={Translate('saveContact')} type="default" onPress={handleAddContact} />
 
-                <ButtonContainer
-                  text={Translate('cancel')}
-                  type="cancel"
-                  onPress={() => navigation.goBack()}
-                />
+                <ButtonContainer text={Translate('cancel')} type="cancel" onPress={() => navigation.goBack()} />
               </>
             )}
           </>
