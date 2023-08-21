@@ -2,11 +2,7 @@ import React, { useEffect, useRef, useCallback } from 'react';
 import { StatusBar, AppState } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-import mobileAds, {
-  AppOpenAd,
-  AdEventType,
-  TestIds,
-} from 'react-native-google-mobile-ads';
+import mobileAds, { AppOpenAd, AdEventType, TestIds } from 'react-native-google-mobile-ads';
 
 import SpInAppUpdates, { IAUUpdateKind } from 'sp-react-native-in-app-updates';
 import VersionInfo from 'react-native-version-info';
@@ -43,10 +39,7 @@ appOpenAd.load();
 
 mobileAds()
   .initialize()
-  .then(
-    adapterStatuses =>
-      __DEV__ && console.log('mobileAds status', adapterStatuses),
-  );
+  .then(adapterStatuses => __DEV__ && console.log('mobileAds status', adapterStatuses));
 
 const App: React.FC = () => {
   const AppTheme = {
@@ -65,19 +58,17 @@ const App: React.FC = () => {
       __DEV__, // isDebug
     );
 
-    inAppUpdates
-      .checkNeedsUpdate({ curVersion: VersionInfo.appVersion })
-      .then(result => {
-        if (result.shouldUpdate) {
-          let updateOptions = {};
+    inAppUpdates.checkNeedsUpdate({ curVersion: VersionInfo.appVersion }).then(result => {
+      if (result.shouldUpdate) {
+        let updateOptions = {};
 
-          updateOptions = {
-            updateType: IAUUpdateKind.FLEXIBLE,
-          };
+        updateOptions = {
+          updateType: IAUUpdateKind.FLEXIBLE,
+        };
 
-          inAppUpdates.startUpdate(updateOptions); // https://github.com/SudoPlz/sp-react-native-in-app-updates/blob/master/src/types.ts#L78
-        }
-      });
+        inAppUpdates.startUpdate(updateOptions); // https://github.com/SudoPlz/sp-react-native-in-app-updates/blob/master/src/types.ts#L78
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -86,26 +77,16 @@ const App: React.FC = () => {
   }, [checkAppUpdates]);
 
   useEffect(() => {
-    const unsubscribeClosed = appOpenAd.addAdEventListener(
-      AdEventType.CLOSED,
-      () => appOpenAd.load(),
-    );
+    const unsubscribeClosed = appOpenAd.addAdEventListener(AdEventType.CLOSED, () => appOpenAd.load());
 
-    const unsubscrubeAppState = AppState.addEventListener(
-      'change',
-      nextAppState => {
-        if (
-          appState.current.match(/inactive|background/) &&
-          nextAppState === 'active' &&
-          appOpenAd.loaded
-        ) {
-          const shouldDisplayAd = GetRandomBoolean();
-          if (shouldDisplayAd) appOpenAd.show();
-        }
+    const unsubscrubeAppState = AppState.addEventListener('change', nextAppState => {
+      if (appState.current.match(/inactive|background/) && nextAppState === 'active' && appOpenAd.loaded) {
+        const shouldDisplayAd = GetRandomBoolean();
+        if (shouldDisplayAd) appOpenAd.show();
+      }
 
-        appState.current = nextAppState;
-      },
-    );
+      appState.current = nextAppState;
+    });
 
     return () => {
       unsubscribeClosed();
