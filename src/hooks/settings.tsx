@@ -1,14 +1,7 @@
 import i18next from 'i18next';
-import React, {
-  createContext,
-  useContext,
-  useMemo,
-  useEffect,
-  useCallback,
-  useState,
-} from 'react';
+import React, { createContext, useContext, useMemo, useEffect, useCallback, useState } from 'react';
 import { getSupportedLocale } from '../utils/device';
-import { useDatabase } from './database';
+import DataBase from '../databases';
 
 interface ISettings {
   language: string;
@@ -46,71 +39,56 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
   );
 
   const [settings, setSettings] = useState<ISettings>({ ...defaultSettings });
-  const { dbConnection } = useDatabase();
 
   const clearDatabaseSettings = useCallback(async () => {
     if (__DEV__) console.log('DATABASE: SETTINGS CLEARED');
-    await dbConnection?.executeSql('DELETE FROM settings');
-  }, [dbConnection]);
+    await DataBase.db.executeSql('DELETE FROM settings');
+  }, []);
 
-  const updateSettings = useCallback(
-    async (newSettings: ISettings) => {
-      const {
-        language,
-        last_country_code,
-        last_country_name,
-        last_country_iso,
-        disabled_phone_mask,
-      } = newSettings;
+  const updateSettings = useCallback(async (newSettings: ISettings) => {
+    const { language, last_country_code, last_country_name, last_country_iso, disabled_phone_mask } = newSettings;
 
-      setSettings({
-        language,
-        last_country_code,
-        last_country_name,
-        last_country_iso,
-        disabled_phone_mask,
-      });
+    setSettings({
+      language,
+      last_country_code,
+      last_country_name,
+      last_country_iso,
+      disabled_phone_mask,
+    });
 
-      const result = await dbConnection?.executeSql(
-        'UPDATE settings SET language=?, last_country_code=?, last_country_name=?, last_country_iso=?, disabled_phone_mask=?',
-        [
-          language,
-          last_country_code,
-          last_country_name,
-          last_country_iso,
-          disabled_phone_mask,
-        ],
-      );
+    const result = await DataBase.db.executeSql('UPDATE settings SET language=?, last_country_code=?, last_country_name=?, last_country_iso=?, disabled_phone_mask=?', [
+      language,
+      last_country_code,
+      last_country_name,
+      last_country_iso,
+      disabled_phone_mask,
+    ]);
 
-      if (result?.[0].rowsAffected !== 1)
-        console.log('Failed to update DB', result?.[0].rowsAffected);
-    },
-    [dbConnection],
-  );
+    console.log('upate settings result', result);
+
+    if (result?.[0].rowsAffected !== 1) console.log('Failed to update DB', result?.[0].rowsAffected);
+  }, []);
 
   const loadDatabaseSettings = useCallback(async () => {
-    const result = await dbConnection?.executeSql('SELECT * FROM settings');
+    const result = await DataBase.db.executeSql('SELECT * FROM settings');
     const dbSettings: ISettings = result?.[0].rows.raw()[0];
 
     if (!dbSettings) {
       if (__DEV__) console.log('using default settings');
 
-      await dbConnection?.executeSql(
-        'INSERT INTO settings (language, last_country_code, last_country_iso, disabled_phone_mask) VALUES(?,?,?,?)',
-        [
-          defaultSettings.language,
-          defaultSettings.last_country_code,
-          defaultSettings.last_country_iso,
-          defaultSettings.disabled_phone_mask,
-        ],
-      );
+      await DataBase.db.executeSql('INSERT INTO settings (language, last_country_code, last_country_iso, disabled_phone_mask) VALUES(?,?,?,?)', [
+        defaultSettings.language,
+        defaultSettings.last_country_code,
+        defaultSettings.last_country_iso,
+        defaultSettings.disabled_phone_mask,
+      ]);
     } else {
       if (__DEV__) console.log('using database settings');
       setSettings(dbSettings);
     }
 
     setLoaded(true);
-  }, [dbConnection, defaultSettings]);
+  }, [defaultSettings]);
 
   useEffect(() => {
     async function loadSettings() {
@@ -119,27 +97,15 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
     }
 
     if (!loaded) loadSettings();
-  }, [
-    loaded,
-    loadDatabaseSettings,
-    clearDatabaseSettings,
-    clearDatabaseSettingsOnStart,
-  ]);
+  }, [loaded, loadDatabaseSettings, clearDatabaseSettings, clearDatabaseSettingsOnStart]);
 
   useEffect(() => {
     i18next.changeLanguage(settings.language);
   }, [settings.language]);
 
-  const value = useMemo(
-    () => ({ loaded, settings, updateSettings }),
-    [loaded, settings, updateSettings],
-  );
+  const value = useMemo(() => ({ loaded, settings, updateSettings }), [loaded, settings, updateSettings]);
 
-  return (
-    <SettingsContext.Provider value={value}>
-      {children}
-    </SettingsContext.Provider>
-  );
+  return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
 };
 
 const useSettings = (): SettingsContext => {
