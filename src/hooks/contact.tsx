@@ -65,13 +65,13 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
                 setContacts(updatedList);
                 ToastAndroid.show(Translate('Toast.Contact.Updated'), ToastAndroid.LONG);
                 resolve(updateResult.rowsAffected > 0);
-              } else reject(Translate('Toast.Contact.FailedToUpdate'));
+              } else throw new Error(Translate('Toast.Contact.FailedToUpdate'));
             });
           });
         } catch (err) {
           const error = err as Error;
           ToastAndroid.show(error.message, ToastAndroid.LONG);
-          return false;
+          reject(error.message);
         }
       });
     },
@@ -105,12 +105,13 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
                 setContacts(filtered);
                 ToastAndroid.show(Translate('Toast.Contact.Deleted'), ToastAndroid.LONG);
                 resolve(deleteResult.rowsAffected > 0);
-              } else reject(Translate('Toast.Contact.FailedToDelete'));
+              } else throw new Error(Translate('Toast.Contact.FailedToDelete'));
             });
           });
         } catch (err) {
           const error = err as Error;
           ToastAndroid.show(error.message, ToastAndroid.LONG);
+          reject(error.message);
         }
 
         return false;
@@ -120,35 +121,41 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
   );
 
   const clearContacts = useCallback(async () => {
-    try {
-      const confirm = await AlertAsync(
-        Translate('Alerts.DangerousAction'),
-        Translate('Confirm.Contact.ClearAll'),
-        [
+    return new Promise(async (resolve, reject) => {
+      try {
+        const confirm = await AlertAsync(
+          Translate('Alerts.DangerousAction'),
+          Translate('Confirm.Contact.ClearAll'),
+          [
+            {
+              text: Translate('Confirm.Option.YesClearHistory'),
+              onPress: () => true,
+            },
+            { text: Translate('Confirm.Option.No'), onPress: () => false },
+          ],
           {
-            text: Translate('Confirm.Option.YesClearHistory'),
-            onPress: () => true,
+            cancelable: true,
+            onDismiss: () => false,
           },
-          { text: Translate('Confirm.Option.No'), onPress: () => false },
-        ],
-        {
-          cancelable: true,
-          onDismiss: () => false,
-        },
-      );
+        );
 
-      if (!confirm) return false;
+        if (!confirm) return false;
 
-      const result = await DataBase.db.executeSql('DELETE FROM contacts');
-
-      if (result) {
-        setContacts([]);
-        ToastAndroid.show(Translate('Toast.Contact.HistoryCleared'), ToastAndroid.LONG);
-      } else throw new Error(Translate('Toast.Contact.FailedToClearAll'));
-    } catch (err) {
-      const error = err as Error;
-      ToastAndroid.show(error.message, ToastAndroid.LONG);
-    }
+        DataBase.db.transaction(tx => {
+          tx.executeSql('DELETE FROM contacts', [], (_, result) => {
+            if (result.rowsAffected > 0) {
+              setContacts([]);
+              ToastAndroid.show(Translate('Toast.Contact.HistoryCleared'), ToastAndroid.LONG);
+              resolve(true);
+            } else throw new Error(Translate('Toast.Contact.FailedToClearAll'));
+          });
+        });
+      } catch (err) {
+        const error = err as Error;
+        ToastAndroid.show(error.message, ToastAndroid.LONG);
+        reject(error.message);
+      }
+    });
   }, [Translate]);
 
   const openWhatsApp = useCallback(
