@@ -1,17 +1,17 @@
 import React from 'react';
 
 import { ContactProvider } from './contact';
-import { DatabaseProvider } from './database';
 import { TranslationProvider } from './translation';
 import { SettingsProvider } from './settings';
 import { CountriesProvider } from './countries';
+import DataBaseInit from '../databases/DataBaseInit';
 
 interface AppProviderProps {
   children: React.ReactElement;
 }
 
 const AppProvider: React.FC<AppProviderProps> = ({ children }) => (
-  <DatabaseProvider>
+  <DataBaseInit>
     <TranslationProvider>
       <SettingsProvider>
         <CountriesProvider>
@@ -19,7 +19,7 @@ const AppProvider: React.FC<AppProviderProps> = ({ children }) => (
         </CountriesProvider>
       </SettingsProvider>
     </TranslationProvider>
-  </DatabaseProvider>
+  </DataBaseInit>
 );
 
 export default AppProvider;
