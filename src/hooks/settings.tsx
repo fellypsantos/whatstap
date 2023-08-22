@@ -41,8 +41,13 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
   const [settings, setSettings] = useState<ISettings>({ ...defaultSettings });
 
   const clearDatabaseSettings = useCallback(async () => {
-    if (__DEV__) console.log('DATABASE: SETTINGS CLEARED');
-    await DataBase.db.executeSql('DELETE FROM settings');
+    DataBase.db.transaction(tx => {
+      tx.executeSql('DELETE FROM settings', [], (_, result) => {
+        if (__DEV__ && result.rowsAffected > 0) {
+          console.log('DATABASE: SETTINGS CLEARED');
+        }
+      });
+    });
   }, []);
 
   const updateSettings = useCallback(async (newSettings: ISettings) => {
@@ -56,38 +61,40 @@ const SettingsProvider: React.FC<Props> = ({ children }) => {
       disabled_phone_mask,
     });
 
-    const result = await DataBase.db.executeSql('UPDATE settings SET language=?, last_country_code=?, last_country_name=?, last_country_iso=?, disabled_phone_mask=?', [
-      language,
-      last_country_code,
-      last_country_name,
-      last_country_iso,
-      disabled_phone_mask,
-    ]);
-
-    console.log('upate settings result', result);
-
-    if (result?.[0].rowsAffected !== 1) console.log('Failed to update DB', result?.[0].rowsAffected);
+    DataBase.db.transaction(tx => {
+      tx.executeSql(
+        'UPDATE settings SET language=?, last_country_code=?, last_country_name=?, last_country_iso=?, disabled_phone_mask=?',
+        [language, last_country_code, last_country_name, last_country_iso, disabled_phone_mask],
+        (_, result) => {
+          if (__DEV__) console.log('upate settings result', result);
+          if (result.rowsAffected !== 1) console.log('Failed to update DB', result.rowsAffected);
+        },
+      );
+    });
   }, []);
 
   const loadDatabaseSettings = useCallback(async () => {
-    const result = await DataBase.db.executeSql('SELECT * FROM settings');
-    const dbSettings: ISettings = result?.[0].rows.raw()[0];
+    DataBase.db.transaction(tx => {
+      tx.executeSql('SELECT * FROM settings', [], (_, result) => {
+        const dbSettings: ISettings = result.rows.raw()[0];
 
-    if (!dbSettings) {
-      if (__DEV__) console.log('using default settings');
+        if (!dbSettings) {
+          if (__DEV__) console.log('using default settings');
 
-      await DataBase.db.executeSql('INSERT INTO settings (language, last_country_code, last_country_iso, disabled_phone_mask) VALUES(?,?,?,?)', [
-        defaultSettings.language,
-        defaultSettings.last_country_code,
-        defaultSettings.last_country_iso,
-        defaultSettings.disabled_phone_mask,
-      ]);
-    } else {
-      if (__DEV__) console.log('using database settings');
-      setSettings(dbSettings);
-    }
+          tx.executeSql('INSERT INTO settings (language, last_country_code, last_country_iso, disabled_phone_mask) VALUES(?,?,?,?)', [
+            defaultSettings.language,
+            defaultSettings.last_country_code,
+            defaultSettings.last_country_iso,
+            defaultSettings.disabled_phone_mask,
+          ]);
+        } else {
+          if (__DEV__) console.log('using database settings');
+          setSettings(dbSettings);
+        }
 
-    setLoaded(true);
+        setLoaded(true);
+      });
+    });
   }, [defaultSettings]);
 
   useEffect(() => {
