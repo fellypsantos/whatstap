@@ -22,11 +22,7 @@ import {
   Divider,
 } from './styles';
 import { format } from 'date-fns';
-import {
-  ptBR as ptBR_DateTime,
-  enUS as enUS_DateTime,
-  es as es_DateTime,
-} from 'date-fns/locale';
+import { ptBR as ptBR_DateTime, enUS as enUS_DateTime, es as es_DateTime } from 'date-fns/locale';
 import { ActivityIndicator, FlatList } from 'react-native';
 
 import IContact from '../../interfaces/IContact';
@@ -35,24 +31,17 @@ import { useAppTranslation } from '../../hooks/translation';
 const Home: React.FC = () => {
   const { Translate, selectedLanguage } = useAppTranslation();
   const navigation = useNavigation<StackNavigationProps>();
-  const { contacts, loading, openWhatsApp, removeContact, clearContacts } =
-    useContact();
+  const { contacts, loading, openWhatsApp, removeContact, clearContacts } = useContact();
 
   const dropdown = useMemo(
     () => ({
       indexes: { EDIT: 0, DELETE: 1 },
-      options: [
-        { title: Translate('Dropdown.Edit') },
-        { title: Translate('Dropdown.Delete') },
-      ],
+      options: [{ title: Translate('Dropdown.Edit') }, { title: Translate('Dropdown.Delete') }],
     }),
     [Translate],
   );
 
-  const formattedPhoneNumber = useCallback(
-    (contact: IContact) => `${contact.country_code}${contact.phone}`,
-    [],
-  );
+  const formattedPhoneNumber = useCallback((contact: IContact) => `${contact.country_code}${contact.phone}`, []);
 
   const parseI18NextLocale = useCallback(() => {
     if (selectedLanguage === 'pt') return ptBR_DateTime;
@@ -62,8 +51,7 @@ const Home: React.FC = () => {
 
   const handlePressMenuItem = useCallback(
     (contact: IContact, optionIndex: number) => {
-      if (optionIndex === dropdown.indexes.EDIT)
-        navigation.navigate('EditContact', { contact: contact });
+      if (optionIndex === dropdown.indexes.EDIT) navigation.navigate('EditContact', { contact: contact });
       else if (optionIndex === dropdown.indexes.DELETE) removeContact(contact);
     },
     [removeContact, dropdown.indexes, navigation],
@@ -73,12 +61,7 @@ const Home: React.FC = () => {
     <ContactCard key={item.id}>
       <ContactCardHeader>
         <ContactNumber>{formattedPhoneNumber(item)}</ContactNumber>
-        <ContactMenuButton
-          dropdownMenuMode
-          actions={dropdown.options}
-          onPress={({ nativeEvent }) =>
-            handlePressMenuItem(item, nativeEvent.index)
-          }>
+        <ContactMenuButton dropdownMenuMode actions={dropdown.options} onPress={({ nativeEvent }) => handlePressMenuItem(item, nativeEvent.index)}>
           <ContactMenuButtonIcon name="ellipsis-v" color="#aaa" size={14} />
         </ContactMenuButton>
       </ContactCardHeader>
@@ -99,13 +82,8 @@ const Home: React.FC = () => {
           })}
         </ContactDateTime>
 
-        <ContactMenuWhatsAppButton
-          onPress={() => openWhatsApp(formattedPhoneNumber(item))}>
-          <ContactMenuWhatsAppButtonIcon
-            name="whatsapp"
-            color="#fff"
-            size={14}
-          />
+        <ContactMenuWhatsAppButton onPress={() => openWhatsApp(formattedPhoneNumber(item))}>
+          <ContactMenuWhatsAppButtonIcon name="whatsapp" color="#fff" size={14} />
         </ContactMenuWhatsAppButton>
       </ContactFooter>
     </ContactCard>
@@ -128,11 +106,7 @@ const Home: React.FC = () => {
             <ContactNumber>{Translate('noContactsYet')}</ContactNumber>
           </ContactCard>
         ) : (
-          <FlatList
-            data={contacts}
-            keyExtractor={item => item.id}
-            renderItem={renderItem}
-          />
+          <FlatList data={contacts} keyExtractor={item => item.id} renderItem={renderItem} />
         )}
       </>
     </AppStructure>
