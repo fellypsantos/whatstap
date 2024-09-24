@@ -72,8 +72,10 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    checkAppUpdates();
-    setInterval(checkAppUpdates, CHECK_UPDATE_INTERVAL_IN_MS);
+    if (!__DEV__) {
+      checkAppUpdates();
+      setInterval(checkAppUpdates, CHECK_UPDATE_INTERVAL_IN_MS);
+    }
   }, [checkAppUpdates]);
 
   useEffect(() => {
