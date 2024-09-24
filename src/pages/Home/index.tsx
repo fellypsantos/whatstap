@@ -84,7 +84,7 @@ const Home: React.FC = () => {
         {loading ? (
           <ActivityIndicator />
         ) : contacts.length === 0 ? (
-          <ContactCard useGrayedLeftBorder>
+          <ContactCard>
             <NoContactsLabel>{Translate('noContactsYet')}</NoContactsLabel>
           </ContactCard>
         ) : (
