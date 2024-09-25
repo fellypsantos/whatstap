@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
 
 import { StackNavigationProps } from '../../routes/Stack';
@@ -24,11 +24,16 @@ import { ActivityIndicator, FlatList } from 'react-native';
 import IContact from '../../interfaces/IContact';
 import { useAppTranslation } from '../../hooks/translation';
 import ButtonComponent from '../../components/Button';
+import SearchInput from '../../components/SearchInput';
+import { isNumeric } from '../../utils/helper';
 
 const Home: React.FC = () => {
   const { Translate } = useAppTranslation();
-  const navigation = useNavigation<StackNavigationProps>();
   const { contacts, loading, openWhatsApp, removeContact, clearContacts } = useContact();
+
+  const [searchContent, setSearchContent] = useState<string>('');
+
+  const navigation = useNavigation<StackNavigationProps>();
 
   const dropdown = useMemo(
     () => ({
@@ -48,24 +53,50 @@ const Home: React.FC = () => {
     [removeContact, dropdown.indexes, navigation],
   );
 
-  const renderItem = ({ item }: { item: IContact }) => (
-    <ContactCard key={item.id}>
-      <ContactCardRow>
-        <ContactCardTouchable onPress={() => openWhatsApp(formattedPhoneNumber(item))}>
-          <ContactName>{item.name || Translate('unamedContact')}</ContactName>
+  const handleFilterSearchContacts = useCallback(
+    (contact: IContact) => {
+      if (searchContent === '') return contact;
 
-          <ContactLocationContainer>
-            <ContactLocationIcon name="phone-alt" color="#5467FB" size={14} />
-            <ContactLocationName>{formattedPhoneNumber(item)}</ContactLocationName>
-          </ContactLocationContainer>
-        </ContactCardTouchable>
+      if (isNumeric(searchContent)) {
+        // search in phone number
+        if (contact.phone.includes(searchContent)) {
+          return contact;
+        }
+      }
 
-        <ContactMenuButton dropdownMenuMode actions={dropdown.options} onPress={({ nativeEvent }) => handlePressMenuItem(item, nativeEvent.index)}>
-          <ContactMenuButtonIcon name="ellipsis-v" color="#aaa" size={14} />
-        </ContactMenuButton>
-      </ContactCardRow>
-    </ContactCard>
+      // search in contact name
+      if (contact.name.includes(searchContent)) {
+        return contact;
+      }
+    },
+    [searchContent],
   );
+
+  const renderItem = useCallback(
+    ({ item }: { item: IContact }) => (
+      <ContactCard key={item.id}>
+        <ContactCardRow>
+          <ContactCardTouchable onPress={() => openWhatsApp(formattedPhoneNumber(item))}>
+            <ContactName>{item.name || Translate('unamedContact')}</ContactName>
+
+            <ContactLocationContainer>
+              <ContactLocationIcon name="phone-alt" color="#5467FB" size={14} />
+              <ContactLocationName>{formattedPhoneNumber(item)}</ContactLocationName>
+            </ContactLocationContainer>
+          </ContactCardTouchable>
+
+          <ContactMenuButton dropdownMenuMode actions={dropdown.options} onPress={({ nativeEvent }) => handlePressMenuItem(item, nativeEvent.index)}>
+            <ContactMenuButtonIcon name="ellipsis-v" color="#aaa" size={14} />
+          </ContactMenuButton>
+        </ContactCardRow>
+      </ContactCard>
+    ),
+    [Translate, dropdown.options, formattedPhoneNumber, handlePressMenuItem, openWhatsApp],
+  );
+
+  const contactListToRender = useMemo(() => {
+    return contacts.filter(handleFilterSearchContacts);
+  }, [contacts, handleFilterSearchContacts]);
 
   return (
     <AppStructure sectionName={Translate('contactHistory')} sectionMenuText={contacts.length > 0 ? Translate('clearContacts') : ''} sectionMenuOnPress={() => clearContacts()}>
@@ -90,7 +121,15 @@ const Home: React.FC = () => {
 
         {contacts.length > 0 && (
           <React.Fragment>
-            <FlatList data={contacts} keyExtractor={item => item.id} renderItem={renderItem} />
+            <SearchInput onSearchContentChange={setSearchContent} />
+
+            {contactListToRender.length === 0 && (
+              <ContactCard>
+                <NoContactsLabel>{Translate('noContactsFound')}</NoContactsLabel>
+              </ContactCard>
+            )}
+
+            <FlatList data={contactListToRender} keyExtractor={item => item.id} renderItem={renderItem} />
 
             <ButtonBottomContainer>
               <ButtonComponent
