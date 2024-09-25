@@ -3,39 +3,18 @@ import React, { ReactElement } from 'react';
 import AppMargin from '../AppMargin';
 import HeaderBar from '../HeaderBar';
 
-import {
-  Container,
-  SectionContainer,
-  SectionName,
-  SectionOption,
-  SectionOptionText,
-} from './styles';
-
-interface HeaderMenu {
-  icon: string;
-  onPress(): void;
-}
+import { Container, SectionContainer, SectionName, SectionOption, SectionOptionText } from './styles';
 
 interface AppStructureProps {
   children: ReactElement;
-  headerMenuOptions: HeaderMenu;
   sectionName: string;
   sectionMenuText?: string;
   sectionMenuOnPress?(): void;
 }
 
-const AppStructure: React.FC<AppStructureProps> = ({
-  children,
-  headerMenuOptions,
-  sectionName,
-  sectionMenuText,
-  sectionMenuOnPress,
-}) => (
+const AppStructure: React.FC<AppStructureProps> = ({ children, sectionName, sectionMenuText, sectionMenuOnPress }) => (
   <>
-    <HeaderBar
-      iconName={headerMenuOptions.icon}
-      onPress={headerMenuOptions.onPress}
-    />
+    <HeaderBar />
 
     <Container>
       <AppMargin>

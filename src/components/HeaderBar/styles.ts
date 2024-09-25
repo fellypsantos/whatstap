@@ -1,25 +1,14 @@
 import styled from 'styled-components/native';
+import ContextMenu from 'react-native-context-menu-view';
 
 export const Container = styled.View`
   flex-direction: row;
   background-color: #5467fb;
-  padding: 20px 20px 20px;
+  padding: 20px 0px 20px 20px;
 `;
 
 export const HeaderTextContainer = styled.View`
   flex: 1;
-`;
-
-export const HeaderHamburgerMenuContainer = styled.TouchableOpacity`
-  justify-content: center;
-  width: 40px;
-  height: 35px;
-  margin-bottom: 10px;
-`;
-
-export const HeaderButtonContainer = styled.TouchableOpacity`
-  justify-content: flex-end;
-  padding: 0px 0px 0px 15px;
 `;
 
 export const AppName = styled.Text`
@@ -45,4 +34,10 @@ export const SettingsLabel = styled.Text`
   font-family: 'Ubuntu-R';
   font-size: 20px;
   margin-bottom: 15px;
+`;
+
+export const ActionBarMenuButton = styled(ContextMenu)`
+  padding: 0px 15px;
+  justify-content: center;
+  align-items: center;
 `;

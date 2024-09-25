@@ -53,3 +53,11 @@ export const NoContactsLabel = styled.Text`
   font-size: 14px;
   margin: 10px 20px;
 `;
+
+export const ContainerWithMargin = styled.View`
+  margin: 10px 20px;
+`;
+
+export const ButtonBottomContainer = styled.View`
+  margin: 10px 10px 0px 10px;
+`;

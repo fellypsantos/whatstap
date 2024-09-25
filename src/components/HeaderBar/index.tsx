@@ -7,27 +7,12 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useSettings } from '../../hooks/settings';
 import { useAppTranslation } from '../../hooks/translation';
 
-import {
-  Container,
-  AppName,
-  AppDescription,
-  HeaderTextContainer,
-  HeaderButtonContainer,
-  HeaderHamburgerMenuContainer,
-  SettingsContainer,
-  SettingsLabel,
-} from './styles';
+import { Container, AppName, AppDescription, HeaderTextContainer, SettingsContainer, SettingsLabel, ActionBarMenuButton } from './styles';
 
 import CheckboxGroupField from '../CheckboxGroupField';
 import ButtonComponent from '../Button';
 
-interface HeaderBarProps {
-  iconName: string;
-  onPress(): void;
-}
-
-const HeaderBar: React.FC<HeaderBarProps> = props => {
-  const { iconName, onPress } = props;
+const HeaderBar: React.FC = () => {
   const { Translate } = useAppTranslation();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -63,13 +48,26 @@ const HeaderBar: React.FC<HeaderBarProps> = props => {
     else return 'en';
   }, []);
 
+  const dropdown = useMemo(
+    () => ({
+      indexes: { LANGUAGE: 0 },
+      options: [{ title: Translate('Settings.AppLanguage') }],
+    }),
+    [Translate],
+  );
+
+  const handlePressActionBarMenu = useCallback(
+    (optionIndex: number) => {
+      if (optionIndex === dropdown.indexes.LANGUAGE) {
+        setModalOpen(true);
+      }
+    },
+    [dropdown.indexes.LANGUAGE],
+  );
+
   return (
     <>
-      <Modal
-        visible={modalOpen}
-        animationType="slide"
-        onDismiss={() => setModalOpen(false)}
-        onRequestClose={() => setModalOpen(false)}>
+      <Modal visible={modalOpen} animationType="slide" onDismiss={() => setModalOpen(false)} onRequestClose={() => setModalOpen(false)}>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <SettingsContainer>
             <SettingsLabel>{Translate('Settings.AppLanguage')}</SettingsLabel>
@@ -83,26 +81,19 @@ const HeaderBar: React.FC<HeaderBarProps> = props => {
               }}
             />
 
-            <ButtonComponent
-              text={Translate('close')}
-              onPress={() => setModalOpen(false)}
-              type="default"
-            />
+            <ButtonComponent text={Translate('close')} onPress={() => setModalOpen(false)} type="default" />
           </SettingsContainer>
         </GestureHandlerRootView>
       </Modal>
       <Container>
         <HeaderTextContainer>
-          <HeaderHamburgerMenuContainer onPress={() => setModalOpen(true)}>
-            <Icon name={'bars'} size={28} color="#fff" />
-          </HeaderHamburgerMenuContainer>
           <AppName>WhatsTap</AppName>
           <AppDescription>{Translate('appDescription')}</AppDescription>
         </HeaderTextContainer>
 
-        <HeaderButtonContainer onPress={onPress}>
-          <Icon name={iconName} size={28} color="#fff" />
-        </HeaderButtonContainer>
+        <ActionBarMenuButton dropdownMenuMode actions={dropdown.options} onPress={({ nativeEvent }) => handlePressActionBarMenu(nativeEvent.index)}>
+          <Icon name="ellipsis-v" color="#fff" size={16} />
+        </ActionBarMenuButton>
       </Container>
     </>
   );

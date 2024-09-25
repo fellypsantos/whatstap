@@ -16,15 +16,17 @@ import {
   ContactMenuButtonIcon,
   ContactName,
   NoContactsLabel,
+  ContainerWithMargin,
+  ButtonBottomContainer,
 } from './styles';
-import { ptBR as ptBR_DateTime, enUS as enUS_DateTime, es as es_DateTime } from 'date-fns/locale';
 import { ActivityIndicator, FlatList } from 'react-native';
 
 import IContact from '../../interfaces/IContact';
 import { useAppTranslation } from '../../hooks/translation';
+import ButtonComponent from '../../components/Button';
 
 const Home: React.FC = () => {
-  const { Translate, selectedLanguage } = useAppTranslation();
+  const { Translate } = useAppTranslation();
   const navigation = useNavigation<StackNavigationProps>();
   const { contacts, loading, openWhatsApp, removeContact, clearContacts } = useContact();
 
@@ -37,12 +39,6 @@ const Home: React.FC = () => {
   );
 
   const formattedPhoneNumber = useCallback((contact: IContact) => `${contact.country_code}${contact.phone}`, []);
-
-  const parseI18NextLocale = useCallback(() => {
-    if (selectedLanguage === 'pt') return ptBR_DateTime;
-    else if (selectedLanguage === 'es') return es_DateTime;
-    else return enUS_DateTime;
-  }, [selectedLanguage]);
 
   const handlePressMenuItem = useCallback(
     (contact: IContact, optionIndex: number) => {
@@ -72,25 +68,42 @@ const Home: React.FC = () => {
   );
 
   return (
-    <AppStructure
-      sectionName={Translate('contactHistory')}
-      sectionMenuText={contacts.length > 0 ? Translate('clearContacts') : ''}
-      sectionMenuOnPress={() => clearContacts()}
-      headerMenuOptions={{
-        icon: 'plus-circle',
-        onPress: () => navigation.navigate('AddContact'),
-      }}>
-      <>
-        {loading ? (
-          <ActivityIndicator />
-        ) : contacts.length === 0 ? (
+    <AppStructure sectionName={Translate('contactHistory')} sectionMenuText={contacts.length > 0 ? Translate('clearContacts') : ''} sectionMenuOnPress={() => clearContacts()}>
+      <React.Fragment>
+        {loading && <ActivityIndicator />}
+
+        {contacts.length === 0 && (
           <ContactCard>
             <NoContactsLabel>{Translate('noContactsYet')}</NoContactsLabel>
+
+            <ContainerWithMargin>
+              <ButtonComponent
+                text={Translate('addContact')}
+                type="default"
+                onPress={() => {
+                  navigation.navigate('AddContact');
+                }}
+              />
+            </ContainerWithMargin>
           </ContactCard>
-        ) : (
-          <FlatList data={contacts} keyExtractor={item => item.id} renderItem={renderItem} />
         )}
-      </>
+
+        {contacts.length > 0 && (
+          <React.Fragment>
+            <FlatList data={contacts} keyExtractor={item => item.id} renderItem={renderItem} />
+
+            <ButtonBottomContainer>
+              <ButtonComponent
+                text={Translate('addContact')}
+                type="default"
+                onPress={() => {
+                  navigation.navigate('AddContact');
+                }}
+              />
+            </ButtonBottomContainer>
+          </React.Fragment>
+        )}
+      </React.Fragment>
     </AppStructure>
   );
 };
