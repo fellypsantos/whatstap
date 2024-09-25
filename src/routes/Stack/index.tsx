@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  createNativeStackNavigator,
-  NativeStackNavigationProp,
-} from '@react-navigation/native-stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import IContact from '../../interfaces/IContact';
 
@@ -23,8 +20,7 @@ export interface PageProps {
   navigation: NativeStackNavigationProp<RootStackParamList>;
 }
 
-export type StackNavigationProps =
-  NativeStackNavigationProp<RootStackParamList>;
+export type StackNavigationProps = NativeStackNavigationProp<RootStackParamList>;
 
 const { Navigator, Screen } = createNativeStackNavigator<RootStackParamList>();
 
