@@ -11,9 +11,12 @@ import { Container, AppName, AppDescription, HeaderTextContainer, SettingsContai
 
 import CheckboxGroupField from '../CheckboxGroupField';
 import ButtonComponent from '../Button';
+import { useNavigation } from '@react-navigation/core';
+import { StackNavigationProps } from '../../routes/Stack';
 
 const HeaderBar: React.FC = () => {
   const { Translate } = useAppTranslation();
+  const navigation = useNavigation<StackNavigationProps>();
 
   const [modalOpen, setModalOpen] = useState(false);
   const { settings, updateSettings } = useSettings();
@@ -48,21 +51,27 @@ const HeaderBar: React.FC = () => {
     else return 'en';
   }, []);
 
-  const dropdown = useMemo(
+  const dropdownHeaderMenu = useMemo(
     () => ({
-      indexes: { LANGUAGE: 0 },
-      options: [{ title: Translate('Settings.AppLanguage') }],
+      indexes: { LANGUAGE: 0, IMPORT_CONTACTS_FROM_AGENDA: 1 },
+      options: [{ title: Translate('Settings.AppLanguage') }, { title: Translate('importContactsFromAgenda') }],
     }),
     [Translate],
   );
 
   const handlePressActionBarMenu = useCallback(
     (optionIndex: number) => {
-      if (optionIndex === dropdown.indexes.LANGUAGE) {
+      if (optionIndex === dropdownHeaderMenu.indexes.LANGUAGE) {
         setModalOpen(true);
+        return;
+      }
+
+      if (optionIndex === dropdownHeaderMenu.indexes.IMPORT_CONTACTS_FROM_AGENDA) {
+        navigation.navigate('ImportContactsFromAgenda');
+        return;
       }
     },
-    [dropdown.indexes.LANGUAGE],
+    [dropdownHeaderMenu.indexes.IMPORT_CONTACTS_FROM_AGENDA, dropdownHeaderMenu.indexes.LANGUAGE, navigation],
   );
 
   return (
@@ -91,7 +100,7 @@ const HeaderBar: React.FC = () => {
           <AppDescription>{Translate('appDescription')}</AppDescription>
         </HeaderTextContainer>
 
-        <ActionBarMenuButton dropdownMenuMode actions={dropdown.options} onPress={({ nativeEvent }) => handlePressActionBarMenu(nativeEvent.index)}>
+        <ActionBarMenuButton dropdownMenuMode actions={dropdownHeaderMenu.options} onPress={({ nativeEvent }) => handlePressActionBarMenu(nativeEvent.index)}>
           <Icon name="ellipsis-v" color="#fff" size={16} />
         </ActionBarMenuButton>
       </Container>
