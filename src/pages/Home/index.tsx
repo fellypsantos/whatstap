@@ -35,7 +35,7 @@ const Home: React.FC = () => {
 
   const navigation = useNavigation<StackNavigationProps>();
 
-  const dropdown = useMemo(
+  const dropdownMenuContactItem = useMemo(
     () => ({
       indexes: { EDIT: 0, DELETE: 1 },
       options: [{ title: Translate('Dropdown.Edit') }, { title: Translate('Dropdown.Delete') }],
@@ -47,10 +47,10 @@ const Home: React.FC = () => {
 
   const handlePressMenuItem = useCallback(
     (contact: IContact, optionIndex: number) => {
-      if (optionIndex === dropdown.indexes.EDIT) navigation.navigate('EditContact', { contact: contact });
-      else if (optionIndex === dropdown.indexes.DELETE) removeContact(contact);
+      if (optionIndex === dropdownMenuContactItem.indexes.EDIT) navigation.navigate('EditContact', { contact: contact });
+      else if (optionIndex === dropdownMenuContactItem.indexes.DELETE) removeContact(contact);
     },
-    [removeContact, dropdown.indexes, navigation],
+    [removeContact, dropdownMenuContactItem.indexes, navigation],
   );
 
   const handleFilterSearchContacts = useCallback(
@@ -85,13 +85,13 @@ const Home: React.FC = () => {
             </ContactLocationContainer>
           </ContactCardTouchable>
 
-          <ContactMenuButton dropdownMenuMode actions={dropdown.options} onPress={({ nativeEvent }) => handlePressMenuItem(item, nativeEvent.index)}>
+          <ContactMenuButton dropdownMenuMode actions={dropdownMenuContactItem.options} onPress={({ nativeEvent }) => handlePressMenuItem(item, nativeEvent.index)}>
             <ContactMenuButtonIcon name="ellipsis-v" color="#aaa" size={14} />
           </ContactMenuButton>
         </ContactCardRow>
       </ContactCard>
     ),
-    [Translate, dropdown.options, formattedPhoneNumber, handlePressMenuItem, openWhatsApp],
+    [Translate, dropdownMenuContactItem.options, formattedPhoneNumber, handlePressMenuItem, openWhatsApp],
   );
 
   const contactListToRender = useMemo(() => {
