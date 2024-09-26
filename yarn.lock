@@ -6133,6 +6133,11 @@ react-native-codegen@^0.69.2:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
+react-native-contacts@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-contacts/-/react-native-contacts-8.0.1.tgz#a72328986068fe4795b3e16a81165f2758e46c2d"
+  integrity sha512-UWjtWaBUcaVoTNveVbH8v+q5iWNPm1F881gTDBsxelwZeSBD6KCa1MKynJnCNO1dOaIlMbZx+oF6Cc/44UrA5A==
+
 react-native-context-menu-view@^1.5.2:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/react-native-context-menu-view/-/react-native-context-menu-view-1.5.2.tgz#944d407b1c5562ceeca66fbd602be3946e9e2ff1"

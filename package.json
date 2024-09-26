@@ -22,6 +22,7 @@
     "react-native-alert-async": "^1.0.5",
     "react-native-bouncy-checkbox": "^3.0.4",
     "react-native-bouncy-checkbox-group": "^0.1.1",
+    "react-native-contacts": "^8.0.1",
     "react-native-context-menu-view": "^1.5.2",
     "react-native-country-codes-picker": "^2.3.3",
     "react-native-gesture-handler": "^2.6.0",
