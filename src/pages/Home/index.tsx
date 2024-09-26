@@ -65,7 +65,7 @@ const Home: React.FC = () => {
       }
 
       // search in contact name
-      if (contact.name.includes(searchContent)) {
+      if (contact.name.toLowerCase().includes(searchContent.toLowerCase())) {
         return contact;
       }
     },
