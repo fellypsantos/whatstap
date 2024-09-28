@@ -9,27 +9,32 @@ import ButtonComponent from '../../components/Button';
 import { Contact } from 'react-native-contacts/type';
 import { convertContactToContactImportItem } from './services/contactImportService';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useAppTranslation } from '../../hooks/translation';
+import { useNavigation } from '@react-navigation/core';
 
 export type ContactImportItemType = Contact & {
   selected: boolean;
 }
 
 export default function ImportContactsFromAgenda() {
+  const { Translate } = useAppTranslation();
+  const navigation = useNavigation();
+
   const [allContactsChecked, setAllContactsChecked] = useState(false);
   const [contactsFromAgenda, setContactsFromAgenda] = useState<ContactImportItemType[]>([]);
 
   const manuallyAllowReadContactsMessage = useCallback(() => {
-    Alert.alert('Permission Denied', 'You need to allow contact access from the settings.', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Open Settings', onPress: () => Linking.openSettings() },
+    Alert.alert(Translate('Alerts.PermissionDenied'), Translate('Alerts.AlowContactAccessFromAppSettings'), [
+      { text: Translate('cancel'), style: 'cancel' },
+      { text: Translate('openSettings'), onPress: () => Linking.openSettings() },
     ]);
-  }, []);
+  }, [Translate]);
 
   const handleReadContactsFromAgenda = useCallback(() => {
     PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
-      title: 'Contacts',
-      message: 'This app would like to view your contacts.',
-      buttonPositive: 'Please accept bare mortal',
+      title: Translate('Permission.ReadContacts.Title'),
+      message: Translate('Permission.ReadContacts.ActionDescription'),
+      buttonPositive: Translate('Buttons.Allow'),
     })
       .then(res => {
         if (res === 'never_ask_again') {
@@ -51,7 +56,7 @@ export default function ImportContactsFromAgenda() {
       .catch(error => {
         console.error('Permission error: ', error);
       });
-  }, [manuallyAllowReadContactsMessage]);
+  }, [Translate, manuallyAllowReadContactsMessage]);
 
   const handleToggleCheckContact = useCallback((contactToToggleChecState: ContactImportItemType) => {
     const updatedContactList = contactsFromAgenda.map(contact => {
@@ -76,7 +81,7 @@ export default function ImportContactsFromAgenda() {
           handleToggleCheckContact(item);
         }}>
         <SelectableContactToImportView>
-          <CheckBox disabled={false} value={item.selected} onValueChange={() => { }} tintColors={{ true: '#5467FB' }} />
+          <CheckBox value={item.selected} tintColors={{ true: '#5467FB' }} />
           <SelectableContactDisplayName>{item.displayName}</SelectableContactDisplayName>
         </SelectableContactToImportView>
       </SelectableContactToImport>
@@ -89,8 +94,10 @@ export default function ImportContactsFromAgenda() {
     <React.Fragment>
       {contactsFromAgenda.length === 0 && (
         <Container>
-          <ButtonComponent text="Importar da Agenda" type="default" onPress={handleReadContactsFromAgenda} />
-          <ButtonComponent text="Voltar" type="cancel" onPress={handleReadContactsFromAgenda} />
+          <ButtonComponent text={Translate('Buttons.ImportContacts.FromAgenda')} type="default" onPress={handleReadContactsFromAgenda} />
+          <ButtonComponent text={Translate('Buttons.Back')} type="cancel" onPress={() => {
+            navigation.goBack();
+          }} />
         </Container>
       )}
 
@@ -102,7 +109,7 @@ export default function ImportContactsFromAgenda() {
             <ToggleSelectAllContacts onPress={handleToggleCheckAllContacts}>
               <Icon name={allContactsChecked ? 'square' : 'check-square'} color="#fff" size={18} />
             </ToggleSelectAllContacts>
-            <ButtonComponent text="Importar Selecionados" type="default" onPress={handleReadContactsFromAgenda} fillWidth disabled />
+            <ButtonComponent text={Translate('Buttons.ImportContacts.Selected')} type="default" onPress={handleReadContactsFromAgenda} fillWidth disabled />
           </BottomButtonContainer>
         </React.Fragment>
       )}
