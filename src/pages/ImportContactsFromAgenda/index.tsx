@@ -7,7 +7,7 @@ import CheckBox from '@react-native-community/checkbox';
 import { Container, BottomButtonContainer, SelectableContactDisplayName, SelectableContactToImport, SelectableContactToImportView, ToggleSelectAllContacts } from './styles';
 import ButtonComponent from '../../components/Button';
 import { Contact } from 'react-native-contacts/type';
-import { convertContactToContactImportItem } from './services/contactImportService';
+import { convertContactToContactImportItem, sortContactsAZ } from './services/contactImportService';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useAppTranslation } from '../../hooks/translation';
 import { useNavigation } from '@react-navigation/core';
@@ -45,7 +45,8 @@ export default function ImportContactsFromAgenda() {
         if (res === 'granted') {
           Contacts.getAll()
             .then((contacts: Contact[]) => {
-              const contactsImportList = convertContactToContactImportItem(contacts);
+              const sortedContactsAZ = sortContactsAZ(contacts);
+              const contactsImportList = convertContactToContactImportItem(sortedContactsAZ);
               setContactsFromAgenda(contactsImportList);
             })
             .catch(e => {
@@ -72,6 +73,16 @@ export default function ImportContactsFromAgenda() {
     setAllContactsChecked(!allContactsChecked);
     setContactsFromAgenda(contactListToggledState);
   }, [allContactsChecked, contactsFromAgenda]);
+
+  const handleProcessSelectedContacts = useCallback(() => {
+    console.log('---- PREPARE TO IMPORT ----');
+
+    contactsFromAgenda.filter((contact) => contact.selected).forEach(contact => {
+      console.log('contact', contact.displayName, 'phone', contact.phoneNumbers);
+    });
+
+    console.log('---- DONE ----');
+  }, [contactsFromAgenda]);
 
   const countSelectedContactsToImport = useMemo(() => {
     return contactsFromAgenda.reduce((accumulator, currentContact) => {
@@ -115,7 +126,7 @@ export default function ImportContactsFromAgenda() {
             <ToggleSelectAllContacts onPress={handleToggleCheckAllContacts}>
               <Icon name={allContactsChecked ? 'square' : 'check-square'} color="#fff" size={18} />
             </ToggleSelectAllContacts>
-            <ButtonComponent text={Translate('Buttons.ImportContacts.Selected')} type="default" onPress={handleReadContactsFromAgenda} fillWidth disabled={countSelectedContactsToImport === 0} />
+            <ButtonComponent text={Translate('Buttons.ImportContacts.Selected')} type="default" onPress={handleProcessSelectedContacts} fillWidth disabled={countSelectedContactsToImport === 0} />
           </BottomButtonContainer>
         </React.Fragment>
       )}
