@@ -11,7 +11,7 @@ import {
   ContactCardRow,
   ContactLocationContainer,
   ContactLocationIcon,
-  ContactLocationName,
+  ContactPhoneNumber,
   ContactMenuButton,
   ContactMenuButtonIcon,
   ContactName,
@@ -81,7 +81,7 @@ const Home: React.FC = () => {
 
             <ContactLocationContainer>
               <ContactLocationIcon name="phone-alt" color="#5467FB" size={14} />
-              <ContactLocationName>{formattedPhoneNumber(item)}</ContactLocationName>
+              <ContactPhoneNumber>{formattedPhoneNumber(item)}</ContactPhoneNumber>
             </ContactLocationContainer>
           </ContactCardTouchable>
 

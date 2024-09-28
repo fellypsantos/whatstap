@@ -12,6 +12,7 @@ export const SearchInputField = styled.TextInput`
   flex: 1;
   font-family: 'Ubuntu-R';
   padding: 8px 20px;
+  color: #474747;
 `;
 
 export const ClearButtonSearchContact = styled(RectButton)`

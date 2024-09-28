@@ -43,15 +43,17 @@ export const ContactLocationIcon = styled(Icon)`
   margin-right: 5px;
 `;
 
-export const ContactLocationName = styled.Text`
+export const ContactPhoneNumber = styled.Text`
   font-family: 'Ubuntu-R';
   font-size: 14px;
+  color: #666;
 `;
 
 export const NoContactsLabel = styled.Text`
   font-family: 'Ubuntu-R';
   font-size: 14px;
   margin: 10px 20px;
+  color: #474747;
 `;
 
 export const ContainerWithMargin = styled.View`

@@ -14,4 +14,5 @@ export const SelectableContactToImportView = styled.View`
 export const SelectableContactDisplayName = styled.Text`
   font-family: 'Ubuntu-R';
   font-size: 16px;
+  color: #474747;
 `;
