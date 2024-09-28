@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Alert, Linking } from 'react-native';
 import Contacts from 'react-native-contacts';
 import { PermissionsAndroid } from 'react-native';
@@ -73,6 +73,12 @@ export default function ImportContactsFromAgenda() {
     setContactsFromAgenda(contactListToggledState);
   }, [allContactsChecked, contactsFromAgenda]);
 
+  const countSelectedContactsToImport = useMemo(() => {
+    return contactsFromAgenda.reduce((accumulator, currentContact) => {
+      return currentContact.selected ? accumulator + 1 : accumulator;
+    }, 0);
+  }, [contactsFromAgenda]);
+
   const renderContactListFromAgenda = useCallback(
     ({ item }: { item: ContactImportItemType }) => (
       <SelectableContactToImport
@@ -109,7 +115,7 @@ export default function ImportContactsFromAgenda() {
             <ToggleSelectAllContacts onPress={handleToggleCheckAllContacts}>
               <Icon name={allContactsChecked ? 'square' : 'check-square'} color="#fff" size={18} />
             </ToggleSelectAllContacts>
-            <ButtonComponent text={Translate('Buttons.ImportContacts.Selected')} type="default" onPress={handleReadContactsFromAgenda} fillWidth disabled />
+            <ButtonComponent text={Translate('Buttons.ImportContacts.Selected')} type="default" onPress={handleReadContactsFromAgenda} fillWidth disabled={countSelectedContactsToImport === 0} />
           </BottomButtonContainer>
         </React.Fragment>
       )}
