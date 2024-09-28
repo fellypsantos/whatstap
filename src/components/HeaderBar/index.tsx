@@ -24,31 +24,31 @@ const HeaderBar: React.FC = () => {
   const languageOptions = useMemo(
     () => [
       {
-        id: 0,
+        id: '0',
         text: 'English',
       },
       {
-        id: 1,
+        id: '1',
         text: 'Português',
       },
       {
-        id: 2,
+        id: '2',
         text: 'Spañol',
       },
     ],
     [],
   );
 
-  const parseLanguageToIndex = useCallback((language: string): number => {
-    if (language === 'es') return 2;
-    else if (language === 'pt') return 1;
-    else return 0;
+  const parseLanguageToIndex = useCallback((language: string): string => {
+    if (language === 'es') { return '2'; }
+    else if (language === 'pt') { return '1'; }
+    else { return '0'; }
   }, []);
 
   const parseIndexToLanguage = useCallback((index: string | number): string => {
-    if (index === 2) return 'es';
-    else if (index === 1) return 'pt';
-    else return 'en';
+    if (index === '2') { return 'es'; }
+    else if (index === '1') { return 'pt'; }
+    else { return 'en'; }
   }, []);
 
   const dropdownHeaderMenu = useMemo(
