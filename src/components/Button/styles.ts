@@ -3,6 +3,8 @@ import styled from 'styled-components/native';
 
 interface IButtonStyleProps {
   type: string;
+  fillWidth?: boolean;
+  disabled?: boolean;
 }
 
 export const MainContainer = styled.View<IButtonStyleProps>`
@@ -11,12 +13,15 @@ export const MainContainer = styled.View<IButtonStyleProps>`
   border-radius: 5px;
   overflow: hidden;
   margin-bottom: 10px;
-`;
+
+  ${({ fillWidth }) => fillWidth && 'flex: 1;'}`;
 
 export const ButtonContainer = styled(RectButton) <IButtonStyleProps>`
   background-color: ${props => (props.type === 'default' ? '#5467fb' : '#fff')};
   padding: 16px;
   align-items: center;
+
+  ${({ disabled }) => disabled && 'background-color: #b0b9fd;'}
 `;
 
 export const ButtonText = styled.Text<IButtonStyleProps>`
