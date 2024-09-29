@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Linking, ToastAndroid } from 'react-native';
 import Contacts from 'react-native-contacts';
 import uuid from 'react-native-uuid';
@@ -14,8 +14,13 @@ import { useAppTranslation } from '../../hooks/translation';
 import { useNavigation } from '@react-navigation/core';
 import { useSettings } from '../../hooks/settings';
 import { CountryItem, CountryPicker } from 'react-native-country-codes-picker';
+import { TestIds, InterstitialAd, AdEventType } from 'react-native-google-mobile-ads';
+
 import { useContact } from '../../hooks/contact';
 import { sleep } from '../../utils/helper';
+
+const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
+
 
 export type ContactImportItemType = Contact & {
   selected: boolean;
@@ -33,6 +38,9 @@ export default function ImportContactsFromAgenda() {
   const [selectedCountryForContacts, setSelectedCountryForContacts] = useState<CountryItem | null>(null);
   const [isImportingContacts, setIsImportingContacts] = useState(false);
   const [processedContactsCount, setProcessedContactsCount] = useState<number>(0);
+
+  const [adLoaded, setAdLoaded] = useState(false);
+  const [adClosed, setAdClosed] = useState(false);
 
   const manuallyAllowReadContactsMessage = useCallback(() => {
     Alert.alert(Translate('Alerts.PermissionDenied'), Translate('Alerts.AlowContactAccessFromAppSettings'), [
@@ -134,17 +142,43 @@ export default function ImportContactsFromAgenda() {
     await sleep(1000);
     setIsImportingContacts(false);
 
+    if (adLoaded) { interstitial.show(); }
+
     ToastAndroid.show(Translate('Toast.Contact.Imported'), ToastAndroid.SHORT);
 
-    navigation.goBack();
+    if (!adLoaded) { navigation.goBack(); }
 
-  }, [Translate, addContact, findContactByCountryCodeAndPhoneNumber, navigation, selectedContacts, selectedCountryForContacts]);
+  }, [Translate, adLoaded, addContact, findContactByCountryCodeAndPhoneNumber, navigation, selectedContacts, selectedCountryForContacts]);
 
   const countSelectedContactsToImport = useMemo(() => {
     return contactsFromAgenda.reduce((accumulator, currentContact) => {
       return currentContact.selected ? accumulator + 1 : accumulator;
     }, 0);
   }, [contactsFromAgenda]);
+
+  useEffect(() => {
+    const unsubscribeLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => setAdLoaded(true));
+    const unsubscribeClose = interstitial.addAdEventListener(AdEventType.CLOSED, () => setAdClosed(true));
+
+    if (!adLoaded) {
+      interstitial.load();
+      if (__DEV__) { console.log('Requesting ad to AdMob Network'); }
+    }
+
+    // Unsubscribe from events on unmount
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeClose();
+    };
+  }, [adLoaded]);
+
+  // HANDLE AD_CLOSE
+  useEffect(() => {
+    if (adLoaded && adClosed) {
+      if (__DEV__) { console.log('Ad was closed by user'); }
+      navigation.goBack();
+    }
+  }, [adLoaded, adClosed, navigation]);
 
   const renderContactListFromAgenda = useCallback(
     ({ item }: { item: ContactImportItemType }) => (
