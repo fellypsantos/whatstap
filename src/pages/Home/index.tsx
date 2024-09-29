@@ -47,15 +47,15 @@ const Home: React.FC = () => {
 
   const handlePressMenuItem = useCallback(
     (contact: IContact, optionIndex: number) => {
-      if (optionIndex === dropdownMenuContactItem.indexes.EDIT) navigation.navigate('EditContact', { contact: contact });
-      else if (optionIndex === dropdownMenuContactItem.indexes.DELETE) removeContact(contact);
+      if (optionIndex === dropdownMenuContactItem.indexes.EDIT) { navigation.navigate('EditContact', { contact: contact }); }
+      else if (optionIndex === dropdownMenuContactItem.indexes.DELETE) { removeContact(contact); }
     },
     [removeContact, dropdownMenuContactItem.indexes, navigation],
   );
 
   const handleFilterSearchContacts = useCallback(
     (contact: IContact) => {
-      if (searchContent === '') return contact;
+      if (searchContent === '') { return contact; }
 
       if (isNumeric(searchContent)) {
         // search in phone number
