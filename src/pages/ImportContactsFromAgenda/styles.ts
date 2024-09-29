@@ -66,3 +66,12 @@ export const LoadingProgressText = styled.Text`
   font-size: 16px;
   margin-left: 10px;
 `;
+
+export const TopWarningText = styled.Text`
+font-family:'Ubuntu-R';
+  color: #fff;
+  padding: 15px 10px;
+  text-align: center;
+  background-color: #5467fb;
+  font-size: 16px;
+`;

@@ -5,7 +5,7 @@ import uuid from 'react-native-uuid';
 import { PermissionsAndroid } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import CheckBox from '@react-native-community/checkbox';
-import { Container, BottomButtonContainer, SelectableContactDisplayName, SelectableContactToImport, SelectableContactToImportView, ToggleSelectAllContacts, SelectedCountryItemFromContactsToImport, SelectedCountryItemFromContactsToImportLabel, LoadingProgressContainer, LoadingProgressText } from './styles';
+import { Container, BottomButtonContainer, SelectableContactDisplayName, SelectableContactToImport, SelectableContactToImportView, ToggleSelectAllContacts, SelectedCountryItemFromContactsToImport, SelectedCountryItemFromContactsToImportLabel, LoadingProgressContainer, LoadingProgressText, TopWarningText } from './styles';
 import ButtonComponent from '../../components/Button';
 import { Contact } from 'react-native-contacts/type';
 import { convertContactToContactImportItem, filterValidContacts, removeCountryCodeFromPhoneNumber, sanitizePhoneNumber, sortContactsAZ } from './services/contactImportService';
@@ -176,6 +176,7 @@ export default function ImportContactsFromAgenda() {
 
       {contactsFromAgenda.length > 0 && (
         <React.Fragment>
+          <TopWarningText>{Translate('AlreadyStoredPhoneNumbersWillBeIgnored')}</TopWarningText>
           <FlatList data={contactsFromAgenda} keyExtractor={contact => contact.recordID} renderItem={renderContactListFromAgenda} />
 
           {isImportingContacts && (
