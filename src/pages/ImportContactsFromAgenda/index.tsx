@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Alert, Linking } from 'react-native';
+import { ActivityIndicator, Alert, Linking, ToastAndroid } from 'react-native';
 import Contacts from 'react-native-contacts';
 import uuid from 'react-native-uuid';
 import { PermissionsAndroid } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import CheckBox from '@react-native-community/checkbox';
-import { Container, BottomButtonContainer, SelectableContactDisplayName, SelectableContactToImport, SelectableContactToImportView, ToggleSelectAllContacts, SelectedCountryItemFromContactsToImport, SelectedCountryItemFromContactsToImportLabel } from './styles';
+import { Container, BottomButtonContainer, SelectableContactDisplayName, SelectableContactToImport, SelectableContactToImportView, ToggleSelectAllContacts, SelectedCountryItemFromContactsToImport, SelectedCountryItemFromContactsToImportLabel, LoadingProgressContainer, LoadingProgressText } from './styles';
 import ButtonComponent from '../../components/Button';
 import { Contact } from 'react-native-contacts/type';
 import { convertContactToContactImportItem, removeCountryCodeFromPhoneNumber, sanitizePhoneNumber, sortContactsAZ } from './services/contactImportService';
@@ -24,16 +24,15 @@ export type ContactImportItemType = Contact & {
 export default function ImportContactsFromAgenda() {
   const { Translate } = useAppTranslation();
   const { settings } = useSettings();
-  const { contacts, addContact, findContactByCountryCodeAndPhoneNumber } = useContact();
+  const { addContact, findContactByCountryCodeAndPhoneNumber } = useContact();
   const navigation = useNavigation();
-
-  console.log('contacts', contacts.length);
 
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [allContactsChecked, setAllContactsChecked] = useState(false);
   const [contactsFromAgenda, setContactsFromAgenda] = useState<ContactImportItemType[]>([]);
   const [selectedCountryForContacts, setSelectedCountryForContacts] = useState<CountryItem | null>(null);
   const [isImportingContacts, setIsImportingContacts] = useState(false);
+  const [processedContactsCount, setProcessedContactsCount] = useState<number>(0);
 
   const manuallyAllowReadContactsMessage = useCallback(() => {
     Alert.alert(Translate('Alerts.PermissionDenied'), Translate('Alerts.AlowContactAccessFromAppSettings'), [
@@ -86,11 +85,11 @@ export default function ImportContactsFromAgenda() {
     setContactsFromAgenda(contactListToggledState);
   }, [allContactsChecked, contactsFromAgenda]);
 
+  const selectedContacts = useMemo(() => contactsFromAgenda.filter((contact) => contact.selected), [contactsFromAgenda]);
+
   const handleProcessSelectedContacts = useCallback(async () => {
 
     if (!selectedCountryForContacts) { return; }
-
-    const selectedContacts = contactsFromAgenda.filter((contact) => contact.selected);
 
     setIsImportingContacts(true);
 
@@ -127,14 +126,18 @@ export default function ImportContactsFromAgenda() {
         createdAt: new Date(),
       };
 
-      await sleep(100);
       addContact(contactData);
+      setProcessedContactsCount((prevState) => prevState + 1);
     }
 
+    await sleep(1000);
     setIsImportingContacts(false);
 
-  }, [addContact, contactsFromAgenda, findContactByCountryCodeAndPhoneNumber, selectedCountryForContacts]);
+    ToastAndroid.show(Translate('Toast.Contact.Imported'), ToastAndroid.SHORT);
 
+    navigation.goBack();
+
+  }, [Translate, addContact, findContactByCountryCodeAndPhoneNumber, navigation, selectedContacts, selectedCountryForContacts]);
 
   const countSelectedContactsToImport = useMemo(() => {
     return contactsFromAgenda.reduce((accumulator, currentContact) => {
@@ -174,53 +177,66 @@ export default function ImportContactsFromAgenda() {
         <React.Fragment>
           <FlatList data={contactsFromAgenda} keyExtractor={contact => contact.recordID} renderItem={renderContactListFromAgenda} />
 
-          <React.Fragment>
-            <CountryPicker
-              lang={settings.language}
-              show={showCountryPicker}
-              inputPlaceholder={Translate('searchCountryName')}
-              pickerButtonOnPress={(item) => {
-                setSelectedCountryForContacts(item);
-                setShowCountryPicker(false);
-              }}
-              onBackdropPress={() => setShowCountryPicker(false)}
-              style={{
-                modal: {
-                  height: '75%',
-                },
-                textInput: {
-                  height: 50,
-                  borderRadius: 0,
-                  color: '#333',
-                },
-                flag: {},
-                dialCode: {
-                  color: '#333',
-                  fontWeight: 'bold',
-                },
-                countryName: {
-                  color: '#333',
-                },
-              }}
-            />
+          {isImportingContacts && (
+            <LoadingProgressContainer>
+              <ActivityIndicator color="#5467fb" size={25} />
+              <LoadingProgressText>{Translate('importingContacts')} {processedContactsCount}/{selectedContacts.length}</LoadingProgressText>
+            </LoadingProgressContainer>
+          )}
 
-            <SelectedCountryItemFromContactsToImport onPress={() => setShowCountryPicker(true)}>
-              {!selectedCountryForContacts && (
-                <SelectedCountryItemFromContactsToImportLabel>Toque aqui e selecione um país.</SelectedCountryItemFromContactsToImportLabel>
-              )}
+          {
+            !isImportingContacts && (
+              <React.Fragment>
+                <React.Fragment>
+                  <CountryPicker
+                    lang={settings.language}
+                    show={showCountryPicker}
+                    inputPlaceholder={Translate('searchCountryName')}
+                    pickerButtonOnPress={(item) => {
+                      setSelectedCountryForContacts(item);
+                      setShowCountryPicker(false);
+                    }}
+                    onBackdropPress={() => setShowCountryPicker(false)}
+                    style={{
+                      modal: {
+                        height: '75%',
+                      },
+                      textInput: {
+                        height: 50,
+                        borderRadius: 0,
+                        color: '#333',
+                      },
+                      flag: {},
+                      dialCode: {
+                        color: '#333',
+                        fontWeight: 'bold',
+                      },
+                      countryName: {
+                        color: '#333',
+                      },
+                    }}
+                  />
 
-              {selectedCountryForContacts && (
-                <SelectedCountryItemFromContactsToImportLabel>País: {selectedCountryForContacts?.name[settings.language]}</SelectedCountryItemFromContactsToImportLabel>
-              )}
-            </SelectedCountryItemFromContactsToImport>
-          </React.Fragment>
+                  <SelectedCountryItemFromContactsToImport onPress={() => setShowCountryPicker(true)}>
+                    {!selectedCountryForContacts && (
+                      <SelectedCountryItemFromContactsToImportLabel>Toque aqui e selecione um país.</SelectedCountryItemFromContactsToImportLabel>
+                    )}
 
-          <BottomButtonContainer>
-            <ToggleSelectAllContacts onPress={handleToggleCheckAllContacts}>
-              <Icon name={allContactsChecked ? 'square' : 'check-square'} color="#fff" size={18} />
-            </ToggleSelectAllContacts>
-            <ButtonComponent text={Translate('Buttons.ImportContacts.Selected')} type="default" onPress={handleProcessSelectedContacts} fillWidth disabled={countSelectedContactsToImport === 0 || !selectedCountryForContacts} />
-          </BottomButtonContainer>
+                    {selectedCountryForContacts && (
+                      <SelectedCountryItemFromContactsToImportLabel>País: {selectedCountryForContacts?.name[settings.language]}</SelectedCountryItemFromContactsToImportLabel>
+                    )}
+                  </SelectedCountryItemFromContactsToImport>
+                </React.Fragment>
+
+                <BottomButtonContainer>
+                  <ToggleSelectAllContacts onPress={handleToggleCheckAllContacts}>
+                    <Icon name={allContactsChecked ? 'square' : 'check-square'} color="#fff" size={18} />
+                  </ToggleSelectAllContacts>
+                  <ButtonComponent text={Translate('Buttons.ImportContacts.Selected')} type="default" onPress={handleProcessSelectedContacts} fillWidth disabled={countSelectedContactsToImport === 0 || !selectedCountryForContacts} />
+                </BottomButtonContainer>
+              </React.Fragment>
+            )
+          }
         </React.Fragment>
       )}
     </React.Fragment>

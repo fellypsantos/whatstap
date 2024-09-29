@@ -51,3 +51,18 @@ export const SelectedCountryItemFromContactsToImportLabel = styled.Text`
   font-family:'Ubuntu-R';
   color: #474747;
 `;
+
+export const LoadingProgressContainer = styled.View`
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: #efefef;
+  padding: 8px 10px;
+`;
+
+export const LoadingProgressText = styled.Text`
+  font-family:'Ubuntu-R';
+  color: #474747;
+  font-size: 16px;
+  margin-left: 10px;
+`;
