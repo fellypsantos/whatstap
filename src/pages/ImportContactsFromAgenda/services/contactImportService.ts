@@ -19,3 +19,11 @@ export const sortContactsAZ = (contacts: Contact[]): Contact[] => {
         return 0;
     });
 };
+
+export const sanitizePhoneNumber = (phoneNumber: string) => {
+    return phoneNumber.replace(/[\s|-]/g, '');
+};
+
+export const removeCountryCodeFromPhoneNumber = (phoneNumber: string, countryCode: string): string => {
+    return phoneNumber.replace(countryCode, '');
+};
