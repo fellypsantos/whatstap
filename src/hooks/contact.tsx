@@ -6,6 +6,11 @@ import IContact from '../interfaces/IContact';
 import { useAppTranslation } from './translation';
 import DataBase from '../databases';
 
+type FindContactByCountryCodeAndPhoneNumberParams = {
+  countryCode: string;
+  phoneNumber: string;
+}
+
 interface ContactContext {
   contacts: IContact[];
   loading: boolean;
@@ -14,6 +19,7 @@ interface ContactContext {
   removeContact(contact: IContact): Promise<boolean>;
   openWhatsApp(phone: string): void;
   clearContacts(): void;
+  findContactByCountryCodeAndPhoneNumber({ countryCode, phoneNumber }: FindContactByCountryCodeAndPhoneNumberParams): Promise<IContact[]>;
 }
 
 interface ContactProviderProps {
@@ -35,9 +41,8 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
         DataBase.db.transaction(tx => {
           tx.executeSql('INSERT INTO contacts(id, name, country_code, phone, country, createdAt) VALUES(?,?,?,?,?,?)', [id, name, country_code, phone, country, createdAt], (_, result) => {
             if (result.rowsAffected === 1) {
-              setContacts([contact, ...contacts]);
-              ToastAndroid.show(Translate('Toast.Contact.Added'), ToastAndroid.LONG);
-            } else throw new Error(Translate('Toast.Contact.FailedToAdd'));
+              setContacts((prevContacts) => [contact, ...prevContacts]);
+            } else { throw new Error(Translate('Toast.Contact.FailedToAdd')); }
           });
         });
       } catch (err) {
@@ -45,7 +50,7 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
         ToastAndroid.show(error.message, ToastAndroid.LONG);
       }
     },
-    [contacts, Translate],
+    [Translate],
   );
 
   const editContact = useCallback(
@@ -58,14 +63,14 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
             tx.executeSql('UPDATE contacts SET country=?, country_code=?, phone=?, name=? WHERE id = ?', [country, country_code, phone, name, id], (_, updateResult) => {
               if (updateResult.rowsAffected === 1) {
                 const updatedList = contacts.map(item => {
-                  if (item.id === contact.id) return { ...contact };
+                  if (item.id === contact.id) { return { ...contact }; }
                   return item;
                 });
 
                 setContacts(updatedList);
                 ToastAndroid.show(Translate('Toast.Contact.Updated'), ToastAndroid.LONG);
                 resolve(updateResult.rowsAffected > 0);
-              } else throw new Error(Translate('Toast.Contact.FailedToUpdate'));
+              } else { throw new Error(Translate('Toast.Contact.FailedToUpdate')); }
             });
           });
         } catch (err) {
@@ -94,7 +99,7 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
           },
         );
 
-        if (!confirm) return false;
+        if (!confirm) { return false; }
 
         try {
           DataBase.db.transaction(tx => {
@@ -105,7 +110,7 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
                 setContacts(filtered);
                 ToastAndroid.show(Translate('Toast.Contact.Deleted'), ToastAndroid.LONG);
                 resolve(deleteResult.rowsAffected > 0);
-              } else throw new Error(Translate('Toast.Contact.FailedToDelete'));
+              } else { throw new Error(Translate('Toast.Contact.FailedToDelete')); }
             });
           });
         } catch (err) {
@@ -139,7 +144,7 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
           },
         );
 
-        if (!confirm) return false;
+        if (!confirm) { return false; }
 
         DataBase.db.transaction(tx => {
           tx.executeSql('DELETE FROM contacts', [], (_, result) => {
@@ -147,7 +152,7 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
               setContacts([]);
               ToastAndroid.show(Translate('Toast.Contact.HistoryCleared'), ToastAndroid.LONG);
               resolve(true);
-            } else throw new Error(Translate('Toast.Contact.FailedToClearAll'));
+            } else { throw new Error(Translate('Toast.Contact.FailedToClearAll')); }
           });
         });
       } catch (err) {
@@ -157,6 +162,22 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
       }
     });
   }, [Translate]);
+
+  const findContactByCountryCodeAndPhoneNumber = useCallback(({ countryCode, phoneNumber }: FindContactByCountryCodeAndPhoneNumberParams): Promise<IContact[]> => {
+    return new Promise((resolve, reject) => {
+      try {
+        DataBase.db.transaction(tx => {
+          tx.executeSql('SELECT * FROM contacts WHERE country_code=? AND phone=?', [countryCode, phoneNumber], (_, result) => {
+            resolve(result.rows.raw());
+          });
+        });
+      } catch (err) {
+        const error = err as Error;
+        ToastAndroid.show(error.message, ToastAndroid.LONG);
+        reject(error.message);
+      }
+    });
+  }, []);
 
   const openWhatsApp = useCallback(
     async (phone: string) => {
@@ -198,8 +219,9 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
       loading,
       openWhatsApp,
       clearContacts,
+      findContactByCountryCodeAndPhoneNumber,
     }),
-    [addContact, editContact, removeContact, contacts, loading, openWhatsApp, clearContacts],
+    [addContact, editContact, removeContact, contacts, loading, openWhatsApp, clearContacts, findContactByCountryCodeAndPhoneNumber],
   );
 
   return <ContactContext.Provider value={value}>{children}</ContactContext.Provider>;
