@@ -39,3 +39,15 @@ export const ToggleSelectAllContacts = styled(RectButton)`
   align-items: center;
   justify-content: center;
 `;
+
+export const SelectedCountryItemFromContactsToImport = styled(RectButton)`
+  align-items: center;
+  justify-content: center;
+  padding: 10px 5px;
+  background-color: #eee;
+`;
+
+export const SelectedCountryItemFromContactsToImportLabel = styled.Text`
+  font-family:'Ubuntu-R';
+  color: #474747;
+`;
