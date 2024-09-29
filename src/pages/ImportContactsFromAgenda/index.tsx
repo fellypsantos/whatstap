@@ -1,16 +1,21 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { Alert, Linking } from 'react-native';
 import Contacts from 'react-native-contacts';
+import uuid from 'react-native-uuid';
 import { PermissionsAndroid } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import CheckBox from '@react-native-community/checkbox';
-import { Container, BottomButtonContainer, SelectableContactDisplayName, SelectableContactToImport, SelectableContactToImportView, ToggleSelectAllContacts } from './styles';
+import { Container, BottomButtonContainer, SelectableContactDisplayName, SelectableContactToImport, SelectableContactToImportView, ToggleSelectAllContacts, SelectedCountryItemFromContactsToImport, SelectedCountryItemFromContactsToImportLabel } from './styles';
 import ButtonComponent from '../../components/Button';
 import { Contact } from 'react-native-contacts/type';
-import { convertContactToContactImportItem, sortContactsAZ } from './services/contactImportService';
+import { convertContactToContactImportItem, removeCountryCodeFromPhoneNumber, sanitizePhoneNumber, sortContactsAZ } from './services/contactImportService';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useAppTranslation } from '../../hooks/translation';
 import { useNavigation } from '@react-navigation/core';
+import { useSettings } from '../../hooks/settings';
+import { CountryItem, CountryPicker } from 'react-native-country-codes-picker';
+import { useContact } from '../../hooks/contact';
+import { sleep } from '../../utils/helper';
 
 export type ContactImportItemType = Contact & {
   selected: boolean;
@@ -18,10 +23,17 @@ export type ContactImportItemType = Contact & {
 
 export default function ImportContactsFromAgenda() {
   const { Translate } = useAppTranslation();
+  const { settings } = useSettings();
+  const { contacts, addContact, findContactByCountryCodeAndPhoneNumber } = useContact();
   const navigation = useNavigation();
 
+  console.log('contacts', contacts.length);
+
+  const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [allContactsChecked, setAllContactsChecked] = useState(false);
   const [contactsFromAgenda, setContactsFromAgenda] = useState<ContactImportItemType[]>([]);
+  const [selectedCountryForContacts, setSelectedCountryForContacts] = useState<CountryItem | null>(null);
+  const [isImportingContacts, setIsImportingContacts] = useState(false);
 
   const manuallyAllowReadContactsMessage = useCallback(() => {
     Alert.alert(Translate('Alerts.PermissionDenied'), Translate('Alerts.AlowContactAccessFromAppSettings'), [
@@ -74,15 +86,55 @@ export default function ImportContactsFromAgenda() {
     setContactsFromAgenda(contactListToggledState);
   }, [allContactsChecked, contactsFromAgenda]);
 
-  const handleProcessSelectedContacts = useCallback(() => {
-    console.log('---- PREPARE TO IMPORT ----');
+  const handleProcessSelectedContacts = useCallback(async () => {
 
-    contactsFromAgenda.filter((contact) => contact.selected).forEach(contact => {
-      console.log('contact', contact.displayName, 'phone', contact.phoneNumbers);
-    });
+    if (!selectedCountryForContacts) { return; }
 
-    console.log('---- DONE ----');
-  }, [contactsFromAgenda]);
+    const selectedContacts = contactsFromAgenda.filter((contact) => contact.selected);
+
+    setIsImportingContacts(true);
+
+    for (const contact of selectedContacts) {
+      if (contact.phoneNumbers.length === 0) { continue; }
+
+      const phoneNumberWithPlusSign = contact.phoneNumbers.find(phone => phone.number.includes('+'));
+
+      let targetPhoneNumber = null;
+      const firstPhoneNumberOnList = contact.phoneNumbers[0].number;
+
+      targetPhoneNumber = phoneNumberWithPlusSign
+        ? removeCountryCodeFromPhoneNumber(phoneNumberWithPlusSign.number, selectedCountryForContacts.dial_code)
+        : firstPhoneNumberOnList;
+
+      if (!targetPhoneNumber) { continue; }
+
+      const sanitizedPhoneNumber = sanitizePhoneNumber(targetPhoneNumber);
+
+      const contactsFound = await findContactByCountryCodeAndPhoneNumber({
+        countryCode: selectedCountryForContacts.dial_code,
+        phoneNumber: sanitizedPhoneNumber,
+      });
+
+      const isDuplicated = contactsFound.length > 0;
+      if (isDuplicated) { continue; }
+
+      const contactData = {
+        id: uuid.v4().toString(),
+        name: contact.displayName,
+        country_code: selectedCountryForContacts.dial_code,
+        phone: sanitizedPhoneNumber,
+        country: selectedCountryForContacts.name.en,
+        createdAt: new Date(),
+      };
+
+      await sleep(100);
+      addContact(contactData);
+    }
+
+    setIsImportingContacts(false);
+
+  }, [addContact, contactsFromAgenda, findContactByCountryCodeAndPhoneNumber, selectedCountryForContacts]);
+
 
   const countSelectedContactsToImport = useMemo(() => {
     return contactsFromAgenda.reduce((accumulator, currentContact) => {
@@ -122,11 +174,52 @@ export default function ImportContactsFromAgenda() {
         <React.Fragment>
           <FlatList data={contactsFromAgenda} keyExtractor={contact => contact.recordID} renderItem={renderContactListFromAgenda} />
 
+          <React.Fragment>
+            <CountryPicker
+              lang={settings.language}
+              show={showCountryPicker}
+              inputPlaceholder={Translate('searchCountryName')}
+              pickerButtonOnPress={(item) => {
+                setSelectedCountryForContacts(item);
+                setShowCountryPicker(false);
+              }}
+              onBackdropPress={() => setShowCountryPicker(false)}
+              style={{
+                modal: {
+                  height: '75%',
+                },
+                textInput: {
+                  height: 50,
+                  borderRadius: 0,
+                  color: '#333',
+                },
+                flag: {},
+                dialCode: {
+                  color: '#333',
+                  fontWeight: 'bold',
+                },
+                countryName: {
+                  color: '#333',
+                },
+              }}
+            />
+
+            <SelectedCountryItemFromContactsToImport onPress={() => setShowCountryPicker(true)}>
+              {!selectedCountryForContacts && (
+                <SelectedCountryItemFromContactsToImportLabel>Toque aqui e selecione um país.</SelectedCountryItemFromContactsToImportLabel>
+              )}
+
+              {selectedCountryForContacts && (
+                <SelectedCountryItemFromContactsToImportLabel>País: {selectedCountryForContacts?.name[settings.language]}</SelectedCountryItemFromContactsToImportLabel>
+              )}
+            </SelectedCountryItemFromContactsToImport>
+          </React.Fragment>
+
           <BottomButtonContainer>
             <ToggleSelectAllContacts onPress={handleToggleCheckAllContacts}>
               <Icon name={allContactsChecked ? 'square' : 'check-square'} color="#fff" size={18} />
             </ToggleSelectAllContacts>
-            <ButtonComponent text={Translate('Buttons.ImportContacts.Selected')} type="default" onPress={handleProcessSelectedContacts} fillWidth disabled={countSelectedContactsToImport === 0} />
+            <ButtonComponent text={Translate('Buttons.ImportContacts.Selected')} type="default" onPress={handleProcessSelectedContacts} fillWidth disabled={countSelectedContactsToImport === 0 || !selectedCountryForContacts} />
           </BottomButtonContainer>
         </React.Fragment>
       )}
