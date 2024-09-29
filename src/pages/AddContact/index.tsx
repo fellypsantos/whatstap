@@ -11,7 +11,7 @@ import PhoneNumberTextInput from '../../components/PhoneNumberInput';
 import TextField from '../../components/TextField';
 import IContact from '../../interfaces/IContact';
 import AppMargin from '../../components/AppMargin';
-import { ActivityIndicator, Alert, ScrollView } from 'react-native';
+import { ActivityIndicator, Alert, ScrollView, ToastAndroid } from 'react-native';
 import { useAppTranslation } from '../../hooks/translation';
 import { useSettings } from '../../hooks/settings';
 import { GetRandomBoolean } from '../../utils/random';
@@ -56,8 +56,10 @@ const AddContact: React.FC = () => {
         createdAt: new Date(),
       });
 
+      ToastAndroid.show(Translate('Toast.Contact.Added'), ToastAndroid.LONG);
+
       if (adLoaded) {
-        if (__DEV__) console.log('Good! Ad is loaded, let show now.');
+        if (__DEV__) { console.log('Good! Ad is loaded, let show now.'); }
         interstitial.show();
       }
 
@@ -66,7 +68,7 @@ const AddContact: React.FC = () => {
       }
 
       setProcessing(false);
-      if (!adLoaded) navigation.goBack();
+      if (!adLoaded) { navigation.goBack(); }
     }, 3000);
   }, [contact, addContact, openWhatsAppChecked, navigation, openWhatsApp, adLoaded, Translate]);
 
@@ -97,7 +99,7 @@ const AddContact: React.FC = () => {
 
     if (!adLoaded && wantShowAd) {
       interstitial.load();
-      if (__DEV__) console.log('Requesting ad to AdMob Network');
+      if (__DEV__) { console.log('Requesting ad to AdMob Network'); }
     }
 
     // Unsubscribe from events on unmount
@@ -110,19 +112,15 @@ const AddContact: React.FC = () => {
   // HANDLE AD_CLOSE
   useEffect(() => {
     if (adLoaded && adClosed) {
-      if (__DEV__) console.log('Ad was closed by user');
-      if (openWhatsAppChecked) openWhatsApp(contact.phone);
+      if (__DEV__) { console.log('Ad was closed by user'); }
+      if (openWhatsAppChecked) { openWhatsApp(contact.phone); }
       navigation.goBack();
     }
   }, [adLoaded, adClosed, contact.phone, openWhatsApp, navigation, openWhatsAppChecked]);
 
   return (
     <AppStructure
-      sectionName={Translate('addContact')}
-      headerMenuOptions={{
-        icon: 'trash',
-        onPress: () => navigation.goBack(),
-      }}>
+      sectionName={Translate('addContact')}>
       <ScrollView>
         <AppMargin>
           <>
