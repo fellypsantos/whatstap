@@ -7,8 +7,8 @@ export const convertContactToContactImportItem = (contacts: Contact[], defaultSe
 
 export const sortContactsAZ = (contacts: Contact[]): Contact[] => {
     return contacts.sort((a, b) => {
-        const nameA = a.displayName.toLowerCase();
-        const nameB = b.displayName.toLowerCase();
+        const nameA = a.displayName?.toLowerCase();
+        const nameB = b.displayName?.toLowerCase();
 
         if (nameA < nameB) {
             return -1;
@@ -18,6 +18,10 @@ export const sortContactsAZ = (contacts: Contact[]): Contact[] => {
         }
         return 0;
     });
+};
+
+export const filterValidContacts = (contacts: Contact[]): Contact[] => {
+    return contacts.filter(contact => contact.phoneNumbers.length > 0);
 };
 
 export const sanitizePhoneNumber = (phoneNumber: string) => {

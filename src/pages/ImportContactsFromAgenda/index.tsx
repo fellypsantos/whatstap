@@ -8,7 +8,7 @@ import CheckBox from '@react-native-community/checkbox';
 import { Container, BottomButtonContainer, SelectableContactDisplayName, SelectableContactToImport, SelectableContactToImportView, ToggleSelectAllContacts, SelectedCountryItemFromContactsToImport, SelectedCountryItemFromContactsToImportLabel, LoadingProgressContainer, LoadingProgressText } from './styles';
 import ButtonComponent from '../../components/Button';
 import { Contact } from 'react-native-contacts/type';
-import { convertContactToContactImportItem, removeCountryCodeFromPhoneNumber, sanitizePhoneNumber, sortContactsAZ } from './services/contactImportService';
+import { convertContactToContactImportItem, filterValidContacts, removeCountryCodeFromPhoneNumber, sanitizePhoneNumber, sortContactsAZ } from './services/contactImportService';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useAppTranslation } from '../../hooks/translation';
 import { useNavigation } from '@react-navigation/core';
@@ -57,7 +57,8 @@ export default function ImportContactsFromAgenda() {
           Contacts.getAll()
             .then((contacts: Contact[]) => {
               const sortedContactsAZ = sortContactsAZ(contacts);
-              const contactsImportList = convertContactToContactImportItem(sortedContactsAZ);
+              const validContacts = filterValidContacts(sortedContactsAZ);
+              const contactsImportList = convertContactToContactImportItem(validContacts);
               setContactsFromAgenda(contactsImportList);
             })
             .catch(e => {
