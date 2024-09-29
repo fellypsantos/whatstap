@@ -18,7 +18,7 @@ export default function SearchInput({ onSearchContentChange }: SearchInputType) 
 
   return (
     <SearchContainer>
-      <SearchInputField value={searchContent} placeholder={Translate('searchPlaceholder')} placeholderTextColor="#aaa" onChangeText={(text: string) => setSearchContent(text)} />
+      <SearchInputField value={searchContent} placeholder={Translate('searchPlaceholder')} placeholderTextColor="#aaa" onChangeText={(text: string) => setSearchContent(text)} autoFocus={false} />
 
       <ClearButtonSearchContact onPress={() => setSearchContent('')}>
         <Icon name="times" color="#999" size={20} />
