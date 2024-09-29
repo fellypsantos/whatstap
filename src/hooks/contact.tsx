@@ -39,7 +39,7 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
         const { id, name, country_code, phone, country, createdAt } = contact;
 
         DataBase.db.transaction(tx => {
-          tx.executeSql('INSERT INTO contacts(id, name, country_code, phone, country, createdAt) VALUES(?,?,?,?,?,?)', [id, name, country_code, phone, country, createdAt], (_, result) => {
+          tx.executeSql('INSERT INTO contacts(id, name, country_code, phone, country, createdAt) VALUES(?,?,?,?,?,?)', [id, name, country_code, phone, country, createdAt.toString()], (_, result) => {
             if (result.rowsAffected === 1) {
               setContacts((prevContacts) => [contact, ...prevContacts]);
             } else { throw new Error(Translate('Toast.Contact.FailedToAdd')); }
