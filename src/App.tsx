@@ -12,12 +12,12 @@ import Stack from './routes/Stack';
 import AdMobBanner from './components/AdMobBanner';
 import { OpenApp } from './AdMob';
 import '../i18n.config';
-import { GetRandomBoolean } from './utils/random';
+import { CalculateChanceToDisplayAppOpenAd } from './utils/random';
 
 PushNotification.configure({
   onRegister: token => __DEV__ && console.log('Firebase Token is: ', token),
   onNotification: notification => {
-    if (__DEV__) console.log('onNotification', notification);
+    if (__DEV__) { console.log('onNotification', notification); }
     // console.warn('Notification received inside Context!', notification);
     // if (notification.userInteraction === true) {
     //   console.warn('setAppNotification');
@@ -83,8 +83,8 @@ const App: React.FC = () => {
 
     const unsubscrubeAppState = AppState.addEventListener('change', nextAppState => {
       if (appState.current.match(/inactive|background/) && nextAppState === 'active' && appOpenAd.loaded) {
-        const shouldDisplayAd = GetRandomBoolean();
-        if (shouldDisplayAd) appOpenAd.show();
+        const shouldDisplayAd = CalculateChanceToDisplayAppOpenAd();
+        if (shouldDisplayAd) { appOpenAd.show(); }
       }
 
       appState.current = nextAppState;
