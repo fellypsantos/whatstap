@@ -14,7 +14,7 @@ import AppMargin from '../../components/AppMargin';
 import { ActivityIndicator, Alert, ScrollView, ToastAndroid } from 'react-native';
 import { useAppTranslation } from '../../hooks/translation';
 import { useSettings } from '../../hooks/settings';
-import { GetRandomBoolean } from '../../utils/random';
+import { CalculateChanceToDisplayAppOpenAd } from '../../utils/random';
 
 const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
 
@@ -27,7 +27,7 @@ const AddContact: React.FC = () => {
   const [disabledPhoneMask, setDisabledPhoneMask] = useState(() => settings.disabled_phone_mask);
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [openWhatsAppChecked, setOpenWhatsAppChecked] = useState(false);
-  const wantShowAd = useMemo(() => GetRandomBoolean(), []);
+  const wantShowAd = useMemo(() => CalculateChanceToDisplayAppOpenAd(true), []);
 
   const navigation = useNavigation();
   const { Translate } = useAppTranslation();
