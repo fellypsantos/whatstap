@@ -53,8 +53,16 @@ const HeaderBar: React.FC = () => {
 
   const dropdownHeaderMenu = useMemo(
     () => ({
-      indexes: { LANGUAGE: 0, IMPORT_CONTACTS_FROM_AGENDA: 1 },
-      options: [{ title: Translate('Settings.AppLanguage') }, { title: Translate('importContactsFromAgenda') }],
+      indexes: {
+        LANGUAGE: 0,
+        IMPORT_CONTACTS_FROM_AGENDA: 1,
+        IMPORT_CONTACTS_FROM_FILE: 2,
+      },
+      options: [
+        { title: Translate('Settings.AppLanguage') },
+        { title: Translate('importContactsFromAgenda') },
+        { title: Translate('importContactsFromFile') },
+      ],
     }),
     [Translate],
   );
@@ -70,8 +78,13 @@ const HeaderBar: React.FC = () => {
         navigation.navigate('ImportContactsFromAgenda');
         return;
       }
+
+      if (optionIndex === dropdownHeaderMenu.indexes.IMPORT_CONTACTS_FROM_FILE) {
+        navigation.navigate('ImportContactsFromFile');
+        return;
+      }
     },
-    [dropdownHeaderMenu.indexes.IMPORT_CONTACTS_FROM_AGENDA, dropdownHeaderMenu.indexes.LANGUAGE, navigation],
+    [dropdownHeaderMenu.indexes.IMPORT_CONTACTS_FROM_AGENDA, dropdownHeaderMenu.indexes.IMPORT_CONTACTS_FROM_FILE, dropdownHeaderMenu.indexes.LANGUAGE, navigation],
   );
 
   return (

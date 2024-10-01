@@ -9,6 +9,7 @@ import AddContact from '../../pages/AddContact';
 import AppProvider from '../../hooks';
 import EditContact from '../../pages/EditContact';
 import ImportContactsFromAgenda from '../../pages/ImportContactsFromAgenda';
+import ImportContactsFromFile from '../../pages/ImportContactsFromFile';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -16,6 +17,7 @@ export type RootStackParamList = {
   EditContact: { contact: IContact };
   SplashScreen: undefined;
   ImportContactsFromAgenda: undefined;
+  ImportContactsFromFile: undefined;
 };
 
 export interface PageProps {
@@ -38,6 +40,7 @@ const Stack: React.FC = () => (
       <Screen name="AddContact" component={AddContact} />
       <Screen name="EditContact" component={EditContact} />
       <Screen name="ImportContactsFromAgenda" component={ImportContactsFromAgenda} />
+      <Screen name="ImportContactsFromFile" component={ImportContactsFromFile} />
     </Navigator>
   </AppProvider>
 );

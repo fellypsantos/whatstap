@@ -148,7 +148,7 @@ const Home: React.FC = () => {
               <ButtonComponent
                 text={Translate('addContact')}
                 type="default"
-                onPress={() => {
+                onPress={async () => {
                   navigation.navigate('AddContact');
                 }}
               />

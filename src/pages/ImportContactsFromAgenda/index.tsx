@@ -255,11 +255,11 @@ export default function ImportContactsFromAgenda() {
 
                   <SelectedCountryItemFromContactsToImport onPress={() => setShowCountryPicker(true)}>
                     {!selectedCountryForContacts && (
-                      <SelectedCountryItemFromContactsToImportLabel>Toque aqui e selecione um país.</SelectedCountryItemFromContactsToImportLabel>
+                      <SelectedCountryItemFromContactsToImportLabel>{Translate('TouchToSelectCountry')}</SelectedCountryItemFromContactsToImportLabel>
                     )}
 
                     {selectedCountryForContacts && (
-                      <SelectedCountryItemFromContactsToImportLabel>País: {selectedCountryForContacts?.name[settings.language]}</SelectedCountryItemFromContactsToImportLabel>
+                      <SelectedCountryItemFromContactsToImportLabel>{Translate('Country')}: {selectedCountryForContacts?.name[settings.language]}</SelectedCountryItemFromContactsToImportLabel>
                     )}
                   </SelectedCountryItemFromContactsToImport>
                 </React.Fragment>
