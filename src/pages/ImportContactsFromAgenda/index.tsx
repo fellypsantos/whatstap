@@ -64,6 +64,11 @@ export default function ImportContactsFromAgenda() {
         if (res === 'granted') {
           Contacts.getAll()
             .then((contacts: Contact[]) => {
+              if (contacts.length === 0) {
+                return Alert.alert('Ops!', 'Nenhum contato foi encontrado na sua agenda telefônica.', [
+                  { text: 'OK', style: 'default', onPress: () => navigation.goBack() },
+                ]);
+              }
               const sortedContactsAZ = sortContactsAZ(contacts);
               const validContacts = filterValidContacts(sortedContactsAZ);
               const contactsImportList = convertContactToContactImportItem(validContacts);
@@ -74,10 +79,11 @@ export default function ImportContactsFromAgenda() {
             });
         }
       })
-      .catch(error => {
-        console.error('Permission error: ', error);
+      .catch(err => {
+        const error = err as Error;
+        Alert.alert('Ops', error.message, [{ text: 'OK', style: 'default' }]);
       });
-  }, [Translate, manuallyAllowReadContactsMessage]);
+  }, [Translate, manuallyAllowReadContactsMessage, navigation]);
 
   const handleToggleCheckContact = useCallback((contactToToggleChecState: ContactImportItemType) => {
     const updatedContactList = contactsFromAgenda.map(contact => {
