@@ -15,6 +15,7 @@ import RNFS from 'react-native-fs';
 
 import { useContact } from '../../hooks/contact';
 import { useDataProcessor } from './hooks/useDataProcessor';
+import { Alert } from 'react-native';
 
 const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
 
@@ -58,8 +59,8 @@ export default function ImportContactsFromFile() {
             }
 
         } catch (err) {
-            // see error handling
-            console.log('err', err);
+            const error = err as Error;
+            Alert.alert('Ops!', error.message, [{ text: 'OK', style: 'default' }]);
         }
     }, [processContactsFromFile]);
 
