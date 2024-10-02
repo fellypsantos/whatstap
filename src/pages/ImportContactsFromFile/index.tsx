@@ -10,11 +10,11 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useAppTranslation } from '../../hooks/translation';
 import { useNavigation } from '@react-navigation/core';
 import { TestIds, InterstitialAd, AdEventType } from 'react-native-google-mobile-ads';
-import DocumentPicker from 'react-native-document-picker';
+import DocumentPicker, { } from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 
 import { useContact } from '../../hooks/contact';
-import { sleep } from '../../utils/helper';
+import { useDataProcessor } from './hooks/useDataProcessor';
 
 const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
 
@@ -26,6 +26,7 @@ export type ContactImportItemType = Contact & {
 export default function ImportContactsFromFile() {
     const { Translate } = useAppTranslation();
     const { addContact, findContactByCountryCodeAndPhoneNumber } = useContact();
+    const { processContactsFromFile } = useDataProcessor();
     const navigation = useNavigation();
 
     const [allContactsChecked, setAllContactsChecked] = useState(false);
@@ -40,23 +41,27 @@ export default function ImportContactsFromFile() {
         try {
             const [result] = await DocumentPicker.pick({
                 mode: 'open',
-                type: [DocumentPicker.types.json],
+                type: [DocumentPicker.types.json, DocumentPicker.types.csv, 'text/comma-separated-values'],
             });
 
-            const fileUri = result.uri;
-            console.log('result is', fileUri);
+            const { name, uri } = result;
+            const content = await RNFS.readFile(uri, 'utf8');
 
-            // Assuming it's a JSON file, read the content
-            const content = await RNFS.readFile(fileUri, 'utf8');
-            const parsedJson = JSON.parse(content);  // Parse the JSON content
+            if (name?.includes('.csv')) {
+                processContactsFromFile(content, 'csv');
+                return;
+            }
 
-            console.log('parsedJson', parsedJson, parsedJson.length);
+            if (name?.includes('.json')) {
+                processContactsFromFile(content, 'json');
+                return;
+            }
 
         } catch (err) {
             // see error handling
             console.log('err', err);
         }
-    }, []);
+    }, [processContactsFromFile]);
 
     const handleToggleCheckContact = useCallback((contactToToggleChecState: ContactImportItemType) => {
         const updatedContactList = contactsFromAgenda.map(contact => {
@@ -158,7 +163,7 @@ export default function ImportContactsFromFile() {
                                     <ToggleSelectAllContacts onPress={handleToggleCheckAllContacts}>
                                         <Icon name={allContactsChecked ? 'square' : 'check-square'} color="#fff" size={18} />
                                     </ToggleSelectAllContacts>
-                                    <ButtonComponent text={Translate('Buttons.ImportContacts.Selected')} type="default" onPress={handleProcessSelectedContacts} fillWidth disabled={countSelectedContactsToImport === 0 || !selectedCountryForContacts} />
+                                    <ButtonComponent text={Translate('Buttons.ImportContacts.Selected')} type="default" onPress={handleProcessSelectedContacts} fillWidth disabled={countSelectedContactsToImport === 0} />
                                 </BottomButtonContainer>
                             </React.Fragment>
                         )
