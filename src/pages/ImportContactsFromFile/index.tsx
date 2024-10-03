@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { ActivityIndicator, ToastAndroid } from 'react-native';
+import uuid from 'react-native-uuid';
 import { FlatList } from 'react-native-gesture-handler';
 import CheckBox from '@react-native-community/checkbox';
 import { Container, BottomButtonContainer, SelectableContactDisplayName, SelectableContactToImport, SelectableContactToImportView, ToggleSelectAllContacts, SelectedCountryItemFromContactsToImport, SelectedCountryItemFromContactsToImportLabel, LoadingProgressContainer, LoadingProgressText, TopWarningText } from './styles';
@@ -54,7 +55,7 @@ export default function ImportContactsFromFile() {
 
             if (name?.includes('.csv')) {
                 const responseAfterCSV = processContactsFromFile(content, 'csv');
-                console.log('responseAfterCSV', responseAfterCSV);
+                setContactsFromFile(responseAfterCSV);
                 return;
             }
 
@@ -88,8 +89,39 @@ export default function ImportContactsFromFile() {
     const selectedContacts = useMemo(() => contactsFromFile.filter((contact) => contact.selected), [contactsFromFile]);
 
     const handleProcessSelectedContacts = useCallback(async () => {
-        console.log('selectedContacts', selectedContacts);
-    }, [selectedContacts]);
+        setIsImportingContacts(true);
+
+        for (const contact of selectedContacts) {
+            const contactsFound = await findContactByCountryCodeAndPhoneNumber({
+                countryCode: contact.country_code,
+                phoneNumber: contact.phone,
+            });
+
+            const isDuplicated = contactsFound.length > 0;
+            if (isDuplicated) { continue; }
+
+            const contactData = {
+                id: uuid.v4().toString(),
+                name: contact.name,
+                country_code: contact.country_code,
+                phone: contact.phone,
+                country: '',
+                createdAt: new Date(),
+            };
+
+            addContact(contactData);
+            setProcessedContactsCount((prevState) => prevState + 1);
+        }
+
+        setIsImportingContacts(false);
+
+        if (adLoaded) { interstitial.show(); }
+
+        ToastAndroid.show(Translate('Toast.Contact.Imported'), ToastAndroid.SHORT);
+
+        if (!adLoaded) { navigation.goBack(); }
+
+    }, [Translate, adLoaded, addContact, findContactByCountryCodeAndPhoneNumber, navigation, selectedContacts]);
 
     const countSelectedContactsToImport = useMemo(() => {
         return contactsFromFile.reduce((accumulator, currentContact) => {
