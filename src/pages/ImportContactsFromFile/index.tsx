@@ -1,11 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, ToastAndroid } from 'react-native';
-import uuid from 'react-native-uuid';
+import { ActivityIndicator } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import CheckBox from '@react-native-community/checkbox';
 import { Container, BottomButtonContainer, SelectableContactDisplayName, SelectableContactToImport, SelectableContactToImportView, ToggleSelectAllContacts, SelectedCountryItemFromContactsToImport, SelectedCountryItemFromContactsToImportLabel, LoadingProgressContainer, LoadingProgressText, TopWarningText } from './styles';
 import ButtonComponent from '../../components/Button';
-import { Contact } from 'react-native-contacts/type';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useAppTranslation } from '../../hooks/translation';
 import { useNavigation } from '@react-navigation/core';
@@ -19,19 +17,25 @@ import { Alert } from 'react-native';
 
 const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
 
+export type ContactItemFromFile = {
+    id: string;
+    name: string;
+    country_code: string;
+    phone: string;
+}
 
-export type ContactImportItemType = Contact & {
+export type ContactImportItemFromFile = ContactItemFromFile & {
     selected: boolean;
 }
 
 export default function ImportContactsFromFile() {
     const { Translate } = useAppTranslation();
     const { addContact, findContactByCountryCodeAndPhoneNumber } = useContact();
-    const { processContactsFromFile } = useDataProcessor();
+    const { processContactsFromFile } = useDataProcessor(Translate);
     const navigation = useNavigation();
 
     const [allContactsChecked, setAllContactsChecked] = useState(false);
-    const [contactsFromAgenda, setContactsFromAgenda] = useState<ContactImportItemType[]>([]);
+    const [contactsFromFile, setContactsFromFile] = useState<ContactImportItemFromFile[]>([]);
     const [isImportingContacts, setIsImportingContacts] = useState(false);
     const [processedContactsCount, setProcessedContactsCount] = useState<number>(0);
 
@@ -49,12 +53,14 @@ export default function ImportContactsFromFile() {
             const content = await RNFS.readFile(uri, 'utf8');
 
             if (name?.includes('.csv')) {
-                processContactsFromFile(content, 'csv');
+                const responseAfterCSV = processContactsFromFile(content, 'csv');
+                console.log('responseAfterCSV', responseAfterCSV);
                 return;
             }
 
             if (name?.includes('.json')) {
-                processContactsFromFile(content, 'json');
+                const responseAfterJSON = processContactsFromFile(content, 'json');
+                setContactsFromFile(responseAfterJSON);
                 return;
             }
 
@@ -64,34 +70,32 @@ export default function ImportContactsFromFile() {
         }
     }, [processContactsFromFile]);
 
-    const handleToggleCheckContact = useCallback((contactToToggleChecState: ContactImportItemType) => {
-        const updatedContactList = contactsFromAgenda.map(contact => {
-            if (contact.recordID === contactToToggleChecState.recordID) { return { ...contact, selected: !contact.selected }; }
+    const handleToggleCheckContact = useCallback((contactToToggleChecState: ContactImportItemFromFile) => {
+        const updatedContactList = contactsFromFile.map(contact => {
+            if (contact.id === contactToToggleChecState.id) { return { ...contact, selected: !contact.selected }; }
             return contact;
         });
 
-        setContactsFromAgenda(updatedContactList);
-    }, [contactsFromAgenda]);
+        setContactsFromFile(updatedContactList);
+    }, [contactsFromFile]);
 
     const handleToggleCheckAllContacts = useCallback(() => {
-        const contactListToggledState = contactsFromAgenda.map(contact => ({ ...contact, selected: !allContactsChecked }));
+        const contactListToggledState = contactsFromFile.map(contact => ({ ...contact, selected: !allContactsChecked }));
         setAllContactsChecked(!allContactsChecked);
-        setContactsFromAgenda(contactListToggledState);
-    }, [allContactsChecked, contactsFromAgenda]);
+        setContactsFromFile(contactListToggledState);
+    }, [allContactsChecked, contactsFromFile]);
 
-    const selectedContacts = useMemo(() => contactsFromAgenda.filter((contact) => contact.selected), [contactsFromAgenda]);
+    const selectedContacts = useMemo(() => contactsFromFile.filter((contact) => contact.selected), [contactsFromFile]);
 
     const handleProcessSelectedContacts = useCallback(async () => {
-
-        // todo
-
-    }, []);
+        console.log('selectedContacts', selectedContacts);
+    }, [selectedContacts]);
 
     const countSelectedContactsToImport = useMemo(() => {
-        return contactsFromAgenda.reduce((accumulator, currentContact) => {
+        return contactsFromFile.reduce((accumulator, currentContact) => {
             return currentContact.selected ? accumulator + 1 : accumulator;
         }, 0);
-    }, [contactsFromAgenda]);
+    }, [contactsFromFile]);
 
     useEffect(() => {
         const unsubscribeLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => setAdLoaded(true));
@@ -118,15 +122,15 @@ export default function ImportContactsFromFile() {
     }, [adLoaded, adClosed, navigation]);
 
     const renderContactListFromAgenda = useCallback(
-        ({ item }: { item: ContactImportItemType }) => (
+        ({ item }: { item: ContactImportItemFromFile }) => (
             <SelectableContactToImport
-                key={item.recordID}
+                key={item.id}
                 onPress={() => {
                     handleToggleCheckContact(item);
                 }}>
                 <SelectableContactToImportView>
                     <CheckBox value={item.selected} tintColors={{ true: '#5467FB' }} />
-                    <SelectableContactDisplayName>{item.displayName}</SelectableContactDisplayName>
+                    <SelectableContactDisplayName>{item.name}</SelectableContactDisplayName>
                 </SelectableContactToImportView>
             </SelectableContactToImport>
         ),
@@ -136,19 +140,19 @@ export default function ImportContactsFromFile() {
     return (
 
         <React.Fragment>
-            {contactsFromAgenda.length === 0 && (
+            {contactsFromFile.length === 0 && (
                 <Container>
-                    <ButtonComponent text={'Selecionar arquivo'} type="default" onPress={handleReadContactsFromFile} />
+                    <ButtonComponent text={Translate('SelectFile')} type="default" onPress={handleReadContactsFromFile} />
                     <ButtonComponent text={Translate('Buttons.Back')} type="cancel" onPress={() => {
                         navigation.goBack();
                     }} />
                 </Container>
             )}
 
-            {contactsFromAgenda.length > 0 && (
+            {contactsFromFile.length > 0 && (
                 <React.Fragment>
                     <TopWarningText>{Translate('AlreadyStoredPhoneNumbersWillBeIgnored')}</TopWarningText>
-                    <FlatList data={contactsFromAgenda} keyExtractor={contact => contact.recordID} renderItem={renderContactListFromAgenda} />
+                    <FlatList data={contactsFromFile} keyExtractor={contact => contact.id} renderItem={renderContactListFromAgenda} />
 
                     {isImportingContacts && (
                         <LoadingProgressContainer>
