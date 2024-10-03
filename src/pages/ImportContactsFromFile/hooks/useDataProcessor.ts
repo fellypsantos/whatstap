@@ -1,9 +1,12 @@
 import { useCallback } from 'react';
 import { readString } from 'react-native-csv';
+import { ContactImportItemFromFile, ContactItemFromFile } from '..';
+import { TFunction } from 'i18next';
+import uuid from 'react-native-uuid';
 
 type FileType = 'json' | 'csv';
 
-export const useDataProcessor = () => {
+export const useDataProcessor = (Translate: TFunction) => {
     const removeEmojis = (text: string): string => {
         return text.replace(/[\u{1F600}-\u{1F64F}]/gu, '') // Emoticons
             .replace(/[\u{1F300}-\u{1F5FF}]/gu, '') // Miscellaneous Symbols and Pictographs
@@ -18,26 +21,63 @@ export const useDataProcessor = () => {
             .replace(/[\u{2700}-\u{27BF}]/gu, '');  // Dingbats
     };
 
-    const processJSON = useCallback((data: string): string => {
-        const parsedContent = JSON.parse(data);
-        console.log(parsedContent.length);
-        return '';
+    const isValidContact = useCallback((item: ContactItemFromFile) => {
+        return (
+            typeof item.name === 'string' &&
+            typeof item.country_code === 'string' &&
+            typeof item.phone === 'string'
+        );
     }, []);
 
-    const processCSV = useCallback((data: string): string => {
+    const generateContactItemData = useCallback((item: ContactItemFromFile) => {
+        return {
+            selected: false,
+            id: uuid.v4().toString(),
+            name: item.name,
+            country_code: item.country_code,
+            phone: item.phone,
+        };
+    }, []);
+
+    const validateContactListFromFile = useCallback((contactsFromFile: ContactItemFromFile[]) => {
+        contactsFromFile.forEach((contactFromFile) => {
+            const isValid = isValidContact(contactFromFile);
+            if (!isValid) {
+                throw new Error(`${Translate('ImportContactFromFileFailed')}: \n\n` + JSON.stringify(contactFromFile));
+            }
+        });
+    }, [Translate, isValidContact]);
+
+    const processJSON = useCallback((data: string): ContactImportItemFromFile[] => {
+        const parsedContacts = JSON.parse(data);
+
+        const contactImportList: ContactImportItemFromFile[] = parsedContacts.map((item: ContactItemFromFile): ContactImportItemFromFile => {
+            return generateContactItemData(item);
+        });
+
+        validateContactListFromFile(contactImportList);
+
+        return contactImportList;
+    }, [generateContactItemData, validateContactListFromFile]);
+
+    const processCSV = useCallback((data: string): ContactImportItemFromFile[] => {
         const response = readString(removeEmojis(data), {
             header: true,
             skipEmptyLines: true,
         });
 
-        console.log(response.data.length);
+        const importedContent = response.data as ContactItemFromFile[];
 
-        return '';
-    }, []);
+        const contactImportList: ContactImportItemFromFile[] = importedContent.map((item: ContactItemFromFile): ContactImportItemFromFile => {
+            return generateContactItemData(item);
+        });
 
+        validateContactListFromFile(contactImportList);
 
+        return contactImportList;
+    }, [generateContactItemData, validateContactListFromFile]);
 
-    const processContactsFromFile = useCallback((data: string, fileType: FileType): string => {
+    const processContactsFromFile = useCallback((data: string, fileType: FileType): ContactImportItemFromFile[] => {
         if (fileType === 'csv') { return processCSV(data); }
         if (fileType === 'json') { return processJSON(data); }
         throw new Error('Unsupported file type');
