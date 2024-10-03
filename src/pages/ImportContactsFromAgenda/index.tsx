@@ -65,7 +65,7 @@ export default function ImportContactsFromAgenda() {
           Contacts.getAll()
             .then((contacts: Contact[]) => {
               if (contacts.length === 0) {
-                return Alert.alert('Ops!', 'Nenhum contato foi encontrado na sua agenda telefônica.', [
+                return Alert.alert('Ops!', Translate('NoContactsInAgenda'), [
                   { text: 'OK', style: 'default', onPress: () => navigation.goBack() },
                 ]);
               }
