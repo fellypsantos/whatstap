@@ -83,8 +83,8 @@ android {
         applicationId "com.fellypsantos.whatstap"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 20241003
+        versionName "3.0"
     }
     signingConfigs {
         debug {
