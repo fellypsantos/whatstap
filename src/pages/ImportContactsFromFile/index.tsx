@@ -3,7 +3,7 @@ import { ActivityIndicator, ToastAndroid } from 'react-native';
 import uuid from 'react-native-uuid';
 import { FlatList } from 'react-native-gesture-handler';
 import CheckBox from '@react-native-community/checkbox';
-import { Container, BottomButtonContainer, SelectableContactDisplayName, SelectableContactToImport, SelectableContactToImportView, ToggleSelectAllContacts, SelectedCountryItemFromContactsToImport, SelectedCountryItemFromContactsToImportLabel, LoadingProgressContainer, LoadingProgressText, TopWarningText } from './styles';
+import { Container, BottomButtonContainer, SelectableContactDisplayName, SelectableContactToImport, SelectableContactToImportView, ToggleSelectAllContacts, LoadingProgressContainer, LoadingProgressText, TopWarningText } from './styles';
 import ButtonComponent from '../../components/Button';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useAppTranslation } from '../../hooks/translation';
