@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, ToastAndroid } from 'react-native';
+import { ActivityIndicator, Image, Modal, ToastAndroid } from 'react-native';
 import uuid from 'react-native-uuid';
 import { FlatList } from 'react-native-gesture-handler';
 import CheckBox from '@react-native-community/checkbox';
-import { Container, BottomButtonContainer, SelectableContactDisplayName, SelectableContactToImport, SelectableContactToImportView, ToggleSelectAllContacts, LoadingProgressContainer, LoadingProgressText, TopWarningText } from './styles';
+import { Container, BottomButtonContainer, SelectableContactDisplayName, SelectableContactToImport, SelectableContactToImportView, ToggleSelectAllContacts, LoadingProgressContainer, LoadingProgressText, TopWarningText, Column, ModalImagesContainer, ModalImageTitle, ModalImagesContainerScrollView, ModalCloseButton, DescriptionText } from './styles';
 import ButtonComponent from '../../components/Button';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useAppTranslation } from '../../hooks/translation';
@@ -15,6 +15,9 @@ import RNFS from 'react-native-fs';
 import { useContact } from '../../hooks/contact';
 import { useDataProcessor } from './hooks/useDataProcessor';
 import { Alert } from 'react-native';
+
+import SampleJsonImage from '../../assets/images/contact-file-sample/sample-json.png';
+import SampleCsvImage from '../../assets/images/contact-file-sample/sample-csv.png';
 
 const interstitial = InterstitialAd.createForAdRequest(TestIds.INTERSTITIAL);
 
@@ -40,6 +43,7 @@ export default function ImportContactsFromFile() {
     const [isImportingContacts, setIsImportingContacts] = useState(false);
     const [processedContactsCount, setProcessedContactsCount] = useState<number>(0);
 
+    const [showModal, setShowModal] = useState(false);
     const [adLoaded, setAdLoaded] = useState(false);
     const [adClosed, setAdClosed] = useState(false);
 
@@ -68,6 +72,7 @@ export default function ImportContactsFromFile() {
         } catch (err) {
             const error = err as Error;
             Alert.alert('Ops!', error.message, [{ text: 'OK', style: 'default' }]);
+            ToastAndroid.show(error.message, ToastAndroid.LONG);
         }
     }, [processContactsFromFile]);
 
@@ -170,14 +175,42 @@ export default function ImportContactsFromFile() {
     );
 
     return (
-
         <React.Fragment>
+            <Modal visible={showModal} animationType="fade">
+                <ModalImagesContainerScrollView>
+
+                    <ModalCloseButton onPress={() => setShowModal(false)}>
+                        <Icon name="times" color="#fff" size={16} />
+                    </ModalCloseButton>
+
+                    <ModalImagesContainer>
+                        <ModalImageTitle>JSON</ModalImageTitle>
+                        <Image source={SampleJsonImage} resizeMode="contain" />
+                    </ModalImagesContainer>
+
+                    <ModalImagesContainer>
+                        <ModalImageTitle>CSV</ModalImageTitle>
+                        <Image source={SampleCsvImage} />
+                    </ModalImagesContainer>
+                </ModalImagesContainerScrollView>
+            </Modal>
+
             {contactsFromFile.length === 0 && (
                 <Container>
-                    <ButtonComponent text={Translate('SelectFile')} type="default" onPress={handleReadContactsFromFile} />
-                    <ButtonComponent text={Translate('Buttons.Back')} type="cancel" onPress={() => {
-                        navigation.goBack();
-                    }} />
+                    <DescriptionText>{Translate('ImportContactsFromFileDescription')}</DescriptionText>
+
+                    <Column>
+                        <ButtonComponent text={Translate('ContactFileExample')} type="default" onPress={() => {
+                            setShowModal(true);
+                        }} />
+                    </Column>
+
+                    <Column>
+                        <ButtonComponent text={Translate('SelectFile')} type="default" onPress={handleReadContactsFromFile} />
+                        <ButtonComponent text={Translate('Buttons.Back')} type="cancel" marginLeft onPress={() => {
+                            navigation.goBack();
+                        }} />
+                    </Column>
                 </Container>
             )}
 

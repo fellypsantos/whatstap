@@ -8,6 +8,19 @@ export const Container = styled.View`
   justify-content: center;
 `;
 
+export const Column = styled.View`
+  margin: 0px 5px;
+  flex-direction: row;
+`;
+
+export const DescriptionText = styled.Text`
+font-family:'Ubuntu-R';
+  color: #666;
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 25px;
+`;
+
 export const SelectableContactToImport = styled(RectButton)``;
 
 export const SelectableContactToImportView = styled.View`
@@ -68,10 +81,41 @@ export const LoadingProgressText = styled.Text`
 `;
 
 export const TopWarningText = styled.Text`
-font-family:'Ubuntu-R';
+  font-family:'Ubuntu-R';
   color: #fff;
   padding: 15px 10px;
   text-align: center;
   background-color: #5467fb;
   font-size: 16px;
+`;
+
+export const ModalImagesContainerScrollView = styled.View`
+  flex: 1;
+  background-color: #1A1B26;
+`;
+
+export const ModalImagesContainer = styled.View`
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+`;
+
+export const ModalImageTitle = styled.Text`
+  font-family:'Ubuntu-R';
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+  background-color: #393c56;
+  font-size: 16px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  align-self: stretch;
+`;
+
+export const ModalCloseButton = styled.TouchableHighlight`
+  justify-content: center;
+  align-items: center;
+  align-self: flex-end;
+  padding: 10px 20px;
+  margin-top: 10px;
 `;
