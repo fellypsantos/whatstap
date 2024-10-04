@@ -49,16 +49,29 @@ export const useDataProcessor = (Translate: TFunction) => {
     }, [Translate, isValidContact]);
 
     const processJSON = useCallback((data: string): ContactImportItemFromFile[] => {
-        const parsedContacts = JSON.parse(data);
+        try {
+            const parsedContacts = JSON.parse(data);
 
-        const contactImportList: ContactImportItemFromFile[] = parsedContacts.map((item: ContactItemFromFile): ContactImportItemFromFile => {
-            return generateContactItemData(item);
-        });
+            const contactImportList: ContactImportItemFromFile[] = parsedContacts.map((item: ContactItemFromFile): ContactImportItemFromFile => {
+                return generateContactItemData(item);
+            });
 
-        validateContactListFromFile(contactImportList);
+            if (contactImportList.length === 0) { throw new Error(Translate('NoContactsInFile')); }
 
-        return contactImportList;
-    }, [generateContactItemData, validateContactListFromFile]);
+            validateContactListFromFile(contactImportList);
+
+            return contactImportList;
+        }
+        catch (err) {
+            const error = err as Error;
+
+            if (error.name === 'SyntaxError') {
+                throw new Error(Translate('ImportContactFromFile.JsonParseError'));
+            }
+
+            throw new Error(error.message);
+        }
+    }, [Translate, generateContactItemData, validateContactListFromFile]);
 
     const processCSV = useCallback((data: string): ContactImportItemFromFile[] => {
         const response = readString(removeEmojis(data), {
@@ -72,10 +85,12 @@ export const useDataProcessor = (Translate: TFunction) => {
             return generateContactItemData(item);
         });
 
+        if (contactImportList.length === 0) { throw new Error(Translate('NoContactsInFile')); }
+
         validateContactListFromFile(contactImportList);
 
         return contactImportList;
-    }, [generateContactItemData, validateContactListFromFile]);
+    }, [Translate, generateContactItemData, validateContactListFromFile]);
 
     const processContactsFromFile = useCallback((data: string, fileType: FileType): ContactImportItemFromFile[] => {
         if (fileType === 'csv') { return processCSV(data); }
