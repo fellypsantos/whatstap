@@ -6,11 +6,12 @@ interface IButtonProps {
   text: string;
   fillWidth?: boolean;
   disabled?: boolean;
+  marginLeft?: boolean;
   onPress(): void;
 }
 
-const ButtonComponent: React.FC<IButtonProps> = ({ type, text, fillWidth, disabled, onPress }) => (
-  <MainContainer type={type} fillWidth={fillWidth}>
+const ButtonComponent: React.FC<IButtonProps> = ({ type, text, fillWidth, disabled, marginLeft, onPress }) => (
+  <MainContainer type={type} fillWidth={fillWidth} marginLeft={marginLeft}>
     <ButtonContainer type={type} onPress={onPress} disabled={disabled} enabled={!disabled}>
       <ButtonText type={type}>{text}</ButtonText>
     </ButtonContainer>

@@ -5,6 +5,7 @@ interface IButtonStyleProps {
   type: string;
   fillWidth?: boolean;
   disabled?: boolean;
+  marginLeft?: boolean;
 }
 
 export const MainContainer = styled.View<IButtonStyleProps>`
@@ -13,6 +14,7 @@ export const MainContainer = styled.View<IButtonStyleProps>`
   border-radius: 5px;
   overflow: hidden;
   margin-bottom: 10px;
+  margin-left: ${props => props.marginLeft ? '10px' : '0px'};
 
   ${({ fillWidth }) => fillWidth && 'flex: 1;'}`;
 
