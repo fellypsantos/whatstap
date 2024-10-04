@@ -65,7 +65,10 @@ const Home: React.FC = () => {
       }
 
       // search in contact name
-      if (contact.name.toLowerCase().includes(searchContent.toLowerCase())) {
+      const normalizedName = contact.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const normalizedSearchContent = searchContent.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+      if (normalizedName.includes(normalizedSearchContent)) {
         return contact;
       }
     },
