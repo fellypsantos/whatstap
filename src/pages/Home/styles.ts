@@ -11,12 +11,18 @@ export const ContactCard = styled.View`
 
 export const ContactCardRow = styled.View`
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
 `;
 
-export const ContactCardTouchable = styled(RectButton)`
+type ContactCardTouchableType = {
+  reduceMarginLeft?: boolean;
+}
+
+export const ContactCardTouchable = styled(RectButton) <ContactCardTouchableType>`
   flex: 1;
   flex-direction: column;
-  padding: 8px 20px;
+  padding: 8px 20px 8px ${props => props.reduceMarginLeft ? '10px' : '20px'};
 `;
 
 export const ContactMenuButton = styled(ContextMenu)`
