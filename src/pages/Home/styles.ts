@@ -2,6 +2,8 @@ import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ContextMenu from 'react-native-context-menu-view';
 import { RectButton } from 'react-native-gesture-handler';
+import CheckBox from '@react-native-community/checkbox';
+
 
 export const ContactCard = styled.View`
   border-bottom-color: #e3e3e3;
@@ -9,10 +11,15 @@ export const ContactCard = styled.View`
   background-color: #fff;
 `;
 
-export const ContactCardRow = styled.View`
+type ContactCardRowType = {
+  selected?: boolean;
+}
+
+export const ContactCardRow = styled.View<ContactCardRowType>`
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  background-color: ${props => props.selected ? '#d7dcfe' : '#fff'};
 `;
 
 type ContactCardTouchableType = {
@@ -68,4 +75,23 @@ export const ContainerWithMargin = styled.View`
 
 export const ButtonBottomContainer = styled.View`
   margin: 10px 10px 0px 10px;
+`;
+
+export const BottomButtonContainer = styled.View`
+  flex-direction: row;
+  justify-content: center;
+`;
+
+export const ToggleSelectAllContacts = styled(RectButton)`
+  background-color: #5467fb;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  padding: 10px 15px;
+  margin-right: 10px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const CheckBoxComponent = styled(CheckBox)`
+  margin-left: 10px;
 `;

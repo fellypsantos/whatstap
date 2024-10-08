@@ -18,6 +18,9 @@ import {
   NoContactsLabel,
   ContainerWithMargin,
   ButtonBottomContainer,
+  BottomButtonContainer,
+  ToggleSelectAllContacts,
+  CheckBoxComponent,
 } from './styles';
 import { ActivityIndicator, FlatList } from 'react-native';
 
@@ -26,15 +29,16 @@ import { useAppTranslation } from '../../hooks/translation';
 import ButtonComponent from '../../components/Button';
 import SearchInput from '../../components/SearchInput';
 import { isNumeric } from '../../utils/helper';
-import CheckBox from '@react-native-community/checkbox';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const Home: React.FC = () => {
   const { Translate } = useAppTranslation();
-  const { contacts, loading, openWhatsApp, removeContact, clearContacts } = useContact();
+  const { contacts, loading, openWhatsApp, removeContact, clearContacts, deleteContacts } = useContact();
 
   const [searchContent, setSearchContent] = useState<string>('');
   const [isSelectionMode, setIsSelectionMode] = useState<boolean>(false);
   const [selectedContacts, setSelectedContacts] = useState<IContact[]>([]);
+  const [allContactsChecked, setAllContactsChecked] = useState(false);
 
   const navigation = useNavigation<StackNavigationProps>();
 
@@ -92,14 +96,47 @@ const Home: React.FC = () => {
     return selectedContacts.find(contact => contact.id === item.id) != null;
   }, [selectedContacts]);
 
+  const handlePressContactItem = useCallback((item: IContact) => {
+    if (!isSelectionMode) {
+      openWhatsApp(formattedPhoneNumber(item));
+      return;
+    }
+
+    const contactFound = selectedContacts.find(contact => contact.id === item.id);
+
+    if (contactFound) {
+      const filteredSelectedContacts = selectedContacts.filter(contact => contact.id !== item.id);
+      setSelectedContacts(filteredSelectedContacts);
+      return;
+    }
+
+    setSelectedContacts([...selectedContacts, item]);
+  }, [formattedPhoneNumber, isSelectionMode, openWhatsApp, selectedContacts]);
+
+  const handleToggleCheckAllContacts = useCallback(() => {
+    const updatedSelectedContacts = allContactsChecked ? [] : contacts;
+    setSelectedContacts(updatedSelectedContacts);
+    setAllContactsChecked(!allContactsChecked);
+  }, [allContactsChecked, contacts]);
+
+  const handleDeleteSelectedContacts = useCallback(() => {
+    deleteContacts(selectedContacts);
+  }, [deleteContacts, selectedContacts]);
+
   const renderItem = useCallback(
     ({ item }: { item: IContact }) => (
       <ContactCard key={item.id}>
-        <ContactCardRow>
-          {isSelectionMode && <CheckBox value={isContactSelected(item)} tintColors={{ true: '#5467FB' }} />}
+        <ContactCardRow selected={isContactSelected(item)}>
+          {isSelectionMode && (
+            <CheckBoxComponent
+              onChange={() => handlePressContactItem(item)}
+              value={isContactSelected(item)}
+              tintColors={{ true: '#5467FB' }}
+            />
+          )}
 
           <ContactCardTouchable
-            onPress={() => openWhatsApp(formattedPhoneNumber(item))}
+            onPress={() => handlePressContactItem(item)}
             onLongPress={() => handleEnableMultiContactSelection(item)}
             reduceMarginLeft={isSelectionMode}
           >
@@ -111,13 +148,15 @@ const Home: React.FC = () => {
             </ContactLocationContainer>
           </ContactCardTouchable>
 
-          <ContactMenuButton dropdownMenuMode actions={dropdownMenuContactItem.options} onPress={({ nativeEvent }) => handlePressMenuItem(item, nativeEvent.index)}>
-            <ContactMenuButtonIcon name="ellipsis-v" color="#aaa" size={14} />
-          </ContactMenuButton>
+          {!isSelectionMode && (
+            <ContactMenuButton dropdownMenuMode actions={dropdownMenuContactItem.options} onPress={({ nativeEvent }) => handlePressMenuItem(item, nativeEvent.index)}>
+              <ContactMenuButtonIcon name="ellipsis-v" color="#aaa" size={14} />
+            </ContactMenuButton>
+          )}
         </ContactCardRow>
       </ContactCard>
     ),
-    [Translate, dropdownMenuContactItem.options, formattedPhoneNumber, handleEnableMultiContactSelection, handlePressMenuItem, isContactSelected, isSelectionMode, openWhatsApp],
+    [Translate, dropdownMenuContactItem.options, formattedPhoneNumber, handleEnableMultiContactSelection, handlePressContactItem, handlePressMenuItem, isContactSelected, isSelectionMode],
   );
 
   const contactListToRender = useMemo(() => {
@@ -184,11 +223,27 @@ const Home: React.FC = () => {
               }
 
               {isSelectionMode && (
-                <ButtonComponent
-                  text={Translate('cancel')}
-                  type="cancel"
-                  onPress={handleDisableMultiContactSelection}
-                />
+                <React.Fragment>
+                  <BottomButtonContainer>
+                    <ToggleSelectAllContacts onPress={handleToggleCheckAllContacts}>
+                      <Icon name={allContactsChecked ? 'square' : 'check-square'} color="#fff" size={18} />
+                    </ToggleSelectAllContacts>
+
+                    <ButtonComponent
+                      text={Translate('cancel')}
+                      type="cancel"
+                      onPress={handleDisableMultiContactSelection}
+                    />
+
+                    <ButtonComponent
+                      marginLeft
+                      fillWidth fillBackground
+                      text={Translate('DeleteSelected')}
+                      type="cancel"
+                      onPress={handleDeleteSelectedContacts}
+                    />
+                  </BottomButtonContainer>
+                </React.Fragment>
               )}
             </ButtonBottomContainer>
           </React.Fragment>
