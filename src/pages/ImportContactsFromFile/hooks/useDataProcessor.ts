@@ -34,7 +34,7 @@ export const useDataProcessor = (Translate: TFunction) => {
             selected: false,
             id: uuid.v4().toString(),
             name: item.name,
-            country_code: item.country_code,
+            country_code: `+${item.country_code}`,
             phone: item.phone,
         };
     }, []);
