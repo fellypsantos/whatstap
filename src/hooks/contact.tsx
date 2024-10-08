@@ -17,6 +17,7 @@ interface ContactContext {
   addContact(contact: IContact): void;
   editContact(contact: IContact): Promise<boolean>;
   removeContact(contact: IContact): Promise<boolean>;
+  deleteContacts(contactsToDelete: IContact[]): Promise<boolean>;
   openWhatsApp(phone: string): void;
   clearContacts(): void;
   findContactByCountryCodeAndPhoneNumber({ countryCode, phoneNumber }: FindContactByCountryCodeAndPhoneNumberParams): Promise<IContact[]>;
@@ -125,6 +126,47 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
     [contacts, Translate],
   );
 
+  const deleteContacts = useCallback((contactsToDelete: IContact[]): Promise<boolean> => {
+    return new Promise(async (resolve, reject) => {
+      const confirm = await AlertAsync(
+        Translate('Alerts.Warning'),
+        Translate('Confirm.Contact.DeleteSelected'),
+        [
+          { text: Translate('Confirm.Option.No'), onPress: () => false },
+          { text: Translate('Confirm.Option.YesIWant'), onPress: () => true },
+        ],
+        {
+          cancelable: true,
+          onDismiss: () => false,
+        },
+      );
+
+      if (!confirm) { return false; }
+
+      const idsToDelete = contactsToDelete.map(contact => contact.id);
+      const placeholders = idsToDelete.map(() => '?').join(',');
+
+      try {
+        DataBase.db.transaction(tx => {
+          tx.executeSql(`DELETE FROM contacts WHERE id IN (${placeholders})`, idsToDelete, (_, deleteResult) => {
+            if (deleteResult) {
+              const filtered = contacts.filter(item => !idsToDelete.includes(item.id));
+              setContacts(filtered);
+              ToastAndroid.show(Translate('Toast.Contact.SelectedsDeleted'), ToastAndroid.LONG);
+              resolve(deleteResult.rowsAffected > 0);
+            } else { throw new Error(Translate('Toast.Contact.FailedToDelete')); }
+          });
+        });
+      } catch (err) {
+        const error = err as Error;
+        ToastAndroid.show(error.message, ToastAndroid.LONG);
+        reject(error.message);
+      }
+
+      return false;
+    });
+  }, [Translate, contacts]);
+
   const clearContacts = useCallback(async () => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -132,11 +174,11 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
           Translate('Alerts.DangerousAction'),
           Translate('Confirm.Contact.ClearAll'),
           [
+            { text: Translate('Confirm.Option.No'), onPress: () => false },
             {
               text: Translate('Confirm.Option.YesClearHistory'),
               onPress: () => true,
             },
-            { text: Translate('Confirm.Option.No'), onPress: () => false },
           ],
           {
             cancelable: true,
@@ -215,13 +257,14 @@ const ContactProvider: React.FC<ContactProviderProps> = ({ children }) => {
       addContact,
       editContact,
       removeContact,
+      deleteContacts,
       contacts,
       loading,
       openWhatsApp,
       clearContacts,
       findContactByCountryCodeAndPhoneNumber,
     }),
-    [addContact, editContact, removeContact, contacts, loading, openWhatsApp, clearContacts, findContactByCountryCodeAndPhoneNumber],
+    [addContact, editContact, removeContact, deleteContacts, contacts, loading, openWhatsApp, clearContacts, findContactByCountryCodeAndPhoneNumber],
   );
 
   return <ContactContext.Provider value={value}>{children}</ContactContext.Provider>;
