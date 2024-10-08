@@ -162,6 +162,7 @@ export default function ImportContactsFromFile() {
         ({ item }: { item: ContactImportItemFromFile }) => (
             <SelectableContactToImport
                 key={item.id}
+                enabled={!isImportingContacts}
                 onPress={() => {
                     handleToggleCheckContact(item);
                 }}>
@@ -171,7 +172,7 @@ export default function ImportContactsFromFile() {
                 </SelectableContactToImportView>
             </SelectableContactToImport>
         ),
-        [handleToggleCheckContact],
+        [handleToggleCheckContact, isImportingContacts],
     );
 
     return (

@@ -190,6 +190,7 @@ export default function ImportContactsFromAgenda() {
     ({ item }: { item: ContactImportItemType }) => (
       <SelectableContactToImport
         key={item.recordID}
+        enabled={!isImportingContacts}
         onPress={() => {
           handleToggleCheckContact(item);
         }}>
@@ -199,7 +200,7 @@ export default function ImportContactsFromAgenda() {
         </SelectableContactToImportView>
       </SelectableContactToImport>
     ),
-    [handleToggleCheckContact],
+    [handleToggleCheckContact, isImportingContacts],
   );
 
   return (
