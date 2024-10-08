@@ -26,12 +26,15 @@ import { useAppTranslation } from '../../hooks/translation';
 import ButtonComponent from '../../components/Button';
 import SearchInput from '../../components/SearchInput';
 import { isNumeric } from '../../utils/helper';
+import CheckBox from '@react-native-community/checkbox';
 
 const Home: React.FC = () => {
   const { Translate } = useAppTranslation();
   const { contacts, loading, openWhatsApp, removeContact, clearContacts } = useContact();
 
   const [searchContent, setSearchContent] = useState<string>('');
+  const [isSelectionMode, setIsSelectionMode] = useState<boolean>(false);
+  const [selectedContacts, setSelectedContacts] = useState<IContact[]>([]);
 
   const navigation = useNavigation<StackNavigationProps>();
 
@@ -75,11 +78,31 @@ const Home: React.FC = () => {
     [searchContent],
   );
 
+  const handleEnableMultiContactSelection = useCallback((contact: IContact) => {
+    setSelectedContacts([contact]);
+    setIsSelectionMode(true);
+  }, []);
+
+  const handleDisableMultiContactSelection = useCallback(() => {
+    setIsSelectionMode(false);
+    setSelectedContacts([]);
+  }, []);
+
+  const isContactSelected = useCallback((item: IContact) => {
+    return selectedContacts.find(contact => contact.id === item.id) != null;
+  }, [selectedContacts]);
+
   const renderItem = useCallback(
     ({ item }: { item: IContact }) => (
       <ContactCard key={item.id}>
         <ContactCardRow>
-          <ContactCardTouchable onPress={() => openWhatsApp(formattedPhoneNumber(item))}>
+          {isSelectionMode && <CheckBox value={isContactSelected(item)} tintColors={{ true: '#5467FB' }} />}
+
+          <ContactCardTouchable
+            onPress={() => openWhatsApp(formattedPhoneNumber(item))}
+            onLongPress={() => handleEnableMultiContactSelection(item)}
+            reduceMarginLeft={isSelectionMode}
+          >
             <ContactName>{item.name || Translate('unamedContact')}</ContactName>
 
             <ContactLocationContainer>
@@ -94,7 +117,7 @@ const Home: React.FC = () => {
         </ContactCardRow>
       </ContactCard>
     ),
-    [Translate, dropdownMenuContactItem.options, formattedPhoneNumber, handlePressMenuItem, openWhatsApp],
+    [Translate, dropdownMenuContactItem.options, formattedPhoneNumber, handleEnableMultiContactSelection, handlePressMenuItem, isContactSelected, isSelectionMode, openWhatsApp],
   );
 
   const contactListToRender = useMemo(() => {
@@ -115,7 +138,7 @@ const Home: React.FC = () => {
   }, [contacts, handleFilterSearchContacts]);
 
   return (
-    <AppStructure sectionName={Translate('contactHistory')} sectionMenuText={contacts.length > 0 ? Translate('clearContacts') : ''} sectionMenuOnPress={() => clearContacts()}>
+    <AppStructure hideSectionContainer={isSelectionMode} sectionName={Translate('contactHistory')} sectionMenuText={contacts.length > 0 ? Translate('clearContacts') : ''} sectionMenuOnPress={() => clearContacts()}>
       <React.Fragment>
         {loading && <ActivityIndicator />}
 
@@ -148,13 +171,25 @@ const Home: React.FC = () => {
             <FlatList data={contactListToRender} keyExtractor={item => item.id} renderItem={renderItem} />
 
             <ButtonBottomContainer>
-              <ButtonComponent
-                text={Translate('addContact')}
-                type="default"
-                onPress={async () => {
-                  navigation.navigate('AddContact');
-                }}
-              />
+              {
+                !isSelectionMode && (
+                  <ButtonComponent
+                    text={Translate('addContact')}
+                    type="default"
+                    onPress={async () => {
+                      navigation.navigate('AddContact');
+                    }}
+                  />
+                )
+              }
+
+              {isSelectionMode && (
+                <ButtonComponent
+                  text={Translate('cancel')}
+                  type="cancel"
+                  onPress={handleDisableMultiContactSelection}
+                />
+              )}
             </ButtonBottomContainer>
           </React.Fragment>
         )}
